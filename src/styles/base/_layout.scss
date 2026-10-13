@@ -1,7 +1,7 @@
 @use '../abstracts/variables' as *;
 
 body {
-  background: $bg-page;
+  background: $void;
   font-family: $font-body;
   font-size: $fs-body;
   font-weight: $font-weight-regular;
@@ -58,11 +58,6 @@ body {
 }
 
 // ---------- debugging ----------
-.layout * {
-  outline: 2px dashed $ember;
-  outline-offset: -2px;
-  background: rgba($ember, 0.08);
-}
 
 .header {
   min-height: 3rem;

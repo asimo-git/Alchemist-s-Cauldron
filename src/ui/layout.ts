@@ -1,13 +1,10 @@
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
+import { createShelfSection } from './components/shelf';
 
 export function createMainLayout(): HTMLElement {
   const header = createElement('header', {
     className: 'header',
-  });
-
-  const cabinet = createElement('div', {
-    className: 'main__cabinet',
   });
 
   const center = createElement('div', {
@@ -27,7 +24,7 @@ export function createMainLayout(): HTMLElement {
 
   const main = createElement('main', {
     className: 'main',
-    children: [cabinet, center, recipe],
+    children: [createShelfSection(), center, recipe],
   });
 
   return createElement('div', {
