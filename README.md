@@ -18,4 +18,4 @@ Levels and score:
 5. Click Brew to check the mix. In Level 3, Pour Out is also available.
 6. Keep brewing until time ends, you lose all lives, or the ingredients run out.
 
-    Every ingredient has a limited stock. The number on the shelf card shows how many portions are left
+   Every ingredient has a limited stock. The number on the shelf card shows how many portions are left
