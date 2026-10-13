@@ -57,6 +57,12 @@ $fs-small: clamp(13px, 1vw, 16px);
 $fs-label: clamp(11px, 0.9vw, 14px);
 
 // Breakpoints
+$breakpoint-desktop: 1920px;
 $breakpoint-laptop: 1100px;
 $breakpoint-tablet: 768px;
 $breakpoint-mobile: 480px;
+
+$layout-max-height: 1080px;
+
+$gap-large: clamp(8px, 1.6vw, 28px);
+$padding-large: clamp(10px, 2vw, 40px);

@@ -1,11 +1,38 @@
+import { createElement } from '../utils/helpers';
+
 export function createMainLayout(): HTMLElement {
-  const homePage = document.createElement('main');
+  const header = createElement('header', {
+    className: 'header',
+  });
 
-  homePage.innerHTML = `
-    <section>
-      <h1 class="home-page__title">A website will be here!</h1>
-    </section>
-  `;
+  const cabinet = createElement('div', {
+    className: 'main__cabinet',
+  });
 
-  return homePage;
+  const center = createElement('div', {
+    className: 'main__center',
+    children: [
+      createElement('div', {
+        className: 'main__cauldron',
+      }),
+      createElement('div', {
+        className: 'main__actions',
+      }),
+    ],
+  });
+
+  const recipe = createElement('div', {
+    className: 'main__recipe',
+    attributes: { 'data-slot': 'recipe' },
+  });
+
+  const main = createElement('main', {
+    className: 'main',
+    children: [cabinet, center, recipe],
+  });
+
+  return createElement('div', {
+    className: 'layout',
+    children: [header, main],
+  });
 }
