@@ -1,5 +1,6 @@
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
+import { createMainActions } from './components/main-actions';
 import { createShelfSection } from './components/shelf';
 
 export function createMainLayout(): HTMLElement {
@@ -9,12 +10,7 @@ export function createMainLayout(): HTMLElement {
 
   const center = createElement('div', {
     className: 'main__center',
-    children: [
-      createCauldronSection(),
-      createElement('div', {
-        className: 'main__actions',
-      }),
-    ],
+    children: [createCauldronSection(), createMainActions()],
   });
 
   const recipe = createElement('div', {

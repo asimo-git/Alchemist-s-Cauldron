@@ -82,7 +82,7 @@ function createIngredientCard(
     const { shelfStock, cauldronIngredients } = getState();
     const stock = shelfStock[ingredient.id] ?? 0;
 
-    element.disabled = !canAddToCauldron(cauldronIngredients);
+    element.disabled = !canAddToCauldron(cauldronIngredients) || stock === 0;
     element.classList.toggle('shelf_card_empty', stock === 0);
     element.setAttribute(
       'aria-label',

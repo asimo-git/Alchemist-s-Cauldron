@@ -16,6 +16,9 @@ $crimson: #a3182b;
 $scarlet: #cf2a3c;
 $ember: #ef5a4a;
 
+$emerald: #3fbf6f;
+$glow-green: 0 0 18px rgba($emerald, 0.55);
+
 $bg-page: radial-gradient(120% 80% at 50% 0%, #2a0d15 0%, $crypt 45%, $void 100%);
 
 // ---- Glow ----
@@ -65,3 +68,6 @@ $layout-max-height: 1080px;
 
 $gap-large: clamp(8px, 1.6vw, 28px);
 $padding-large: clamp(10px, 2vw, 40px);
+
+// ---- Animation ----
+$move: 0.4s ease;
