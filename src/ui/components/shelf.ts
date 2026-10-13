@@ -1,24 +1,39 @@
 import type { IIngredient } from '../../utils/types';
 import { INGREDIENTS } from '../../data/ingredients';
 import { createElement } from '../../utils/helpers';
-import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
+import {
+  GAME_EVENTS,
+  GAME_SIGNALS,
+  gameActions,
+  gameEvents,
+  getState,
+} from '../../state/game-state';
 import { canAddToCauldron } from '../../logic/calculate-cauldron';
 
 export function createShelfSection(): HTMLElement {
   gameActions.startNewGame();
   const controller = new AbortController();
+  const { signal } = controller;
   const { shelfStock } = getState();
 
   const ingredients = INGREDIENTS.filter((item) => Object.hasOwn(shelfStock, item.id));
   // destroy: () => controller.abort() при обновлении карточек
 
-  return createElement('section', {
+  const shelf = createElement('section', {
     className: 'shelf_container',
     attributes: { 'aria-label': 'Ingredient shelf' },
-    children: ingredients.map((item) =>
-      createIngredientCard(item, shelfStock[item.id], controller.signal),
-    ),
+    children: ingredients.map((item) => createIngredientCard(item, shelfStock[item.id], signal)),
   });
+
+  function setisLocked(isLocked: boolean): void {
+    shelf.classList.toggle('shelf_container_isLocked', isLocked);
+    shelf.inert = isLocked;
+    shelf.setAttribute('aria-disabled', String(isLocked));
+  }
+
+  gameEvents.addEventListener(GAME_SIGNALS.cauldronFull, () => setisLocked(true), { signal });
+
+  return shelf;
 }
 
 function createIngredientCard(

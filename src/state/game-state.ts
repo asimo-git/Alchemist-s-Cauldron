@@ -15,6 +15,13 @@ export const GAME_EVENTS = {
   lastReactionId: 'last-reaction-changed',
 } as const satisfies Record<keyof IGameState, string>;
 
+export const GAME_SIGNALS = {
+  cauldronFull: 'cauldron-full',
+} as const;
+
+type GameEventName =
+  (typeof GAME_EVENTS)[keyof typeof GAME_EVENTS] | (typeof GAME_SIGNALS)[keyof typeof GAME_SIGNALS];
+
 const store: { state: IGameState } = {
   state: {
     status: 'menu',
@@ -28,8 +35,6 @@ const store: { state: IGameState } = {
     lastReactionId: undefined,
   },
 };
-
-type GameEventName = (typeof GAME_EVENTS)[keyof typeof GAME_EVENTS];
 
 interface IGameEventTarget extends EventTarget {
   addEventListener(
@@ -77,10 +82,16 @@ export const gameActions = {
     if (!canAddToCauldron(cauldronIngredients)) return;
     // show error
 
+    const nextIngredients = [...cauldronIngredients, ingredient];
+
     setState({
-      cauldronIngredients: [...cauldronIngredients, ingredient],
+      cauldronIngredients: nextIngredients,
       shelfStock: takePortion(shelfStock, ingridientId),
     });
+
+    if (!canAddToCauldron(nextIngredients)) {
+      gameEvents.dispatchEvent(new Event(GAME_SIGNALS.cauldronFull));
+    }
   },
 
   clearCauldron(): void {

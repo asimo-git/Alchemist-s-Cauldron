@@ -9,6 +9,7 @@
   border-radius: $r-md;
   box-shadow: inset 0 0 40px rgba($void, 0.8);
   overflow-y: auto;
+  transition: filter 0.5s ease;
 
   // ---- Firefox ----
   scrollbar-width: thin;
@@ -37,6 +38,17 @@
 
   &::-webkit-scrollbar-thumb:active {
     background: linear-gradient(180deg, $crimson, $oxblood);
+  }
+}
+
+.shelf_container_locked {
+  filter: brightness(0.8) saturate(0.8);
+  border-color: $basalt;
+  cursor: not-allowed;
+  user-select: none;
+
+  * {
+    pointer-events: none;
   }
 }
 
