@@ -1,4 +1,5 @@
 import { createElement } from '../utils/helpers';
+import { createCauldronSection } from './components/cauldron';
 
 export function createMainLayout(): HTMLElement {
   const header = createElement('header', {
@@ -12,9 +13,7 @@ export function createMainLayout(): HTMLElement {
   const center = createElement('div', {
     className: 'main__center',
     children: [
-      createElement('div', {
-        className: 'main__cauldron',
-      }),
+      createCauldronSection(),
       createElement('div', {
         className: 'main__actions',
       }),
