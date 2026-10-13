@@ -29,11 +29,11 @@ export interface IGameState {
   score: number;
   timeLeft: number;
   lives: number;
-  activeRecipe: IRecipe;
+  activeRecipe: IRecipe | undefined;
   cauldronIngredients: IIngredient[];
   shelfStock: Record<string, number>; // ingredient id -> portions left
   difficulty?: Difficulty; // Level 2+
-  lastReactionId?: string | null; // Level 3+
+  lastReactionId?: string | undefined; // Level 3+
 }
 
 export interface IReaction {

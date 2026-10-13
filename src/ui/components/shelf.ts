@@ -1,34 +1,39 @@
 import type { IIngredient } from '../../utils/types';
 import { INGREDIENTS } from '../../data/ingredients';
-import { createElement, randomInt } from '../../utils/helpers';
-import { MAX_STOCK, MIN_STOCK, SHELF_SIZE } from '../../data/game';
+import { createElement } from '../../utils/helpers';
+import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
+import { canAddToCauldron } from '../../logic/calculate-cauldron';
 
 export function createShelfSection(): HTMLElement {
-  const cards = INGREDIENTS.slice(0, SHELF_SIZE).map((ingredient) =>
-    createIngredientCard(ingredient, randomInt(MIN_STOCK, MAX_STOCK)),
-  );
+  gameActions.startNewGame();
+  const controller = new AbortController();
+  const { shelfStock } = getState();
+
+  const ingredients = INGREDIENTS.filter((item) => Object.hasOwn(shelfStock, item.id));
+  // destroy: () => controller.abort() при обновлении карточек
 
   return createElement('section', {
     className: 'shelf_container',
     attributes: { 'aria-label': 'Ingredient shelf' },
-    children: cards,
+    children: ingredients.map((item) =>
+      createIngredientCard(item, shelfStock[item.id], controller.signal),
+    ),
   });
 }
 
-function createIngredientCard(ingredient: IIngredient, stock: number): HTMLButtonElement {
+function createIngredientCard(
+  ingredient: IIngredient,
+  stock: number | undefined,
+  signal: AbortSignal,
+): HTMLButtonElement {
   const icon = createElement('img', {
     className: 'shelf_card_icon',
-    attributes: {
-      src: 'potion.png',
-      alt: '',
-      'aria-hidden': 'true',
-      draggable: 'false',
-    },
+    attributes: { src: 'potion.png', alt: '', 'aria-hidden': 'true', draggable: 'false' },
   });
 
   const stockBadge = createElement('span', {
     className: 'shelf_card_stock',
-    textContent: String(stock),
+    textContent: String(stock ?? 0),
     attributes: { 'aria-hidden': 'true' },
   });
 
@@ -41,14 +46,11 @@ function createIngredientCard(ingredient: IIngredient, stock: number): HTMLButto
     ],
   });
 
-  return createElement('button', {
+  const element = createElement('button', {
     className: 'shelf_card',
-    attributes: {
-      type: 'button',
-      'aria-label': `Add ${ingredient.name}, ${stock} in stock`,
-    },
+    attributes: { type: 'button' },
+    events: { click: () => gameActions.addToCauldron(ingredient.id) },
     children: [
-      // createElement('span', { className: 'shelf_card_frame', children: [icon] }),
       icon,
       stockBadge,
       createElement('div', {
@@ -60,6 +62,27 @@ function createIngredientCard(ingredient: IIngredient, stock: number): HTMLButto
       }),
     ],
   });
+
+  const render = () => {
+    const { shelfStock, cauldronIngredients } = getState();
+    const stock = shelfStock[ingredient.id] ?? 0;
+
+    element.disabled = !canAddToCauldron(cauldronIngredients);
+    element.classList.toggle('shelf_card_empty', stock === 0);
+    element.setAttribute(
+      'aria-label',
+      stock === 0
+        ? `${ingredient.name}, out of stock`
+        : `Add ${ingredient.name}, ${stock} in stock`,
+    );
+    stockBadge.textContent = String(stock);
+    icon.src = stock === 0 ? 'potion-empty.png' : 'potion.png';
+  };
+
+  render();
+  gameEvents.addEventListener(GAME_EVENTS.shelfStock, render, { signal });
+
+  return element;
 }
 
 function createStat(label: string, value: number, modifier: string): HTMLElement {

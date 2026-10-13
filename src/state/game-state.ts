@@ -1,0 +1,89 @@
+import { createShelfStock, takePortion } from '../logic/stock';
+import type { IIngredient, IGameState } from '../utils/types';
+import { INGREDIENTS } from '../data/ingredients';
+import { canAddToCauldron } from '../logic/calculate-cauldron';
+
+export const GAME_EVENTS = {
+  status: 'status-changed',
+  score: 'score-changed',
+  timeLeft: 'time-left-changed',
+  lives: 'lives-changed',
+  activeRecipe: 'active-recipe-changed',
+  cauldronIngredients: 'cauldron-changed',
+  shelfStock: 'shelf-stock-changed',
+  difficulty: 'difficulty-changed',
+  lastReactionId: 'last-reaction-changed',
+} as const satisfies Record<keyof IGameState, string>;
+
+const store: { state: IGameState } = {
+  state: {
+    status: 'menu',
+    score: 0,
+    timeLeft: 0,
+    lives: 3,
+    activeRecipe: undefined,
+    cauldronIngredients: [],
+    shelfStock: {},
+    difficulty: undefined,
+    lastReactionId: undefined,
+  },
+};
+
+type GameEventName = (typeof GAME_EVENTS)[keyof typeof GAME_EVENTS];
+
+interface IGameEventTarget extends EventTarget {
+  addEventListener(
+    type: GameEventName,
+    listener: EventListener,
+    options?: AddEventListenerOptions,
+  ): void;
+  removeEventListener(
+    type: GameEventName,
+    listener: EventListener,
+    options?: EventListenerOptions,
+  ): void;
+}
+
+export const gameEvents = new EventTarget() as IGameEventTarget;
+
+function setState(patch: Partial<IGameState>): void {
+  const previous = store.state;
+  store.state = { ...previous, ...patch };
+
+  for (const key of Object.keys(patch) as (keyof IGameState)[]) {
+    if (store.state[key] !== previous[key]) {
+      gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
+    }
+  }
+}
+
+export const getState = (): Readonly<IGameState> => store.state;
+
+export const gameActions = {
+  startNewGame(): void {
+    setState({
+      shelfStock: createShelfStock(),
+      cauldronIngredients: [],
+    });
+  },
+
+  addToCauldron(ingridientId: string): void {
+    const ingredient: IIngredient | undefined = INGREDIENTS.find(
+      (item) => item.id === ingridientId,
+    );
+    if (!ingredient) return;
+
+    const { cauldronIngredients, shelfStock } = store.state;
+    if (!canAddToCauldron(cauldronIngredients)) return;
+    // show error
+
+    setState({
+      cauldronIngredients: [...cauldronIngredients, ingredient],
+      shelfStock: takePortion(shelfStock, ingridientId),
+    });
+  },
+
+  clearCauldron(): void {
+    setState({ cauldronIngredients: [] });
+  },
+};
