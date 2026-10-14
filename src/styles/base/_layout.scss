@@ -1,0 +1,68 @@
+@use '../abstracts/variables' as *;
+
+body {
+  background: $void;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $font-weight-regular;
+  color: $bone;
+  min-height: 100dvh;
+}
+
+.layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: $gap-large;
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  height: min(100dvh, $layout-max-height);
+  margin: 0 auto;
+  padding: $padding-large;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1.5fr;
+  gap: inherit;
+  min-height: 0;
+
+  &__center {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-column: span 2;
+    grid-row: 2;
+    gap: inherit;
+  }
+
+  &__actions {
+    display: grid;
+    gap: inherit;
+  }
+
+  @media (min-width: $breakpoint-tablet), (max-height: 520px) and (orientation: landscape) {
+    grid-template-columns: 1fr 1.15fr 1fr;
+    grid-template-rows: 1fr;
+
+    &__center {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+}
+
+.main > *,
+.main__center > * {
+  min-width: 0;
+  min-height: 0;
+}
+
+// ---------- debugging ----------
+
+.header {
+  min-height: 3rem;
+}
+
+.main__actions {
+  min-height: 9rem;
+}

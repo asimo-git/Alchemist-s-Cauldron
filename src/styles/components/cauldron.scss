@@ -1,0 +1,8 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.cauldron_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

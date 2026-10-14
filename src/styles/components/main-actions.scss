@@ -1,0 +1,106 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.main-actions {
+  @include flex(column, flex-start, stretch, $size-3);
+
+  &__bars {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: $size-05;
+    row-gap: $size-05;
+  }
+
+  &__button {
+    padding: $size-2;
+    font-family: $font-accent;
+    font-weight: $font-weight-bold;
+    font-size: $fs-h2;
+    text-transform: uppercase;
+    color: $bone;
+    background: $crimson;
+    border: 1px solid $scarlet;
+    border-radius: $r-md;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      box-shadow: $glow-red;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.bar {
+  display: contents;
+  color: $silver;
+  font-size: $fs-small;
+
+  &__track-container {
+    min-width: 0;
+  }
+
+  &__track {
+    position: relative;
+    height: $size-2;
+    background: $obsidian;
+    border: 1px solid $slate;
+    border-radius: $r-md;
+    transition:
+      box-shadow $move,
+      border-color $move;
+  }
+
+  &__correct-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba($ember, 0.25);
+    transition:
+      left $move,
+      width $move,
+      background-color $move;
+  }
+
+  &__center {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: $ash;
+  }
+
+  &__marker {
+    position: absolute;
+    top: -$size-05;
+    bottom: -$size-05;
+    left: 0;
+    width: $size-05;
+    background: $bone;
+    transform: translateX(-50%);
+    transition: left $move;
+  }
+
+  &--in-range &__track {
+    border-color: $emerald;
+    box-shadow: 0 0 14px rgba($emerald, 0.7);
+  }
+
+  &--in-range &__zone {
+    background: rgba($emerald, 0.35);
+  }
+
+  &__head,
+  &__scale {
+    @include flex(row, space-between, start, $size-1);
+  }
+
+  &__scale {
+    font-size: $fs-label;
+    color: $ash;
+  }
+}

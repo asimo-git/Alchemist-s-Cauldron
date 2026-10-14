@@ -16,6 +16,9 @@ $crimson: #a3182b;
 $scarlet: #cf2a3c;
 $ember: #ef5a4a;
 
+$emerald: #3fbf6f;
+$glow-green: 0 0 18px rgba($emerald, 0.55);
+
 $bg-page: radial-gradient(120% 80% at 50% 0%, #2a0d15 0%, $crypt 45%, $void 100%);
 
 // ---- Glow ----
@@ -23,16 +26,15 @@ $glow-red: 0 0 18px rgba($ember, 0.45);
 $glow-soft: 0 0 28px rgba($crimson, 0.35);
 
 // ---- Spacing ----
-$sp: (
-  1: 4px,
-  2: 8px,
-  3: 12px,
-  4: 16px,
-  5: 24px,
-  6: 32px,
-  7: 48px,
-  8: 72px,
-);
+$size-05: 4px;
+$size-1: 8px;
+$size-1-5: 12px;
+$size-2: 16px;
+$size-3: 24px;
+$size-4: 32px;
+$size-6: 48px;
+$size-9: 72px;
+$size-15: 120px;
 
 // ---- Radius ----
 $r-sm: 2px;
@@ -57,6 +59,15 @@ $fs-small: clamp(13px, 1vw, 16px);
 $fs-label: clamp(11px, 0.9vw, 14px);
 
 // Breakpoints
+$breakpoint-desktop: 1920px;
 $breakpoint-laptop: 1100px;
 $breakpoint-tablet: 768px;
 $breakpoint-mobile: 480px;
+
+$layout-max-height: 1080px;
+
+$gap-large: clamp(8px, 1.6vw, 28px);
+$padding-large: clamp(10px, 2vw, 40px);
+
+// ---- Animation ----
+$move: 0.4s ease;
