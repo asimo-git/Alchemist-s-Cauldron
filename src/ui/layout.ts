@@ -1,6 +1,7 @@
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
 import { createMainActions } from './components/main-actions';
+import { createRecipeSection } from './components/recipe';
 import { createShelfSection } from './components/shelf';
 
 export function createMainLayout(): HTMLElement {
@@ -13,14 +14,9 @@ export function createMainLayout(): HTMLElement {
     children: [createCauldronSection(), createMainActions()],
   });
 
-  const recipe = createElement('div', {
-    className: 'main__recipe',
-    attributes: { 'data-slot': 'recipe' },
-  });
-
   const main = createElement('main', {
     className: 'main',
-    children: [createShelfSection(), center, recipe],
+    children: [createShelfSection(), center, createRecipeSection()],
   });
 
   return createElement('div', {

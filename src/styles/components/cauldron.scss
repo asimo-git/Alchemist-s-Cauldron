@@ -1,48 +1,8 @@
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
-.cauldron_container {
-  @include flex(column, center, center, $size-1);
-}
-
-// .cauldron_frame {
-//   width: 100%;
-//   aspect-ratio: 1;
-// }
-
 .cauldron_img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.cauldron_indicator {
-  @include flex(column, center, center, $size-1);
-  padding: $size-1 $size-1;
-  background: linear-gradient(180deg, rgba($obsidian, 0.9), rgba($crypt, 0.95));
-  border: 1px solid $slate;
-  border-radius: $r-md;
-  box-shadow: inset 0 0 20px rgba($void, 0.8);
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.cauldron_counter {
-  font-family: $font-accent;
-  font-size: $fs-small;
-  font-weight: $font-weight-bold;
-  letter-spacing: 0.1em;
-  color: $silver;
-}
-
-.cauldron_indicator_full {
-  border-color: $scarlet;
-  box-shadow:
-    inset 0 0 20px rgba($void, 0.8),
-    $glow-red;
-
-  .cauldron_counter {
-    color: $ember;
-  }
 }

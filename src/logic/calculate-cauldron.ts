@@ -1,10 +1,8 @@
 import type { IIngredient, IRecipe } from '../utils/types';
-import { CAULDRON_CAPACITY } from '../data/game';
-
-export const STAT_KEYS = ['temperature', 'density', 'magicPower'] as const;
+import { CAULDRON_CAPACITY, STATS } from '../data/game';
 
 export interface IBarData {
-  key: (typeof STAT_KEYS)[number];
+  key: (typeof STATS)[number]['key'];
   value: number;
   limit: number; // шкала: [-limit; +limit]
   zoneStart: number; // % от левого края шкалы
@@ -17,7 +15,7 @@ export const canAddToCauldron = (cauldron: IIngredient[]): boolean =>
   cauldron.length < CAULDRON_CAPACITY;
 
 export function calculateCauldron(ingredients: IIngredient[], recipe: IRecipe): IBarData[] {
-  return STAT_KEYS.map((key) => {
+  return STATS.map(({ key }) => {
     const { min, max } = recipe[key];
     const value = ingredients.reduce((sum, item) => sum + item[key], 0);
 
