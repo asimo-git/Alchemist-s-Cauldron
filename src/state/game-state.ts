@@ -4,7 +4,8 @@ import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
 import { getRecipesByDifficulty } from '../logic/recipe-generator';
 import { isBrewSuccess } from '../logic/brew-check';
-import { BREW_TIME_BONUS, SCORE_PER_RECIPE } from '../data/game';
+import { LEVEL_1_LIVES, LEVEL_1_TIME, SCORE_PER_RECIPE } from '../data/game';
+import { createCountdown } from '../logic/timer';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -30,8 +31,8 @@ const store: { state: IGameState } = {
   state: {
     status: 'menu',
     score: 0,
-    timeLeft: 0,
-    lives: 5,
+    lives: LEVEL_1_LIVES,
+    timeLeft: LEVEL_1_TIME,
     activeRecipe: undefined,
     cauldronIngredients: [],
     shelfStock: {},
@@ -60,9 +61,7 @@ function setState(patch: Partial<IGameState>): void {
   store.state = { ...previous, ...patch };
 
   for (const key of Object.keys(patch) as (keyof IGameState)[]) {
-    // console.log(key);
     if (store.state[key] !== previous[key]) {
-      // console.log(key);
       gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
     }
   }
@@ -70,14 +69,20 @@ function setState(patch: Partial<IGameState>): void {
 
 export const getState = (): Readonly<IGameState> => store.state;
 
+const countdown = createCountdown((timeLeft) =>
+  setState(timeLeft === 0 ? { timeLeft, status: 'game-over' } : { timeLeft }),
+);
+
 export const gameActions = {
   startNewGame(): void {
     setState({
+      status: 'playing',
       activeRecipe: getRecipesByDifficulty(),
       shelfStock: createShelfStock(),
       cauldronIngredients: [],
     });
     gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
+    countdown.start(LEVEL_1_TIME);
   },
 
   addToCauldron(ingridientId: string): void {
@@ -107,22 +112,21 @@ export const gameActions = {
   },
 
   brew(): void {
-    const { activeRecipe, cauldronIngredients, score, timeLeft, lives } = store.state;
+    const { activeRecipe, cauldronIngredients, score, lives } = store.state;
     if (!activeRecipe || cauldronIngredients.length === 0) return;
 
     if (isBrewSuccess(cauldronIngredients, activeRecipe)) {
       setState({
         score: score + SCORE_PER_RECIPE,
-        timeLeft: timeLeft + BREW_TIME_BONUS,
         cauldronIngredients: [],
         activeRecipe: getRecipesByDifficulty(),
       });
+      countdown.addTime();
     } else {
       setState({
         lives: lives - 1,
         cauldronIngredients: [],
       });
     }
-    console.log(getState());
   },
 };

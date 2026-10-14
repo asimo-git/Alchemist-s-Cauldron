@@ -3,10 +3,16 @@ import { createCauldronSection } from './components/cauldron';
 import { createMainActions } from './components/main-actions';
 import { createRecipeSection } from './components/recipe';
 import { createShelfSection } from './components/shelf';
+import { createTimer } from './components/timer';
 
 export function createMainLayout(): HTMLElement {
   const header = createElement('header', {
     className: 'header',
+    children: [
+      createElement('div', { className: 'header__side' }),
+      createTimer(),
+      createElement('div', { className: 'header__side' }),
+    ],
   });
 
   const center = createElement('div', {
