@@ -6,7 +6,7 @@ export type Stock = Record<string, number>;
 
 export function createShelfStock(): Stock {
   const stock: Stock = {};
-  for (const { id } of INGREDIENTS) stock[id] = randomInt(MIN_STOCK, MAX_STOCK);
+  for (const { id } of INGREDIENTS.slice(0, 6)) stock[id] = randomInt(MIN_STOCK, MAX_STOCK);
   return stock;
 }
 

@@ -1,5 +1,5 @@
 import { createElement } from '../../utils/helpers';
-import { GAME_EVENTS, gameEvents, getState } from '../../state/game-state';
+import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
 import { calculateCauldron, type IBarData } from '../../logic/calculate-cauldron';
 
 function createBar(label: string) {
@@ -58,10 +58,19 @@ export function createMainActions(): HTMLElement {
     children: Object.values(bars).map((bar) => bar.element),
   });
 
+  const handleStart = (event: Event) => {
+    gameActions.startNewGame();
+    const button = event.target as HTMLButtonElement;
+    button.textContent = 'Brew';
+    button.removeEventListener('click', handleStart);
+    button.addEventListener('click', gameActions.brew);
+  };
+
   const brewButton = createElement('button', {
     className: 'main-actions__button',
-    textContent: 'Brew',
+    textContent: 'Start Game',
     attributes: { type: 'button' },
+    events: { click: handleStart },
   });
 
   const render = (): void => {

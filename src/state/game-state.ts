@@ -3,6 +3,8 @@ import type { IIngredient, IGameState } from '../utils/types';
 import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
 import { getRecipesByDifficulty } from '../logic/recipe-generator';
+import { isBrewSuccess } from '../logic/brew-check';
+import { BREW_TIME_BONUS, SCORE_PER_RECIPE } from '../data/game';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -18,6 +20,7 @@ export const GAME_EVENTS = {
 
 export const GAME_SIGNALS = {
   cauldronFull: 'cauldron-full',
+  gameBegun: 'game-begun',
 } as const;
 
 type GameEventName =
@@ -28,7 +31,7 @@ const store: { state: IGameState } = {
     status: 'menu',
     score: 0,
     timeLeft: 0,
-    lives: 3,
+    lives: 5,
     activeRecipe: undefined,
     cauldronIngredients: [],
     shelfStock: {},
@@ -57,7 +60,9 @@ function setState(patch: Partial<IGameState>): void {
   store.state = { ...previous, ...patch };
 
   for (const key of Object.keys(patch) as (keyof IGameState)[]) {
+    // console.log(key);
     if (store.state[key] !== previous[key]) {
+      // console.log(key);
       gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
     }
   }
@@ -72,6 +77,7 @@ export const gameActions = {
       shelfStock: createShelfStock(),
       cauldronIngredients: [],
     });
+    gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
   },
 
   addToCauldron(ingridientId: string): void {
@@ -98,5 +104,25 @@ export const gameActions = {
 
   clearCauldron(): void {
     setState({ cauldronIngredients: [] });
+  },
+
+  brew(): void {
+    const { activeRecipe, cauldronIngredients, score, timeLeft, lives } = store.state;
+    if (!activeRecipe || cauldronIngredients.length === 0) return;
+
+    if (isBrewSuccess(cauldronIngredients, activeRecipe)) {
+      setState({
+        score: score + SCORE_PER_RECIPE,
+        timeLeft: timeLeft + BREW_TIME_BONUS,
+        cauldronIngredients: [],
+        activeRecipe: getRecipesByDifficulty(),
+      });
+    } else {
+      setState({
+        lives: lives - 1,
+        cauldronIngredients: [],
+      });
+    }
+    console.log(getState());
   },
 };
