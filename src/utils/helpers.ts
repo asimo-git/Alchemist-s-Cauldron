@@ -44,3 +44,9 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
 export function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function pickRandom<T>(array: T[]): T | undefined {
+  if (array.length === 0) return;
+  const index = randomInt(0, array.length - 1);
+  return array[index];
+}

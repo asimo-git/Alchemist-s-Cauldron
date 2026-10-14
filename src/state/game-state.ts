@@ -2,7 +2,7 @@ import { createShelfStock, takePortion } from '../logic/stock';
 import type { IIngredient, IGameState } from '../utils/types';
 import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
-import { RECIPES } from '../data/recipes';
+import { getRecipesByDifficulty } from '../logic/recipe-generator';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -68,7 +68,7 @@ export const getState = (): Readonly<IGameState> => store.state;
 export const gameActions = {
   startNewGame(): void {
     setState({
-      activeRecipe: RECIPES[0],
+      activeRecipe: getRecipesByDifficulty(),
       shelfStock: createShelfStock(),
       cauldronIngredients: [],
     });
