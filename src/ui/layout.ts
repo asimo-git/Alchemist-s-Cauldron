@@ -1,20 +1,11 @@
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
+import { createHeader } from './components/header';
 import { createMainActions } from './components/main-actions';
 import { createRecipeSection } from './components/recipe';
 import { createShelfSection } from './components/shelf';
-import { createTimer } from './components/timer';
 
 export function createMainLayout(): HTMLElement {
-  const header = createElement('header', {
-    className: 'header',
-    children: [
-      createElement('div', { className: 'header__side' }),
-      createTimer(),
-      createElement('div', { className: 'header__side' }),
-    ],
-  });
-
   const center = createElement('div', {
     className: 'main__center',
     children: [createCauldronSection(), createMainActions()],
@@ -27,6 +18,6 @@ export function createMainLayout(): HTMLElement {
 
   return createElement('div', {
     className: 'layout',
-    children: [header, main],
+    children: [createHeader(), main],
   });
 }
