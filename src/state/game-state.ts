@@ -1,4 +1,4 @@
-import { createShelfStock, takePortion } from '../logic/stock';
+import { createShelfStock, isOutOfIngredients, takePortion } from '../logic/stock';
 import type { IIngredient, IGameState } from '../utils/types';
 import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
@@ -6,6 +6,7 @@ import { getRecipesByDifficulty } from '../logic/recipe-generator';
 import { isBrewSuccess } from '../logic/brew-check';
 import { LEVEL_1_LIVES, LEVEL_1_TIME, SCORE_PER_RECIPE } from '../data/game';
 import { createCountdown } from '../logic/timer';
+import { openGameOverDialog } from '../ui/components/dialogs/game-over-dialog';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -29,7 +30,7 @@ type GameEventName =
 
 const store: { state: IGameState } = {
   state: {
-    status: 'menu',
+    status: 'game-over',
     score: 0,
     lives: LEVEL_1_LIVES,
     timeLeft: LEVEL_1_TIME,
@@ -56,6 +57,14 @@ interface IGameEventTarget extends EventTarget {
 
 export const gameEvents = new EventTarget() as IGameEventTarget;
 
+function syncTimer(): void {
+  const { status } = store.state;
+
+  if (status === 'game-over') countdown.stop();
+  else if (status === 'playing' && !document.hidden) countdown.resume();
+  else countdown.pause();
+}
+
 function setState(patch: Partial<IGameState>): void {
   const previous = store.state;
   store.state = { ...previous, ...patch };
@@ -65,18 +74,32 @@ function setState(patch: Partial<IGameState>): void {
       gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
     }
   }
+
+  if (store.state.status !== previous.status) syncTimer();
+}
+
+export function initGameState(): void {
+  document.addEventListener('visibilitychange', syncTimer);
+  gameEvents.addEventListener(GAME_EVENTS.status, () => {
+    if (getState().status !== 'game-over') return;
+    openGameOverDialog();
+  });
 }
 
 export const getState = (): Readonly<IGameState> => store.state;
 
-const countdown = createCountdown((timeLeft) =>
-  setState(timeLeft === 0 ? { timeLeft, status: 'game-over' } : { timeLeft }),
+const countdown = createCountdown(
+  (timeLeft) => setState({ timeLeft }),
+  () => setState({ status: 'game-over' }),
 );
 
 export const gameActions = {
   startNewGame(): void {
     setState({
       status: 'playing',
+      score: 0,
+      lives: LEVEL_1_LIVES,
+      timeLeft: LEVEL_1_TIME,
       activeRecipe: getRecipesByDifficulty(),
       shelfStock: createShelfStock(),
       cauldronIngredients: [],
@@ -109,6 +132,9 @@ export const gameActions = {
 
   clearCauldron(): void {
     setState({ cauldronIngredients: [] });
+    if (store.state.status === 'playing' && isOutOfIngredients(store.state)) {
+      setState({ status: 'game-over' });
+    }
   },
 
   brew(): void {
@@ -128,5 +154,17 @@ export const gameActions = {
         cauldronIngredients: [],
       });
     }
+
+    if (store.state.lives === 0 || isOutOfIngredients(store.state)) {
+      setState({ status: 'game-over' });
+    }
+  },
+
+  pauseGame(): void {
+    if (store.state.status === 'playing') setState({ status: 'paused' });
+  },
+
+  resumeGame(): void {
+    if (store.state.status === 'paused') setState({ status: 'playing' });
   },
 };

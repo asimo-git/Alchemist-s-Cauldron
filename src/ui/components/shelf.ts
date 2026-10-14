@@ -41,19 +41,26 @@ export function createShelfSection(): HTMLElement {
     shelf.setAttribute('aria-disabled', String(isLocked));
   }
 
+  function syncLocked(): void {
+    const { cauldronIngredients } = getState();
+    setLocked(!canAddToCauldron(cauldronIngredients));
+  }
+
   gameEvents.addEventListener(
     GAME_SIGNALS.gameBegun,
     () => {
-      setLocked(false);
       buildCards();
+      syncLocked();
     },
     { signal },
   );
 
-  gameEvents.addEventListener(GAME_SIGNALS.cauldronFull, () => setLocked(true), { signal });
+  gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, syncLocked, { signal });
+  gameEvents.addEventListener(GAME_EVENTS.status, syncLocked, { signal });
 
   if (getState().activeRecipe) {
     buildCards();
+    syncLocked();
   }
 
   return shelf;
@@ -83,7 +90,12 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
   const element = createElement('button', {
     className: 'shelf_card',
     attributes: { type: 'button' },
-    events: { click: () => gameActions.addToCauldron(ingredient.id) },
+    events: {
+      click: () => {
+        console.log(getState().shelfStock);
+        gameActions.addToCauldron(ingredient.id);
+      },
+    },
     children: [
       icon,
       stockBadge,

@@ -1,3 +1,4 @@
+import { initGameState } from '../state/game-state';
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
 import { createHeader } from './components/header';
@@ -15,6 +16,8 @@ export function createMainLayout(): HTMLElement {
     className: 'main',
     children: [createShelfSection(), center, createRecipeSection()],
   });
+
+  initGameState();
 
   return createElement('div', {
     className: 'layout',

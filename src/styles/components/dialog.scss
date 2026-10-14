@@ -1,0 +1,71 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+html {
+  scrollbar-gutter: stable;
+}
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-width: 100vw;
+  max-height: 100dvh;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: $bone;
+
+  &::backdrop {
+    background: rgba($void, 0.65);
+    backdrop-filter: blur(8px);
+  }
+
+  &__window {
+    @include flex(column, flex-start, center, $size-2);
+    width: min(90vw, 420px);
+    padding: $size-4 $size-6;
+    text-align: center;
+    background: $obsidian;
+    border: 1px solid $oxblood;
+    border-radius: $r-md;
+    box-shadow: $glow-soft;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-accent;
+    font-size: $fs-h1;
+  }
+
+  &__text {
+    margin: 0;
+    font-size: $fs-body;
+    color: $ash;
+  }
+
+  &__score {
+    margin: 0;
+    font-family: $font-accent;
+    font-size: $fs-display;
+    color: $ember;
+    line-height: 1;
+  }
+
+  &__button {
+    padding: $size-1-5 $size-4;
+    font-family: $font-accent;
+
+    font-size: $fs-h3;
+    text-transform: uppercase;
+    color: $bone;
+    background: $crimson;
+    border: 1px solid $scarlet;
+    border-radius: $r-md;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: $glow-red;
+    }
+  }
+}

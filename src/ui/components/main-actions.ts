@@ -58,26 +58,25 @@ export function createMainActions(): HTMLElement {
     children: Object.values(bars).map((bar) => bar.element),
   });
 
-  const handleStart = (event: Event) => {
-    gameActions.startNewGame();
-    const button = event.target as HTMLButtonElement;
-    button.textContent = 'Brew';
-    button.removeEventListener('click', handleStart);
-    button.addEventListener('click', gameActions.brew);
-  };
-
   const brewButton = createElement('button', {
     className: 'main-actions__button',
     textContent: 'Start Game',
     attributes: { type: 'button' },
-    events: { click: handleStart },
+    events: {
+      click: () => {
+        if (getState().status === 'game-over') gameActions.startNewGame();
+        else gameActions.brew();
+      },
+    },
   });
 
   const render = (): void => {
-    const { activeRecipe, cauldronIngredients } = getState();
+    const { activeRecipe, cauldronIngredients, status } = getState();
     if (!activeRecipe) return;
+    const isOver = status === 'game-over';
 
-    brewButton.disabled = cauldronIngredients.length === 0;
+    brewButton.textContent = isOver ? 'Start Game' : 'Brew';
+    brewButton.disabled = !isOver && cauldronIngredients.length === 0;
 
     for (const data of calculateCauldron(cauldronIngredients, activeRecipe)) {
       bars[data.key].update(data);
@@ -86,6 +85,7 @@ export function createMainActions(): HTMLElement {
 
   gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, render);
   gameEvents.addEventListener(GAME_EVENTS.activeRecipe, render);
+  gameEvents.addEventListener(GAME_EVENTS.status, render);
   render();
 
   return createElement('div', {

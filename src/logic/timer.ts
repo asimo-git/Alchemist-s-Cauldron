@@ -14,7 +14,10 @@ export const calculateTimePercent = (timeLeft: number, totalTime: number): numbe
 
 export const isTimeLow = (timeLeft: number): boolean => timeLeft < LOW_TIME_THRESHOLD;
 
-export function createCountdown(onTick: (timeLeft: number) => void): {
+export function createCountdown(
+  onTick: (timeLeft: number) => void,
+  onEnd?: () => void,
+): {
   start: (seconds: number) => void;
   pause: () => void;
   resume: () => void;
@@ -25,11 +28,18 @@ export function createCountdown(onTick: (timeLeft: number) => void): {
   let remainingMs = 0;
   let intervalId: number | undefined;
   let isPaused = false;
+  let hasEnded = false;
 
   function update(): void {
     const timeLeft = calculateTimeLeft(endTime, Date.now());
 
-    if (timeLeft === 0) stop();
+    if (timeLeft === 0) {
+      stop();
+      if (!hasEnded) {
+        hasEnded = true;
+        onEnd?.();
+      }
+    }
 
     onTick(timeLeft);
   }
@@ -41,6 +51,7 @@ export function createCountdown(onTick: (timeLeft: number) => void): {
   }
 
   function pause(): void {
+    console.log('pause');
     if (isPaused || intervalId === undefined) return;
 
     remainingMs = Math.max(0, endTime - Date.now());
@@ -50,18 +61,11 @@ export function createCountdown(onTick: (timeLeft: number) => void): {
   }
 
   function resume(): void {
-    if (!isPaused || document.hidden) return;
+    console.log('resume');
+    if (!isPaused) return;
 
     isPaused = false;
     run(remainingMs);
-  }
-
-  function handleVisibilityChange(): void {
-    if (document.hidden) {
-      pause();
-    } else {
-      resume();
-    }
   }
 
   function stop(): void {
@@ -69,14 +73,13 @@ export function createCountdown(onTick: (timeLeft: number) => void): {
     intervalId = undefined;
     remainingMs = 0;
     isPaused = false;
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
   }
 
   function start(seconds: number): void {
     stop();
+    hasEnded = false;
     remainingMs = seconds * 1000;
     run(remainingMs);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
   }
 
   function addTime(): void {
