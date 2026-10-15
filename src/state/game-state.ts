@@ -180,7 +180,8 @@ export const gameActions = {
   },
 
   pauseGame(): void {
-    if (store.state.status === 'playing') setState({ status: 'paused' });
+    if (store.state.status !== 'playing') return;
+    setState({ status: 'paused' });
     openPauseDialog();
   },
 
