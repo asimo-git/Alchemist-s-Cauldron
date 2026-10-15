@@ -1,14 +1,12 @@
+import { initGameState } from '../state/game-state';
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
+import { createHeader } from './components/header';
 import { createMainActions } from './components/main-actions';
 import { createRecipeSection } from './components/recipe';
 import { createShelfSection } from './components/shelf';
 
 export function createMainLayout(): HTMLElement {
-  const header = createElement('header', {
-    className: 'header',
-  });
-
   const center = createElement('div', {
     className: 'main__center',
     children: [createCauldronSection(), createMainActions()],
@@ -19,8 +17,10 @@ export function createMainLayout(): HTMLElement {
     children: [createShelfSection(), center, createRecipeSection()],
   });
 
+  initGameState();
+
   return createElement('div', {
     className: 'layout',
-    children: [header, main],
+    children: [createHeader(), main],
   });
 }

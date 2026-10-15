@@ -46,6 +46,11 @@ function createBar(label: string) {
   return { element, update };
 }
 
+const isIdle = (): boolean => {
+  const { status } = getState();
+  return status === 'game-over' || status === 'menu';
+};
+
 export function createMainActions(): HTMLElement {
   const bars = {
     temperature: createBar('Temperature'),
@@ -58,27 +63,27 @@ export function createMainActions(): HTMLElement {
     children: Object.values(bars).map((bar) => bar.element),
   });
 
-  const handleStart = (event: Event) => {
-    gameActions.startNewGame();
-    const button = event.target as HTMLButtonElement;
-    button.textContent = 'Brew';
-    button.removeEventListener('click', handleStart);
-    button.addEventListener('click', gameActions.brew);
-  };
-
   const brewButton = createElement('button', {
     className: 'main-actions__button',
     textContent: 'Start Game',
     attributes: { type: 'button' },
-    events: { click: handleStart },
+    events: {
+      click: () => {
+        if (isIdle()) gameActions.startNewGame();
+        else gameActions.brew();
+      },
+    },
   });
 
   const render = (): void => {
     const { activeRecipe, cauldronIngredients } = getState();
+
+    const isButtonIdle = isIdle();
+
+    brewButton.textContent = isButtonIdle ? 'Start Game' : 'Brew';
+    brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
+
     if (!activeRecipe) return;
-
-    brewButton.disabled = cauldronIngredients.length === 0;
-
     for (const data of calculateCauldron(cauldronIngredients, activeRecipe)) {
       bars[data.key].update(data);
     }
@@ -86,6 +91,7 @@ export function createMainActions(): HTMLElement {
 
   gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, render);
   gameEvents.addEventListener(GAME_EVENTS.activeRecipe, render);
+  gameEvents.addEventListener(GAME_EVENTS.status, render);
   render();
 
   return createElement('div', {

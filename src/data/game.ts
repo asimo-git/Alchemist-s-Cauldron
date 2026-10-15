@@ -5,6 +5,9 @@ export const CAULDRON_CAPACITY = 4;
 export const BREW_TOLERANCE = 8; // Level 1
 export const SCORE_PER_RECIPE = 200;
 export const BREW_TIME_BONUS = 10;
+export const LEVEL_1_TIME = 150;
+export const LEVEL_1_LIVES = 3;
+export const LOW_TIME_THRESHOLD = 15;
 
 export const STATS = [
   { key: 'temperature', label: 'Temperature' },
