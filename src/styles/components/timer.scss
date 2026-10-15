@@ -45,6 +45,35 @@
     color: $scarlet;
     animation: none;
   }
+
+  &__top {
+    position: relative;
+  }
+
+  &__pause {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    padding: $size-05 $size-1-5;
+    font-family: $font-body;
+    font-size: $fs-label;
+    text-transform: uppercase;
+    color: $silver;
+    background: $obsidian;
+    border: 1px solid $slate;
+    border-radius: $r-md;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $ash;
+      color: $bone;
+    }
+  }
+
+  &--idle &__pause {
+    visibility: hidden;
+  }
 }
 
 @keyframes timer-pulse {

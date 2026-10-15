@@ -56,7 +56,15 @@ export function createShelfSection(): HTMLElement {
   );
 
   gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, syncLocked, { signal });
-  gameEvents.addEventListener(GAME_EVENTS.status, syncLocked, { signal });
+  gameEvents.addEventListener(
+    GAME_EVENTS.status,
+    () => {
+      syncLocked();
+      if (getState().status === 'game-over' || getState().status === 'menu')
+        shelf.replaceChildren();
+    },
+    { signal },
+  );
 
   if (getState().activeRecipe) {
     buildCards();
@@ -92,7 +100,6 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
     attributes: { type: 'button' },
     events: {
       click: () => {
-        console.log(getState().shelfStock);
         gameActions.addToCauldron(ingredient.id);
       },
     },

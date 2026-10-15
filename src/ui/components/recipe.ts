@@ -49,7 +49,13 @@ export function createRecipeSection(): HTMLElement {
     counter.textContent = `${count} / ${CAULDRON_CAPACITY}`;
     indicator.classList.toggle('recipe__indicator--full', count >= CAULDRON_CAPACITY);
 
-    if (!activeRecipe) return;
+    if (!activeRecipe) {
+      name.textContent = '';
+      for (const { key } of STATS) {
+        ranges[key].textContent = '';
+      }
+      return;
+    }
 
     name.textContent = activeRecipe.name;
     for (const { key } of STATS) {

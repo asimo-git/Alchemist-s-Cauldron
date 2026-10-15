@@ -52,20 +52,28 @@ html {
     line-height: 1;
   }
 
-  &__button {
-    padding: $size-1-5 $size-4;
-    font-family: $font-accent;
+  &__actions {
+    @include flex(column, space-between, stretch, $size-2);
+  }
 
+  &__button {
+    padding: $size-2 $size-4;
+    font-family: $font-accent;
     font-size: $fs-h3;
     text-transform: uppercase;
     color: $bone;
-    background: $crimson;
-    border: 1px solid $scarlet;
+    background: $obsidian;
+    border: 1px solid $slate;
     border-radius: $r-md;
     cursor: pointer;
 
     &:hover {
-      box-shadow: $glow-red;
+      border-color: $ash;
+    }
+
+    &--primary {
+      background: $crimson;
+      border-color: $scarlet;
     }
   }
 }

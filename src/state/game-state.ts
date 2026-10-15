@@ -7,6 +7,7 @@ import { isBrewSuccess } from '../logic/brew-check';
 import { LEVEL_1_LIVES, LEVEL_1_TIME, SCORE_PER_RECIPE } from '../data/game';
 import { createCountdown } from '../logic/timer';
 import { openGameOverDialog } from '../ui/components/dialogs/game-over-dialog';
+import { openPauseDialog } from '../ui/components/dialogs/pause-dialog';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -57,13 +58,15 @@ interface IGameEventTarget extends EventTarget {
 
 export const gameEvents = new EventTarget() as IGameEventTarget;
 
+// The timer synchronizes each time the status changes.
 function syncTimer(): void {
   const { status } = store.state;
 
-  if (status === 'game-over') countdown.stop();
+  if (status === 'game-over' || status === 'menu') countdown.stop();
   else if (status === 'playing' && !document.hidden) countdown.resume();
   else countdown.pause();
 }
+////////////////////////////////////////////////////////
 
 function setState(patch: Partial<IGameState>): void {
   const previous = store.state;
@@ -74,12 +77,26 @@ function setState(patch: Partial<IGameState>): void {
       gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
     }
   }
-
+  console.log(store.state);
   if (store.state.status !== previous.status) syncTimer();
 }
 
 export function initGameState(): void {
-  document.addEventListener('visibilitychange', syncTimer);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) gameActions.pauseGame();
+  });
+
+  document.addEventListener(
+    'keydown',
+    (event) => {
+      if (event.key !== 'Escape' || event.repeat) return;
+      if (document.querySelector('dialog[open]')) return;
+      event.preventDefault();
+      gameActions.pauseGame();
+    },
+    { capture: true },
+  );
+
   gameEvents.addEventListener(GAME_EVENTS.status, () => {
     if (getState().status !== 'game-over') return;
     openGameOverDialog();
@@ -109,6 +126,7 @@ export const gameActions = {
   },
 
   addToCauldron(ingridientId: string): void {
+    if (store.state.status !== 'playing') return;
     const ingredient: IIngredient | undefined = INGREDIENTS.find(
       (item) => item.id === ingridientId,
     );
@@ -138,6 +156,7 @@ export const gameActions = {
   },
 
   brew(): void {
+    if (store.state.status !== 'playing') return;
     const { activeRecipe, cauldronIngredients, score, lives } = store.state;
     if (!activeRecipe || cauldronIngredients.length === 0) return;
 
@@ -162,9 +181,23 @@ export const gameActions = {
 
   pauseGame(): void {
     if (store.state.status === 'playing') setState({ status: 'paused' });
+    openPauseDialog();
   },
 
   resumeGame(): void {
     if (store.state.status === 'paused') setState({ status: 'playing' });
+  },
+
+  exitToMenu(): void {
+    setState({
+      status: 'menu',
+      score: 0,
+      lives: LEVEL_1_LIVES,
+      timeLeft: LEVEL_1_TIME,
+      activeRecipe: undefined,
+      shelfStock: {},
+      cauldronIngredients: [],
+    });
+    // setState({ status: 'menu', cauldronIngredients: [] });
   },
 };

@@ -51,7 +51,6 @@ export function createCountdown(
   }
 
   function pause(): void {
-    console.log('pause');
     if (isPaused || intervalId === undefined) return;
 
     remainingMs = Math.max(0, endTime - Date.now());
@@ -61,7 +60,6 @@ export function createCountdown(
   }
 
   function resume(): void {
-    console.log('resume');
     if (!isPaused) return;
 
     isPaused = false;
