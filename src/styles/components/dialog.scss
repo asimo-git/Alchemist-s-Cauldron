@@ -23,13 +23,22 @@ html {
 
   &__window {
     @include flex(column, flex-start, center, $size-2);
-    width: min(90vw, 420px);
+    width: fit-content;
+    min-width: min(90vw, 420px);
+    max-width: 90vw;
+    max-height: 90dvh;
+    overflow-y: auto;
     padding: $size-4 $size-6;
     text-align: center;
     background: $obsidian;
     border: 1px solid $oxblood;
     border-radius: $r-md;
     box-shadow: $glow-soft;
+  }
+
+  &__content {
+    @include flex(column, flex-start, center, $size-2);
+    width: 100%;
   }
 
   &__title {
@@ -52,8 +61,33 @@ html {
     line-height: 1;
   }
 
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: $fs-body;
+
+    th,
+    td {
+      padding: $size-1 $size-1-5;
+      text-align: left;
+      border-bottom: 1px solid $slate;
+    }
+
+    th {
+      color: $ash;
+      font-size: $fs-label;
+      text-transform: uppercase;
+    }
+  }
+
   &__actions {
     @include flex(column, space-between, stretch, $size-2);
+
+    &--row {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   &__button {
@@ -67,13 +101,28 @@ html {
     border-radius: $r-md;
     cursor: pointer;
 
-    &:hover {
+    &:hover:not(:disabled) {
       border-color: $ash;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     &--primary {
       background: $crimson;
       border-color: $scarlet;
+    }
+
+    &--danger {
+      background: $wine;
+      border-color: $oxblood;
+
+      &:hover:not(:disabled) {
+        border-color: $crimson;
+        box-shadow: $glow-red;
+      }
     }
   }
 }

@@ -47,3 +47,9 @@ export interface IReaction {
     magicPower: number;
   };
 }
+
+export interface ILeaderboardEntry {
+  name: string;
+  score: number;
+  date: number; // timestamp, ms
+}
