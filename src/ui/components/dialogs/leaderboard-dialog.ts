@@ -5,6 +5,19 @@ import { closeDialog, openDialog } from '../dialog';
 export const showLeaderboard = (): void => openDialog(createLeaderboardView());
 
 function createConfirmView(): HTMLElement {
+  const error = createElement('p', {
+    className: 'dialog__error',
+    attributes: { role: 'alert' },
+  });
+
+  const handleClear = (): void => {
+    if (clearLeaderboard() === 'failed') {
+      error.textContent = 'Could not clear the leaderboard: browser storage is unavailable.';
+      return;
+    }
+    showLeaderboard();
+  };
+
   return createElement('div', {
     className: 'dialog__content',
     children: [
@@ -13,6 +26,7 @@ function createConfirmView(): HTMLElement {
         className: 'dialog__text',
         textContent: 'All results will be permanently deleted.',
       }),
+      error,
       createElement('div', {
         className: 'dialog__actions dialog__actions--row',
         children: [
@@ -26,12 +40,7 @@ function createConfirmView(): HTMLElement {
             className: 'dialog__button dialog__button--danger',
             textContent: 'Clear',
             attributes: { type: 'button' },
-            events: {
-              click: () => {
-                clearLeaderboard();
-                showLeaderboard();
-              },
-            },
+            events: { click: handleClear },
           }),
         ],
       }),
@@ -55,13 +64,9 @@ function createLeaderboardView(): HTMLElement {
           }),
         )
       : [
-          createElement('tr', {
-            children: [
-              createElement('td', {
-                textContent: 'No results yet',
-                attributes: { colspan: '4' },
-              }),
-            ],
+          createElement('td', {
+            textContent: 'No results yet',
+            attributes: { colspan: '4' },
           }),
         ];
 

@@ -12,8 +12,11 @@ export const LEVEL_1_LIVES = 3;
 export const LOW_TIME_THRESHOLD = 15;
 
 // Leaderboard
-export const STORAGE_KEY = 'alchemy-leaderboard';
+export const TOP_STORAGE_KEY = 'alchemy-leaderboard';
 export const MAX_ENTRIES = 10;
+export const MIN_NAME_LENGTH = 2;
+export const MAX_NAME_LENGTH = 15;
+export const NAME_PATTERN = /^[\p{L}\p{N} _-]+$/u;
 
 export const STATS = [
   { key: 'temperature', label: 'Temperature' },

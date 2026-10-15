@@ -125,4 +125,46 @@ html {
       }
     }
   }
+
+  &__form {
+    @include flex(column, flex-start, stretch, $size-2);
+    width: 100%;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: $size-1-5 $size-2;
+    font-family: $font-body;
+    font-size: $fs-body;
+    text-align: center;
+    color: $bone;
+    background: $crypt;
+    border: 1px solid $slate;
+    border-radius: $r-md;
+
+    &::placeholder {
+      color: $iron;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $ash;
+      box-shadow: $glow-soft;
+    }
+
+    &[aria-invalid='true'] {
+      border-color: $scarlet;
+    }
+  }
+
+  &__error {
+    margin: 0;
+    font-size: $fs-small;
+    color: $ember;
+
+    &:empty {
+      display: none;
+    }
+  }
 }
