@@ -18,7 +18,7 @@ export function openGameOverDialog(): void {
   ];
 
   const playAgainButton = createElement('button', {
-    className: 'dialog__button',
+    className: 'dialog__button--accent',
     textContent: 'Play again',
     attributes: { type: 'button' },
     events: {
@@ -75,7 +75,7 @@ export function openGameOverDialog(): void {
       ...summary,
       createElement('p', { className: 'dialog__text', textContent: 'Result saved!' }),
       createElement('button', {
-        className: 'dialog__button',
+        className: 'dialog__button--accent',
         textContent: 'Leaderboard',
         attributes: { type: 'button' },
         events: { click: showLeaderboard },

@@ -38,17 +38,5 @@
 }
 
 .header__leaderboard-button {
-  padding: $size-1 $size-2;
-  font-family: $font-accent;
-  font-size: $fs-small;
-  color: $bone;
-  background: $oxblood;
-  border: 1px solid $crimson;
-  border-radius: $r-md;
-  cursor: pointer;
-
-  &:hover {
-    background: $crimson;
-    box-shadow: $glow-red;
-  }
+  @include button-accent(sm);
 }

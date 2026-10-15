@@ -31,13 +31,13 @@ function createConfirmView(): HTMLElement {
         className: 'dialog__actions dialog__actions--row',
         children: [
           createElement('button', {
-            className: 'dialog__button',
+            className: 'dialog__button--primary',
             textContent: 'Cancel',
             attributes: { type: 'button' },
             events: { click: showLeaderboard },
           }),
           createElement('button', {
-            className: 'dialog__button dialog__button--danger',
+            className: 'dialog__button dialog__button--accent',
             textContent: 'Clear',
             attributes: { type: 'button' },
             events: { click: handleClear },
@@ -85,7 +85,7 @@ function createLeaderboardView(): HTMLElement {
   });
 
   const clearButton = createElement('button', {
-    className: 'dialog__button dialog__button--danger',
+    className: 'dialog__button dialog__button--accent',
     textContent: 'Clear Leaderboard',
     attributes: { type: 'button' },
     events: { click: () => openDialog(createConfirmView()) },
@@ -102,7 +102,7 @@ function createLeaderboardView(): HTMLElement {
         children: [
           clearButton,
           createElement('button', {
-            className: 'dialog__button',
+            className: 'dialog__button--primary',
             textContent: 'Close',
             attributes: { type: 'button' },
             events: { click: closeDialog },

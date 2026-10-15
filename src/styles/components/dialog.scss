@@ -91,38 +91,14 @@ html {
   }
 
   &__button {
-    padding: $size-2 $size-4;
-    font-family: $font-accent;
-    font-size: $fs-h3;
-    text-transform: uppercase;
-    color: $bone;
-    background: $obsidian;
-    border: 1px solid $slate;
-    border-radius: $r-md;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      border-color: $ash;
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    width: 100%;
 
     &--primary {
-      background: $crimson;
-      border-color: $scarlet;
+      @include button-regular(md);
     }
 
-    &--danger {
-      background: $wine;
-      border-color: $oxblood;
-
-      &:hover:not(:disabled) {
-        border-color: $crimson;
-        box-shadow: $glow-red;
-      }
+    &--accent {
+      @include button-accent(md);
     }
   }
 

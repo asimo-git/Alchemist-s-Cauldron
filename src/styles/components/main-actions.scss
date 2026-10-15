@@ -2,7 +2,7 @@
 @use '../abstracts/mixins' as *;
 
 .main-actions {
-  @include flex(column, flex-start, stretch, $size-3);
+  @include flex(column, flex-start, stretch, $size-1);
 
   &__bars {
     display: grid;
@@ -12,25 +12,7 @@
   }
 
   &__button {
-    padding: $size-2;
-    font-family: $font-accent;
-    font-weight: $font-weight-bold;
-    font-size: $fs-h2;
-    text-transform: uppercase;
-    color: $bone;
-    background: $crimson;
-    border: 1px solid $scarlet;
-    border-radius: $r-md;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      box-shadow: $glow-red;
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    @include button-accent(lg);
   }
 }
 
