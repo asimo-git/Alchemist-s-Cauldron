@@ -1,0 +1,65 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.recipe {
+  @include flex(column, flex-start, stretch, $size-2);
+  padding: $size-3;
+  color: $silver;
+  background: $obsidian;
+  border: 1px solid $slate;
+  border-radius: $r-md;
+
+  &__title {
+    margin: 0;
+    font-family: $font-accent;
+    font-size: $fs-h3;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $ash;
+  }
+
+  &__name {
+    margin: 0;
+    font-family: $font-accent;
+    font-size: $fs-h2;
+    font-weight: $font-weight-bold;
+    color: $bone;
+  }
+
+  &__indicator {
+    font-family: $font-body;
+    font-size: $fs-small;
+    color: $ash;
+    transition: color 0.3s;
+
+    &--full {
+      color: $ember;
+    }
+  }
+
+  &__counter {
+    font-variant-numeric: tabular-nums;
+    color: $bone;
+  }
+
+  &__list {
+    @include flex(column, flex-start, stretch, $size-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    @include flex(row, space-between, baseline);
+    padding-bottom: $size-05;
+    border-bottom: 1px dashed $slate;
+    font-family: $font-body;
+    font-size: $fs-body;
+  }
+
+  &__range {
+    font-variant-numeric: tabular-nums;
+    color: $bone;
+  }
+}

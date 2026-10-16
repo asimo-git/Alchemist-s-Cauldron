@@ -1,0 +1,191 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.shelf_container {
+  @include flex(column, flex-start, stretch, $gap-large);
+  padding: $padding-large;
+  background: linear-gradient(180deg, rgba($obsidian, 0.85), rgba($crypt, 0.95));
+  border: 1px solid $slate;
+  border-radius: $r-md;
+  box-shadow: inset 0 0 40px rgba($void, 0.8);
+  overflow-y: auto;
+  transition: filter 0.5s ease;
+
+  // ---- Firefox ----
+  scrollbar-width: thin;
+  scrollbar-color: $iron $void;
+
+  // ---- WebKit (Chrome, Safari, Edge) ----
+  &::-webkit-scrollbar {
+    width: $size-1;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $void;
+    border-radius: $r-sm;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, $iron, $slate);
+    border: 2px solid $void;
+    border-radius: $r-sm;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, $silver, $iron);
+    box-shadow: 0 0 $size-1 rgba($ember, 0.6);
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, $crimson, $oxblood);
+  }
+}
+
+.shelf_container_locked {
+  filter: brightness(0.8) saturate(0.8);
+  border-color: $basalt;
+  cursor: not-allowed;
+  user-select: none;
+
+  * {
+    pointer-events: none;
+  }
+}
+
+.shelf_card {
+  @include flex(row, flex-start, center, $size-1);
+  position: relative;
+  padding: $size-1;
+  font-family: $font-body;
+  color: $bone;
+  text-align: center;
+  cursor: pointer;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba($oxblood, 0.35), transparent 60%),
+    linear-gradient(180deg, $basalt 0%, $obsidian 100%);
+  border: 1px solid $iron;
+  border-radius: $r-md;
+  box-shadow:
+    inset 0 0 0 3px $obsidian,
+    inset 0 0 0 4px $slate,
+    0 4px 12px rgba($void, 0.7);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 1px solid $crimson;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  &::before {
+    top: 6px;
+    left: 6px;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  &::after {
+    bottom: 6px;
+    right: 6px;
+    border-left: 0;
+    border-top: 0;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-3px);
+    border-color: $scarlet;
+    box-shadow:
+      inset 0 0 0 3px $obsidian,
+      inset 0 0 0 4px $oxblood,
+      $glow-soft;
+    outline: none;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.shelf_card_stock {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 1;
+  @include flex(row, center, center);
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 $size-05;
+  font-family: $font-accent;
+  font-size: $fs-small;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  color: $bone;
+  background: radial-gradient(circle at 30% 30%, $scarlet, $oxblood);
+  border: 1px solid $ember;
+  border-radius: $r-full;
+  box-shadow: $glow-red;
+}
+
+.shelf_card_icon {
+  width: 20%;
+  filter: drop-shadow(0 0 6px rgba($ember, 0.5));
+  transition: filter 0.2s ease;
+
+  .shelf_card:hover & {
+    filter: drop-shadow(0 0 10px rgba($ember, 0.9));
+  }
+}
+
+.shelf_card_text {
+  flex: 1;
+}
+
+.shelf_card_name {
+  font-family: $font-accent;
+  font-size: $fs-h3;
+  line-height: 2;
+  text-shadow: 0 0 8px rgba($crimson, 0.6);
+}
+
+.shelf_card_stats {
+  @include flex(row, space-between, stretch, $size-1);
+  width: 100%;
+  margin: 0;
+  padding: $size-1 0 0;
+  list-style: none;
+  border-top: 1px solid $slate;
+}
+
+.shelf_stat {
+  @include flex(column, flex-start, center, 2px);
+  flex: 1;
+}
+
+.shelf_stat_label {
+  font-size: $fs-label;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $ash;
+}
+
+.shelf_stat_value {
+  font-family: $font-accent;
+  font-size: $fs-body;
+  font-weight: $font-weight-bold;
+  color: $silver;
+}
+
+.shelf_stat_magic .shelf_stat_value {
+  color: $ember;
+  text-shadow: $glow-red;
+}

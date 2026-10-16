@@ -1,0 +1,73 @@
+// ---- Neutrals ----
+$void: #0a0708;
+$crypt: #130e10;
+$obsidian: #1c1518;
+$basalt: #2a2124;
+$slate: #3e3539;
+$iron: #62575c;
+$ash: #9a8f93;
+$silver: #c4bcc0;
+$bone: #e9e0da;
+
+// ---- Reds ----
+$wine: #3a0b14;
+$oxblood: #6a1220;
+$crimson: #a3182b;
+$scarlet: #cf2a3c;
+$ember: #ef5a4a;
+
+$emerald: #3fbf6f;
+$glow-green: 0 0 18px rgba($emerald, 0.55);
+
+$bg-page: radial-gradient(120% 80% at 50% 0%, #2a0d15 0%, $crypt 45%, $void 100%);
+
+// ---- Glow ----
+$glow-red: 0 0 18px rgba($ember, 0.45);
+$glow-soft: 0 0 28px rgba($crimson, 0.35);
+
+// ---- Spacing ----
+$size-05: 4px;
+$size-1: 8px;
+$size-1-5: 12px;
+$size-2: 16px;
+$size-3: 24px;
+$size-4: 32px;
+$size-6: 48px;
+$size-9: 72px;
+$size-15: 120px;
+
+// ---- Radius ----
+$r-sm: 2px;
+$r-md: 4px;
+$r-full: 999px;
+
+// ---- Fonts ----
+$font-accent: 'Grenze gotisch', Georgia, serif;
+$font-body: 'Garamond', Georgia, serif;
+
+// Font weights
+$font-weight-regular: 400;
+$font-weight-bold: 900;
+
+// ---- Type scale  ----
+$fs-display: clamp(36px, 6vw, 80px);
+$fs-h1: clamp(28px, 4vw, 52px);
+$fs-h2: clamp(22px, 2.6vw, 36px);
+$fs-h3: clamp(17px, 1.8vw, 24px);
+$fs-body: clamp(16px, 1.2vw, 20px);
+$fs-small: clamp(13px, 1vw, 16px);
+$fs-label: clamp(11px, 0.9vw, 14px);
+
+// Breakpoints
+$breakpoint-desktop: 1920px;
+$breakpoint-laptop: 1100px;
+$breakpoint-tablet: 768px;
+$breakpoint-mobile: 480px;
+
+$layout-max-height: 1080px;
+
+$gap-large: clamp(8px, 1.6vw, 28px);
+$padding-large: clamp(10px, 2vw, 40px);
+
+// ---- Animation ----
+$move: 0.4s ease;
