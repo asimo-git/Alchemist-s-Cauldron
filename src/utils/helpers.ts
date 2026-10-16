@@ -50,3 +50,9 @@ export function pickRandom<T>(array: T[]): T | undefined {
   const index = randomInt(0, array.length - 1);
   return array[index];
 }
+
+export const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+export const isNonNegativeNumber = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value >= 0 && Number.isSafeInteger(value);
