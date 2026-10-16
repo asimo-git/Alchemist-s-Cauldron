@@ -4,7 +4,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'dragon-tears',
     name: 'Dragon Tears',
-    icon: '🐉',
+    icon: 'potions/dragon-tears.png',
     temperature: 25,
     density: 8,
     magicPower: 10,
@@ -12,7 +12,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'fairy-dust',
     name: 'Fairy Dust',
-    icon: '✨',
+    icon: 'potions/fairy-dust.png',
     temperature: 12,
     density: 9,
     magicPower: 12,
@@ -20,7 +20,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'frost-lotus',
     name: 'Frost Lotus',
-    icon: '❄️',
+    icon: 'potions/frost-lotus.png',
     temperature: -18,
     density: 4,
     magicPower: 14,
@@ -28,7 +28,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'mandrake-root',
     name: 'Mandrake Root',
-    icon: '🌱',
+    icon: 'potions/mandrake-root.png',
     temperature: -5,
     density: 20,
     magicPower: 8,
@@ -36,7 +36,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'caustic-acid',
     name: 'Caustic Acid',
-    icon: '🧪',
+    icon: 'potions/caustic-acid.png',
     temperature: 10,
     density: 14,
     magicPower: 22,
@@ -44,7 +44,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'essence-of-the-void',
     name: 'Essence of the Void',
-    icon: '🕳️',
+    icon: 'potions/essence-of-the-void.png',
     temperature: -20,
     density: -10,
     magicPower: 40,
@@ -52,7 +52,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'phoenix-feather',
     name: 'Phoenix Feather',
-    icon: '🔥',
+    icon: 'potions/phoenix-feather.png',
     temperature: 50,
     density: -10,
     magicPower: 30,
@@ -60,7 +60,7 @@ export const INGREDIENTS: readonly IIngredient[] = [
   {
     id: 'toad-slime',
     name: 'Toad Slime',
-    icon: '🐸',
+    icon: 'potions/toad-slime.png',
     temperature: 5,
     density: 30,
     magicPower: 0,

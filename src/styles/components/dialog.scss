@@ -23,13 +23,22 @@ html {
 
   &__window {
     @include flex(column, flex-start, center, $size-2);
-    width: min(90vw, 420px);
+    width: fit-content;
+    min-width: min(90vw, 420px);
+    max-width: 90vw;
+    max-height: 90dvh;
+    overflow-y: auto;
     padding: $size-4 $size-6;
     text-align: center;
     background: $obsidian;
     border: 1px solid $oxblood;
     border-radius: $r-md;
     box-shadow: $glow-soft;
+  }
+
+  &__content {
+    @include flex(column, flex-start, center, $size-2);
+    width: 100%;
   }
 
   &__title {
@@ -52,28 +61,86 @@ html {
     line-height: 1;
   }
 
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: $fs-body;
+
+    th,
+    td {
+      padding: $size-1 $size-1-5;
+      text-align: left;
+      border-bottom: 1px solid $slate;
+    }
+
+    th {
+      color: $ash;
+      font-size: $fs-label;
+      text-transform: uppercase;
+    }
+  }
+
   &__actions {
     @include flex(column, space-between, stretch, $size-2);
+
+    &--row {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   &__button {
-    padding: $size-2 $size-4;
-    font-family: $font-accent;
-    font-size: $fs-h3;
-    text-transform: uppercase;
-    color: $bone;
-    background: $obsidian;
-    border: 1px solid $slate;
-    border-radius: $r-md;
-    cursor: pointer;
-
-    &:hover {
-      border-color: $ash;
-    }
+    width: 100%;
 
     &--primary {
-      background: $crimson;
+      @include button-regular(md);
+    }
+
+    &--accent {
+      @include button-accent(md);
+    }
+  }
+
+  &__form {
+    @include flex(column, flex-start, stretch, $size-2);
+    width: 100%;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: $size-1-5 $size-2;
+    font-family: $font-body;
+    font-size: $fs-body;
+    text-align: center;
+    color: $bone;
+    background: $crypt;
+    border: 1px solid $slate;
+    border-radius: $r-md;
+
+    &::placeholder {
+      color: $iron;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $ash;
+      box-shadow: $glow-soft;
+    }
+
+    &[aria-invalid='true'] {
       border-color: $scarlet;
+    }
+  }
+
+  &__error {
+    margin: 0;
+    font-size: $fs-small;
+    color: $ember;
+
+    &:empty {
+      display: none;
     }
   }
 }

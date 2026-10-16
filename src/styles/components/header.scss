@@ -36,3 +36,7 @@
     }
   }
 }
+
+.header__leaderboard-button {
+  @include button-accent(sm);
+}

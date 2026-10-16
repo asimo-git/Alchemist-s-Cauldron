@@ -77,7 +77,7 @@ export function createShelfSection(): HTMLElement {
 function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTMLButtonElement {
   const icon = createElement('img', {
     className: 'shelf_card_icon',
-    attributes: { src: 'potion.png', alt: '', 'aria-hidden': 'true', draggable: 'false' },
+    attributes: { src: ingredient.icon, alt: '', 'aria-hidden': 'true', draggable: 'false' },
   });
 
   const stockBadge = createElement('span', {
@@ -129,7 +129,7 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
         : `Add ${ingredient.name}, ${stock} in stock`,
     );
     stockBadge.textContent = String(stock);
-    icon.src = stock === 0 ? 'potion-empty.png' : 'potion.png';
+    icon.src = stock === 0 ? 'potion-empty.png' : ingredient.icon;
   };
 
   render();

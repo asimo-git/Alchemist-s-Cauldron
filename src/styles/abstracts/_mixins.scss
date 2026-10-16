@@ -10,3 +10,85 @@
     gap: $gap;
   }
 }
+
+@mixin button-size($size: md) {
+  @if $size == sm {
+    padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1.2vw, 16px);
+    font-size: $fs-label;
+  } @else if $size == lg {
+    padding: clamp(12px, 1vw, 24px) clamp(24px, 3vw, 48px);
+    font-size: $fs-h2;
+  } @else {
+    padding: clamp(8px, 0.8vw, 16px) clamp(16px, 2vw, 32px);
+    font-size: $fs-h3;
+  }
+}
+
+@mixin hover-only {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      @content;
+    }
+  }
+}
+
+@mixin button-base($size: md) {
+  @include button-size($size);
+  font-family: $font-accent;
+  text-transform: uppercase;
+  color: $bone;
+  border: 1px solid transparent;
+  border-radius: $r-md;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.1s;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $ash;
+    outline-offset: 2px;
+  }
+}
+
+@mixin button-regular($size: md) {
+  @include button-base($size);
+  background: $obsidian;
+  border-color: $slate;
+
+  @include hover-only {
+    border-color: $ash;
+  }
+
+  &:active:not(:disabled) {
+    background: $basalt;
+    border-color: $ash;
+    transform: scale(0.97);
+  }
+}
+
+@mixin button-accent($size: md) {
+  @include button-base($size);
+  background: $crimson;
+  border-color: $scarlet;
+
+  @include hover-only {
+    background: $scarlet;
+    border-color: $ember;
+    box-shadow: $glow-red;
+  }
+
+  &:active:not(:disabled) {
+    background: $oxblood;
+    border-color: $scarlet;
+    transform: scale(0.97);
+  }
+}

@@ -1,8 +1,19 @@
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
+.cauldron_container {
+  position: relative;
+  overflow: hidden;
+}
+
+.cauldron_frame {
+  position: absolute;
+  inset: 0;
+}
+
 .cauldron_img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }

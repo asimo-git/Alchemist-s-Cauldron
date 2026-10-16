@@ -77,7 +77,7 @@ function setState(patch: Partial<IGameState>): void {
       gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
     }
   }
-  console.log(store.state);
+
   if (store.state.status !== previous.status) syncTimer();
 }
 
