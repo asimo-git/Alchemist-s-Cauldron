@@ -8,7 +8,7 @@
   gap: $gap-large;
 
   &__side {
-    @include flex(row, flex-start, center);
+    @include flex(row, flex-start, center, $size-05);
 
     &--end {
       justify-content: flex-end;
@@ -37,6 +37,6 @@
   }
 }
 
-.header__leaderboard-button {
-  @include button-accent(sm);
+.header__button {
+  @include button-regular(sm);
 }

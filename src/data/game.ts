@@ -1,4 +1,4 @@
-import type { IGameState } from '../utils/types';
+import type { Difficulty, IGameState } from '../utils/types';
 
 export const SHELF_SIZE = 6;
 export const MIN_STOCK = 2;
@@ -35,3 +35,5 @@ export const SAVE_TRIGGER_KEYS: Set<keyof IGameState> = new Set([
   'cauldronIngredients',
   'shelfStock',
 ]);
+
+export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];

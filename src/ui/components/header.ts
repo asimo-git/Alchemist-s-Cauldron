@@ -3,6 +3,7 @@ import { GAME_EVENTS, gameEvents, getState } from '../../state/game-state';
 import { LEVEL_1_LIVES } from '../../data/game';
 import { createTimer } from './timer';
 import { showLeaderboard } from './dialogs/leaderboard-dialog';
+import { showSettings } from './dialogs/settings-dialog';
 
 export function createHeader(): HTMLElement {
   const hearts = Array.from({ length: LEVEL_1_LIVES }, () =>
@@ -16,10 +17,17 @@ export function createHeader(): HTMLElement {
   });
 
   const leaderboardButton = createElement('button', {
-    className: 'header__leaderboard-button',
+    className: 'header__button',
     textContent: 'Leaderboard',
     attributes: { type: 'button' },
     events: { click: showLeaderboard },
+  });
+
+  const settingsButton = createElement('button', {
+    className: 'header__button',
+    textContent: 'Settings',
+    attributes: { type: 'button' },
+    events: { click: showSettings },
   });
 
   const renderLives = (): void => {
@@ -30,20 +38,26 @@ export function createHeader(): HTMLElement {
     lives.setAttribute('aria-label', `Lives: ${livesLeft}`);
   };
 
-  const renderLeaderboardButton = (): void => {
+  const renderIdleButtons = (): void => {
     const { status } = getState();
-    leaderboardButton.hidden = status !== 'menu' && status !== 'game-over';
+    const isIdle = status === 'menu' || status === 'game-over';
+
+    leaderboardButton.hidden = !isIdle;
+    settingsButton.hidden = !isIdle;
   };
 
   gameEvents.addEventListener(GAME_EVENTS.lives, renderLives);
-  gameEvents.addEventListener(GAME_EVENTS.status, renderLeaderboardButton);
+  gameEvents.addEventListener(GAME_EVENTS.status, renderIdleButtons);
   renderLives();
-  renderLeaderboardButton();
+  renderIdleButtons();
 
   return createElement('header', {
     className: 'header',
     children: [
-      createElement('div', { className: 'header__side', children: [leaderboardButton] }),
+      createElement('div', {
+        className: 'header__side',
+        children: [leaderboardButton, settingsButton],
+      }),
       createTimer(),
       createElement('div', {
         className: 'header__side header__side--end',

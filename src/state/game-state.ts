@@ -1,5 +1,5 @@
 import { createShelfStock, isOutOfIngredients, takePortion } from '../logic/stock';
-import type { IIngredient, IGameState } from '../utils/types';
+import type { IIngredient, IGameState, Difficulty } from '../utils/types';
 import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
 import { getRecipesByDifficulty } from '../logic/recipe-generator';
@@ -39,7 +39,7 @@ const store: { state: IGameState } = {
     activeRecipe: undefined,
     cauldronIngredients: [],
     shelfStock: {},
-    difficulty: undefined,
+    difficulty: 'easy',
     lastReactionId: undefined,
   },
 };
@@ -225,5 +225,9 @@ export const gameActions = {
     countdown.start(save.timeLeft);
     countdown.pause();
     openPauseDialog();
+  },
+
+  setDifficulty(difficulty: Difficulty): void {
+    setState({ difficulty });
   },
 };
