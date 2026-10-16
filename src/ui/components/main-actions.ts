@@ -1,6 +1,7 @@
 import { createElement } from '../../utils/helpers';
 import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
 import { calculateCauldron, type IBarData } from '../../logic/calculate-cauldron';
+import { loadGame } from '../../logic/game-save';
 
 function createBar(label: string) {
   const correctZone = createElement('div', { className: 'bar__correct-zone' });
@@ -75,11 +76,18 @@ export function createMainActions(): HTMLElement {
     },
   });
 
+  const continueButton = createElement('button', {
+    className: 'main-actions__button',
+    textContent: 'Continue Game',
+    attributes: { type: 'button' },
+    events: { click: () => gameActions.continueGame() },
+  });
+
   const render = (): void => {
     const { activeRecipe, cauldronIngredients } = getState();
 
     const isButtonIdle = isIdle();
-
+    continueButton.hidden = !isButtonIdle || loadGame() === undefined;
     brewButton.textContent = isButtonIdle ? 'Start Game' : 'Brew';
     brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
 
@@ -96,6 +104,6 @@ export function createMainActions(): HTMLElement {
 
   return createElement('div', {
     className: 'main-actions',
-    children: [barSection, brewButton],
+    children: [barSection, continueButton, brewButton],
   });
 }

@@ -8,7 +8,7 @@ import { LEVEL_1_LIVES, LEVEL_1_TIME, SAVE_TRIGGER_KEYS, SCORE_PER_RECIPE } from
 import { createCountdown } from '../logic/timer';
 import { openGameOverDialog } from '../ui/components/dialogs/game-over-dialog';
 import { openPauseDialog } from '../ui/components/dialogs/pause-dialog';
-import { clearSave, saveGame } from '../logic/game-save';
+import { clearSave, loadGame, saveGame } from '../logic/game-save';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -214,6 +214,16 @@ export const gameActions = {
       shelfStock: {},
       cauldronIngredients: [],
     });
-    // setState({ status: 'menu', cauldronIngredients: [] });
+  },
+
+  continueGame(): void {
+    const save = loadGame();
+    if (!save) return;
+
+    setState({ ...save, status: 'paused' });
+    gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
+    countdown.start(save.timeLeft);
+    countdown.pause();
+    openPauseDialog();
   },
 };
