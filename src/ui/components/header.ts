@@ -1,9 +1,10 @@
 import { createElement } from '../../utils/helpers';
-import { GAME_EVENTS, gameEvents, getState } from '../../state/game-state';
+import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
 import { LEVEL_1_LIVES } from '../../data/game';
 import { createTimer } from './timer';
 import { showLeaderboard } from './dialogs/leaderboard-dialog';
 import { showSettings } from './dialogs/settings-dialog';
+import { showHelp } from './dialogs/help-dialog';
 
 export function createHeader(): HTMLElement {
   const hearts = Array.from({ length: LEVEL_1_LIVES }, () =>
@@ -28,6 +29,18 @@ export function createHeader(): HTMLElement {
     textContent: 'Settings',
     attributes: { type: 'button' },
     events: { click: showSettings },
+  });
+
+  const helpButton = createElement('button', {
+    className: 'header__button',
+    textContent: 'Help',
+    attributes: { type: 'button' },
+    events: {
+      click: () => {
+        gameActions.pauseGame(); // если игра идёт, ставим на паузу; иначе ничего не делает
+        showHelp();
+      },
+    },
   });
 
   const renderLives = (): void => {
@@ -56,7 +69,7 @@ export function createHeader(): HTMLElement {
     children: [
       createElement('div', {
         className: 'header__side',
-        children: [leaderboardButton, settingsButton],
+        children: [leaderboardButton, settingsButton, helpButton],
       }),
       createTimer(),
       createElement('div', {
