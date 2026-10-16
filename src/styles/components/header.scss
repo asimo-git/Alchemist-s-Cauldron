@@ -52,3 +52,27 @@
   color: $ember;
   white-space: nowrap;
 }
+
+.header__difficulty {
+  width: fit-content;
+  padding: $size-05 $size-1-5;
+  font-family: $font-accent;
+  font-size: $fs-label;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid currentColor;
+  border-radius: $r-full;
+
+  &[data-difficulty='easy'] {
+    color: $silver;
+  }
+
+  &[data-difficulty='medium'] {
+    color: $scarlet;
+  }
+
+  &[data-difficulty='hard'] {
+    color: $ember;
+    box-shadow: $glow-red;
+  }
+}

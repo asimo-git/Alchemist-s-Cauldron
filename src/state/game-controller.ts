@@ -84,7 +84,7 @@ export const gameActions = {
       score: 0,
       lives: getSettings().lives,
       timeLeft: getSettings().startTime,
-      activeRecipe: getRecipesByDifficulty(),
+      activeRecipe: getRecipesByDifficulty(store.state.difficulty),
       shelfStock: createShelfStock(DIFFICULTY_SETTINGS[store.state.difficulty].shelfIngredients),
       cauldronIngredients: [],
     });

@@ -18,6 +18,11 @@ export function createHeader(): HTMLElement {
     attributes: { 'aria-label': 'Score' },
   });
 
+  const difficultyBadge = createElement('div', {
+    className: 'header__difficulty',
+    attributes: { 'aria-label': 'Difficulty' },
+  });
+
   const leaderboardButton = createElement('button', {
     className: 'header__button',
     textContent: 'Leaderboard',
@@ -77,9 +82,19 @@ export function createHeader(): HTMLElement {
     score.setAttribute('aria-label', `Score: ${currentScore}`);
   };
 
+  const renderDifficulty = (): void => {
+    const { difficulty } = getState();
+    const label = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+
+    difficultyBadge.textContent = label;
+    difficultyBadge.setAttribute('aria-label', `Difficulty: ${label}`);
+  };
+
   gameEvents.addEventListener(GAME_EVENTS.lives, renderLives);
   gameEvents.addEventListener(GAME_EVENTS.score, renderScore);
   gameEvents.addEventListener(GAME_EVENTS.status, renderIdleState);
+  gameEvents.addEventListener(GAME_EVENTS.difficulty, renderDifficulty);
+  renderDifficulty();
   renderLives();
   renderScore();
   renderIdleState();
@@ -92,9 +107,10 @@ export function createHeader(): HTMLElement {
         children: [helpButton, settingsButton, leaderboardButton],
       }),
       createTimer(),
+
       createElement('div', {
         className: 'header__side header__side--end',
-        children: [lives, score],
+        children: [lives, score, difficultyBadge],
       }),
     ],
   });
