@@ -17,6 +17,11 @@ export function createHeader(): HTMLElement {
     children: hearts,
   });
 
+  const score = createElement('div', {
+    className: 'header__score',
+    attributes: { 'aria-label': 'Score' },
+  });
+
   const leaderboardButton = createElement('button', {
     className: 'header__button',
     textContent: 'Leaderboard',
@@ -37,7 +42,7 @@ export function createHeader(): HTMLElement {
     attributes: { type: 'button' },
     events: {
       click: () => {
-        gameActions.pauseGame(); // если игра идёт, ставим на паузу; иначе ничего не делает
+        gameActions.pauseGame();
         showHelp();
       },
     },
@@ -51,30 +56,39 @@ export function createHeader(): HTMLElement {
     lives.setAttribute('aria-label', `Lives: ${livesLeft}`);
   };
 
-  const renderIdleButtons = (): void => {
+  const renderIdleState = (): void => {
     const { status } = getState();
     const isIdle = status === 'menu' || status === 'game-over';
 
     leaderboardButton.hidden = !isIdle;
     settingsButton.hidden = !isIdle;
+    lives.hidden = isIdle;
+  };
+
+  const renderScore = (): void => {
+    const { score: currentScore } = getState();
+    score.textContent = `Score: ${currentScore}`;
+    score.setAttribute('aria-label', `Score: ${currentScore}`);
   };
 
   gameEvents.addEventListener(GAME_EVENTS.lives, renderLives);
-  gameEvents.addEventListener(GAME_EVENTS.status, renderIdleButtons);
+  gameEvents.addEventListener(GAME_EVENTS.score, renderScore);
+  gameEvents.addEventListener(GAME_EVENTS.status, renderIdleState);
   renderLives();
-  renderIdleButtons();
+  renderScore();
+  renderIdleState();
 
   return createElement('header', {
     className: 'header',
     children: [
       createElement('div', {
         className: 'header__side',
-        children: [leaderboardButton, settingsButton, helpButton],
+        children: [helpButton, settingsButton, leaderboardButton],
       }),
       createTimer(),
       createElement('div', {
         className: 'header__side header__side--end',
-        children: [lives],
+        children: [lives, score],
       }),
     ],
   });
