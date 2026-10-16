@@ -4,10 +4,11 @@ import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
 import { getRecipesByDifficulty } from '../logic/recipe-generator';
 import { isBrewSuccess } from '../logic/brew-check';
-import { LEVEL_1_LIVES, LEVEL_1_TIME, SCORE_PER_RECIPE } from '../data/game';
+import { LEVEL_1_LIVES, LEVEL_1_TIME, SAVE_TRIGGER_KEYS, SCORE_PER_RECIPE } from '../data/game';
 import { createCountdown } from '../logic/timer';
 import { openGameOverDialog } from '../ui/components/dialogs/game-over-dialog';
 import { openPauseDialog } from '../ui/components/dialogs/pause-dialog';
+import { clearSave, loadGame, saveGame } from '../logic/game-save';
 
 export const GAME_EVENTS = {
   status: 'status-changed',
@@ -72,6 +73,8 @@ function setState(patch: Partial<IGameState>): void {
   const previous = store.state;
   store.state = { ...previous, ...patch };
 
+  persistSave(patch);
+
   for (const key of Object.keys(patch) as (keyof IGameState)[]) {
     if (store.state[key] !== previous[key]) {
       gameEvents.dispatchEvent(new Event(GAME_EVENTS[key]));
@@ -79,6 +82,18 @@ function setState(patch: Partial<IGameState>): void {
   }
 
   if (store.state.status !== previous.status) syncTimer();
+}
+
+function persistSave(patch: Partial<IGameState>): void {
+  const { status } = store.state;
+
+  if (status === 'playing' || status === 'paused') {
+    if (Object.keys(patch).some((key) => SAVE_TRIGGER_KEYS.has(key as keyof IGameState))) {
+      saveGame(store.state);
+    }
+  } else if (patch.status === 'game-over' || patch.status === 'menu') {
+    clearSave();
+  }
 }
 
 export function initGameState(): void {
@@ -199,6 +214,16 @@ export const gameActions = {
       shelfStock: {},
       cauldronIngredients: [],
     });
-    // setState({ status: 'menu', cauldronIngredients: [] });
+  },
+
+  continueGame(): void {
+    const save = loadGame();
+    if (!save) return;
+
+    setState({ ...save, status: 'paused' });
+    gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
+    countdown.start(save.timeLeft);
+    countdown.pause();
+    openPauseDialog();
   },
 };
