@@ -1,5 +1,6 @@
-import { CAULDRON_CAPACITY, STATS } from '../../data/game';
-import { GAME_EVENTS, gameEvents, getState } from '../../state/game-state';
+import { GAME_EVENTS, STATS } from '../../data/game';
+import { getSettings, getState } from '../../state/game-state';
+import { gameEvents } from '../../state/game-controller';
 import { createElement } from '../../utils/helpers';
 
 export function createRecipeSection(): HTMLElement {
@@ -46,8 +47,8 @@ export function createRecipeSection(): HTMLElement {
     const { cauldronIngredients, activeRecipe } = getState();
     const count = cauldronIngredients.length;
 
-    counter.textContent = `${count} / ${CAULDRON_CAPACITY}`;
-    indicator.classList.toggle('recipe__indicator--full', count >= CAULDRON_CAPACITY);
+    counter.textContent = `${count} / ${getSettings().cauldronCapacity}`;
+    indicator.classList.toggle('recipe__indicator--full', count >= getSettings().cauldronCapacity);
 
     if (!activeRecipe) {
       name.textContent = '';

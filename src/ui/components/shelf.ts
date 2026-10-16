@@ -1,14 +1,10 @@
 import type { IIngredient } from '../../utils/types';
 import { INGREDIENTS } from '../../data/ingredients';
 import { createElement } from '../../utils/helpers';
-import {
-  GAME_EVENTS,
-  GAME_SIGNALS,
-  gameActions,
-  gameEvents,
-  getState,
-} from '../../state/game-state';
+import { getState } from '../../state/game-state';
+import { gameActions, gameEvents } from '../../state/game-controller';
 import { canAddToCauldron } from '../../logic/calculate-cauldron';
+import { GAME_EVENTS, GAME_SIGNALS } from '../../data/game';
 
 export function createShelfSection(): HTMLElement {
   const controller = new AbortController();

@@ -1,5 +1,6 @@
 import { DIFFICULTIES } from '../../../data/game';
-import { gameActions, getState } from '../../../state/game-state';
+import { gameActions } from '../../../state/game-controller';
+import { getState } from '../../../state/game-state';
 import { createElement } from '../../../utils/helpers';
 import type { Difficulty } from '../../../utils/types';
 import { closeDialog, openDialog } from '../dialog';

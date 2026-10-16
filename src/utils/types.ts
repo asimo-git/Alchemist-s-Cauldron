@@ -1,3 +1,5 @@
+import type { GAME_EVENTS, GAME_SIGNALS } from '../data/game';
+
 export type Difficulty = 'easy' | 'medium' | 'hard'; // Level 2+
 export type GameStatus = 'menu' | 'playing' | 'paused' | 'game-over';
 
@@ -32,7 +34,7 @@ export interface IGameState {
   activeRecipe: IRecipe | undefined;
   cauldronIngredients: IIngredient[];
   shelfStock: Record<string, number>; // ingredient id -> portions left
-  difficulty?: Difficulty; // Level 2+
+  difficulty: Difficulty;
   lastReactionId?: string | undefined; // Level 3+
 }
 
@@ -52,4 +54,31 @@ export interface ILeaderboardEntry {
   name: string;
   score: number;
   date: number; // timestamp, ms
+}
+
+export interface IDifficultySettings {
+  shelfIngredients: number;
+  cauldronCapacity: number;
+  startTime: number;
+  recipeTolerance: number;
+  lives: number;
+  scorePerBrew: number;
+  timeBonus: number;
+  reactions: number; // Level 3+,
+}
+
+type GameEventName =
+  (typeof GAME_EVENTS)[keyof typeof GAME_EVENTS] | (typeof GAME_SIGNALS)[keyof typeof GAME_SIGNALS];
+
+export interface IGameEventTarget extends EventTarget {
+  addEventListener(
+    type: GameEventName,
+    listener: EventListener,
+    options?: AddEventListenerOptions,
+  ): void;
+  removeEventListener(
+    type: GameEventName,
+    listener: EventListener,
+    options?: EventListenerOptions,
+  ): void;
 }

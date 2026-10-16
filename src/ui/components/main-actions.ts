@@ -1,7 +1,9 @@
 import { createElement } from '../../utils/helpers';
-import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
+import { gameActions, gameEvents } from '../../state/game-controller';
+import { getState } from '../../state/game-state';
 import { calculateCauldron, type IBarData } from '../../logic/calculate-cauldron';
 import { loadGame } from '../../logic/game-save';
+import { GAME_EVENTS } from '../../data/game';
 
 function createBar(label: string) {
   const correctZone = createElement('div', { className: 'bar__correct-zone' });

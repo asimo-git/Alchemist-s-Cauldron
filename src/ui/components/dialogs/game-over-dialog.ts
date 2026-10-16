@@ -1,6 +1,7 @@
 import { addLeaderboardEntry, isTopScore, validatePlayerName } from '../../../logic/leaderboard';
 import { isOutOfIngredients } from '../../../logic/stock';
-import { gameActions, getState } from '../../../state/game-state';
+import { getState } from '../../../state/game-state';
+import { gameActions } from '../../../state/game-controller';
 import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 import { showLeaderboard } from './leaderboard-dialog';

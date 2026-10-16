@@ -1,20 +1,16 @@
 import { createElement } from '../../utils/helpers';
-import { GAME_EVENTS, gameActions, gameEvents, getState } from '../../state/game-state';
-import { LEVEL_1_LIVES } from '../../data/game';
+import { gameActions, gameEvents } from '../../state/game-controller';
+import { getSettings, getState } from '../../state/game-state';
 import { createTimer } from './timer';
 import { showLeaderboard } from './dialogs/leaderboard-dialog';
 import { showSettings } from './dialogs/settings-dialog';
 import { showHelp } from './dialogs/help-dialog';
+import { GAME_EVENTS } from '../../data/game';
 
 export function createHeader(): HTMLElement {
-  const hearts = Array.from({ length: LEVEL_1_LIVES }, () =>
-    createElement('span', { className: 'header__heart', textContent: '♥' }),
-  );
-
   const lives = createElement('div', {
     className: 'header__lives',
     attributes: { 'aria-label': 'Lives' },
-    children: hearts,
   });
 
   const score = createElement('div', {
@@ -50,7 +46,17 @@ export function createHeader(): HTMLElement {
 
   const renderLives = (): void => {
     const { lives: livesLeft } = getState();
-    for (const [index, heart] of hearts.entries()) {
+    const total = getSettings().lives;
+
+    if (lives.children.length !== total) {
+      lives.replaceChildren(
+        ...Array.from({ length: total }, () =>
+          createElement('span', { className: 'header__heart', textContent: '♥' }),
+        ),
+      );
+    }
+
+    for (const [index, heart] of [...lives.children].entries()) {
       heart.classList.toggle('header__heart--lost', index >= livesLeft);
     }
     lives.setAttribute('aria-label', `Lives: ${livesLeft}`);

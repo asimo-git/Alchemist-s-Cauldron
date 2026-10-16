@@ -1,4 +1,4 @@
-import { initGameState } from '../state/game-state';
+import { initGameState } from '../state/game-controller';
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
 import { createHeader } from './components/header';

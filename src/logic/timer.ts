@@ -1,4 +1,5 @@
-import { BREW_TIME_BONUS, LEVEL_1_TIME, LOW_TIME_THRESHOLD } from '../data/game';
+import { LOW_TIME_THRESHOLD } from '../data/game';
+import { getSettings } from '../state/game-state';
 
 export const calculateTimeLeft = (endTime: number, now: number): number =>
   Math.max(0, Math.ceil((endTime - now) / 1000));
@@ -83,15 +84,15 @@ export function createCountdown(
   function addTime(): void {
     if (!isPaused && intervalId === undefined) return;
 
-    const maxMs = LEVEL_1_TIME * 1000;
+    const maxMs = getSettings().startTime * 1000;
 
     if (isPaused) {
-      remainingMs = Math.min(remainingMs + BREW_TIME_BONUS * 1000, maxMs);
+      remainingMs = Math.min(remainingMs + getSettings().timeBonus * 1000, maxMs);
       onTick(Math.ceil(remainingMs / 1000));
       return;
     }
 
-    endTime = Math.min(endTime + BREW_TIME_BONUS * 1000, Date.now() + maxMs);
+    endTime = Math.min(endTime + getSettings().timeBonus * 1000, Date.now() + maxMs);
     update();
   }
 

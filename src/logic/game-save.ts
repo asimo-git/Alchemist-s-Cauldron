@@ -1,16 +1,14 @@
-import { LEVEL_1_LIVES, LEVEL_1_TIME, SAVE_STORAGE_KEY } from '../data/game';
+import { DIFFICULTIES, SAVE_STORAGE_KEY } from '../data/game';
 import { INGREDIENTS } from '../data/ingredients';
+import { getSettings } from '../state/game-state';
 import { isNonNegativeNumber, isPlainObject } from '../utils/helpers';
 import { getStorageItem } from '../utils/storage';
-import type { Difficulty, IGameState, IRecipe } from '../utils/types';
+import type { IGameState, IRecipe } from '../utils/types';
 
-//TODO: make difficulties required
 //a valid prescription is required
 export type SavedGame = Omit<IGameState, 'activeRecipe'> & {
   activeRecipe: IRecipe;
 };
-
-const DIFFICULTIES: unknown[] = ['easy', 'medium', 'hard'] satisfies Difficulty[];
 
 const isRange = (value: unknown): boolean =>
   isPlainObject(value) &&
@@ -24,7 +22,8 @@ const isRecipe = (value: unknown): boolean =>
   isPlainObject(value) &&
   typeof value.id === 'string' &&
   typeof value.name === 'string' &&
-  DIFFICULTIES.includes(value.difficulty) &&
+  typeof value.difficulty === 'string' &&
+  (DIFFICULTIES as readonly string[]).includes(value.difficulty) &&
   isRange(value.temperature) &&
   isRange(value.density) &&
   isRange(value.magicPower);
@@ -45,12 +44,12 @@ export function isValidSave(data: unknown): data is SavedGame {
 
   return (
     (status === 'playing' || status === 'paused') &&
-    (difficulty === undefined || DIFFICULTIES.includes(difficulty)) &&
+    typeof difficulty === 'string' &&
+    (DIFFICULTIES as readonly string[]).includes(difficulty) &&
     isNonNegativeNumber(score) &&
     isNonNegativeNumber(timeLeft) &&
-    timeLeft <= LEVEL_1_TIME &&
     isNonNegativeNumber(lives) &&
-    lives <= LEVEL_1_LIVES &&
+    lives <= getSettings().lives &&
     isRecipe(activeRecipe) &&
     Array.isArray(cauldronIngredients) &&
     cauldronIngredients.every(
