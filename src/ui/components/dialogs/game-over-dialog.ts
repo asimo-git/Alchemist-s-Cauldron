@@ -30,7 +30,7 @@ export function openGameOverDialog(): void {
     },
   });
 
-  if (!isTopScore(state.score)) {
+  if (!isTopScore(state.score, state.difficulty)) {
     openDialog(...summary, playAgainButton);
     return;
   }
@@ -67,7 +67,7 @@ export function openGameOverDialog(): void {
       return;
     }
 
-    if (addLeaderboardEntry(name, state.score) === 'failed') {
+    if (addLeaderboardEntry(name, state.score, state.difficulty) === 'failed') {
       showError('Could not save your result: browser storage is unavailable or full.');
       return;
     }

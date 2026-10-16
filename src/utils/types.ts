@@ -54,6 +54,7 @@ export interface ILeaderboardEntry {
   name: string;
   score: number;
   date: number; // timestamp, ms
+  difficulty: Difficulty;
 }
 
 export interface IDifficultySettings {
