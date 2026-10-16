@@ -1,18 +1,19 @@
 import type { IIngredient, IRecipe } from '../utils/types';
-import { CAULDRON_CAPACITY, STATS } from '../data/game';
+import { STATS } from '../data/game';
+import { getSettings } from '../state/game-state';
 
 export interface IBarData {
   key: (typeof STATS)[number]['key'];
   value: number;
-  limit: number; // шкала: [-limit; +limit]
-  zoneStart: number; // % от левого края шкалы
+  limit: number; // => [-limit; +limit]
+  zoneStart: number; // %
   zoneWidth: number; // %
   markerPosition: number; // %
   inRange: boolean;
 }
 
 export const canAddToCauldron = (cauldron: IIngredient[]): boolean =>
-  cauldron.length < CAULDRON_CAPACITY;
+  cauldron.length < getSettings().cauldronCapacity;
 
 export function calculateCauldron(ingredients: IIngredient[], recipe: IRecipe): IBarData[] {
   return STATS.map(({ key }) => {

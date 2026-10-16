@@ -1,5 +1,5 @@
 import { clearLeaderboard, formatDate, getLeaderboard } from '../../../logic/leaderboard';
-import { createElement } from '../../../utils/helpers';
+import { capitalize, createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 
 export const showLeaderboard = (): void => openDialog(createLeaderboardView());
@@ -59,19 +59,24 @@ function createLeaderboardView(): HTMLElement {
               createElement('td', { textContent: String(index + 1) }),
               createElement('td', { textContent: entry.name }),
               createElement('td', { textContent: String(entry.score) }),
+              createElement('td', { textContent: capitalize(entry.difficulty) }),
               createElement('td', { textContent: formatDate(entry.date) }),
             ],
           }),
         )
       : [
-          createElement('td', {
-            textContent: 'No results yet',
-            attributes: { colspan: '4' },
+          createElement('tr', {
+            children: [
+              createElement('td', {
+                textContent: 'No results yet',
+                attributes: { colspan: '5' },
+              }),
+            ],
           }),
         ];
 
   const headRow = createElement('tr', {
-    children: ['Rank', 'Name', 'Score', 'Date'].map((title) =>
+    children: ['Rank', 'Name', 'Score', 'Difficulty', 'Date'].map((title) =>
       createElement('th', { textContent: title, attributes: { scope: 'col' } }),
     ),
   });

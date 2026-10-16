@@ -5,9 +5,11 @@ import type { IGameState } from '../utils/types';
 
 export type Stock = Record<string, number>;
 
-export function createShelfStock(): Stock {
+export function createShelfStock(shelfIngredients: number): Stock {
   const stock: Stock = {};
-  for (const { id } of INGREDIENTS.slice(0, 6)) stock[id] = randomInt(MIN_STOCK, MAX_STOCK);
+  for (const { id } of INGREDIENTS.slice(0, shelfIngredients)) {
+    stock[id] = randomInt(MIN_STOCK, MAX_STOCK);
+  }
   return stock;
 }
 

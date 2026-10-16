@@ -56,3 +56,5 @@ export const isPlainObject = (value: unknown): value is Record<string, unknown> 
 
 export const isNonNegativeNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0 && Number.isSafeInteger(value);
+
+export const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);

@@ -1,4 +1,4 @@
-import { gameActions } from '../../../state/game-state';
+import { gameActions } from '../../../state/game-controller';
 import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 
