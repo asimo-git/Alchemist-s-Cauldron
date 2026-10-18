@@ -5,6 +5,14 @@ html {
   scrollbar-gutter: stable;
 }
 
+// ---- Dialog ornaments (inline SVG) ----
+
+$frame: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23290d15'/%3E%3Cstop offset='.5' stop-color='%23170f12'/%3E%3Cstop offset='1' stop-color='%23110c0e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M10 .5H38L47.5 10V38L38 47.5H10L.5 38V10Z' fill='url(%23g)' stroke='%236a1220'/%3E%3Cpath d='M12 5H36L43 12V36L36 43H12L5 36V12Z' fill='none' stroke='%23a3182b' stroke-opacity='.6'/%3E%3Cg fill='%23cf2a3c'%3E%3Cpath d='M9 6 12 9 9 12 6 9Z'/%3E%3Cpath d='M39 6 42 9 39 12 36 9Z'/%3E%3Cpath d='M9 36 12 39 9 42 6 39Z'/%3E%3Cpath d='M39 36 42 39 39 42 36 39Z'/%3E%3C/g%3E%3C/svg%3E");
+
+$title-flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 16' fill='none' stroke='%23a3182b' stroke-linecap='round'%3E%3Cpath d='M0 8H40' stroke='%236a1220'/%3E%3Cpath d='M40 8C46 8 49 3.5 53 3.5C57 3.5 58.5 7 55.5 8.5'/%3E%3Cpath d='M40 8C46 8 49 12.5 53 12.5C57 12.5 58.5 9 55.5 7.5'/%3E%3Cpath d='M59 8 61.5 5.5 64 8 61.5 10.5Z' fill='%23cf2a3c' stroke='none'/%3E%3C/svg%3E");
+
+$rhombus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M4 0 8 4 4 8 0 4z' fill='%23cf2a3c'/%3E%3C/svg%3E");
+
 .dialog {
   position: fixed;
   inset: 0;
@@ -17,20 +25,29 @@ html {
   color: $bone;
 
   &::backdrop {
-    background: rgba($void, 0.65);
-    backdrop-filter: blur(8px);
+    background: radial-gradient(ellipse at center, rgba($wine, 0.35), rgba($void, 0.9) 75%);
+    backdrop-filter: blur(6px);
   }
 
   &__window {
-    @include panel;
     @include flex(column, flex-start, center, $size-2);
     width: fit-content;
     min-width: min(90vw, 420px);
-    max-width: 90vw;
+    max-width: min(90vw, 760px);
     max-height: 90dvh;
     overflow-y: auto;
-    padding: $size-4 $size-6;
+    padding: $size-2 $size-4 $size-3;
     text-align: center;
+    border: 16px solid transparent;
+    border-image: $frame 16 fill / 16px stretch;
+    filter: drop-shadow(0 0 28px rgba($crimson, 0.3));
+    scrollbar-width: thin;
+    scrollbar-color: $slate transparent;
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: $size-1-5 $size-1-5 $size-2;
+      border-width: 12px;
+    }
   }
 
   &__content {
@@ -38,11 +55,40 @@ html {
     width: 100%;
   }
 
+  // ---- Text ----
+
   &__title {
+    @include flex(row, center, center, $size-1-5);
+    width: 100%;
     margin: 0;
+    padding-bottom: $size-1-5;
     font-family: $font-accent;
-    font-size: $fs-h1;
+    font-size: $fs-h2;
+    line-height: 1.1;
     text-shadow: 0 0 20px rgba($crimson, 0.7);
+    white-space: nowrap;
+    background:
+      $rhombus center bottom / 8px 8px no-repeat,
+      linear-gradient(90deg, transparent, $crimson, transparent) center bottom 3.5px / 70% 1px
+        no-repeat;
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 0 1 64px;
+      min-width: 24px;
+      height: 16px;
+      background: $title-flourish right center / auto 100% no-repeat;
+    }
+
+    &::after {
+      scale: -1 1;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      white-space: normal;
+      text-wrap: balance;
+    }
   }
 
   &__text {
@@ -55,52 +101,235 @@ html {
     margin: 0;
     font-family: $font-accent;
     font-size: $fs-display;
-    color: $ember;
     line-height: 1;
+    color: $ember;
+    text-shadow:
+      0 0 24px rgba($ember, 0.6),
+      0 0 4px rgba($void, 0.8);
   }
+
+  &__list {
+    @include flex(column);
+    max-width: 48ch;
+    font-size: $fs-small;
+    line-height: 1.45;
+    text-align: left;
+    color: $silver;
+
+    li {
+      position: relative;
+      padding: $size-1 0 $size-1 $size-3;
+      border-bottom: 1px solid rgba($slate, 0.45);
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: calc($size-1 + 0.5em);
+        left: $size-05;
+        width: 7px;
+        height: 7px;
+        background: $rhombus center / contain no-repeat;
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  // ---- Leaderboard ----
 
   &__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: $fs-body;
+    font-size: $fs-small;
+    font-variant-numeric: tabular-nums;
 
     th,
     td {
       padding: $size-1 $size-1-5;
       text-align: left;
-      border-bottom: 1px solid $slate;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba($slate, 0.5);
     }
 
     th {
       @include label;
+      border-bottom-color: $oxblood;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s;
+
+      @media (hover: hover) {
+        &:hover {
+          background: rgba($wine, 0.4);
+        }
+      }
+    }
+
+    td:nth-child(1) {
+      width: 2.5em;
+      font-family: $font-accent;
+      text-align: center;
+      color: $ash;
+    }
+
+    tbody tr:nth-child(1) td:nth-child(1) {
+      color: $ember;
+      text-shadow: $glow-red;
+    }
+
+    tbody tr:nth-child(2) td:nth-child(1) {
+      color: $bone;
+    }
+
+    tbody tr:nth-child(3) td:nth-child(1) {
+      color: $scarlet;
+    }
+
+    td:nth-child(2) {
+      max-width: 12em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: $bone;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+      text-align: right;
+    }
+
+    td:nth-child(3) {
+      font-family: $font-accent;
+      font-size: $fs-body;
+      color: $ember;
+    }
+
+    td:nth-child(4) {
+      @include label;
+    }
+
+    td:nth-child(5) {
+      color: $iron;
+    }
+
+    td[colspan] {
+      padding-block: $size-3;
+      font-family: $font-body;
+      font-style: italic;
+      text-align: center;
+      color: $iron;
+    }
+
+    // mobile screens: every entry becomes a two-line card
+    //   rank | name        score
+    //        | difficulty   date
+    @media (max-width: $breakpoint-mobile) {
+      display: block;
+
+      thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+      }
+
+      tbody {
+        display: block;
+      }
+
+      tbody tr {
+        display: grid;
+        grid-template-columns: 2em minmax(0, 1fr) auto;
+        grid-template-areas:
+          'rank name score'
+          'rank diff date';
+        align-items: baseline;
+        column-gap: $size-1;
+        row-gap: 2px;
+        padding: $size-1 $size-05;
+        border-bottom: 1px solid rgba($slate, 0.5);
+      }
+
+      td {
+        padding: 0;
+        border: 0;
+      }
+
+      td:nth-child(1) {
+        grid-area: rank;
+        align-self: center;
+        width: auto;
+        font-size: $fs-body;
+      }
+
+      td:nth-child(2) {
+        grid-area: name;
+        max-width: none;
+      }
+
+      td:nth-child(3) {
+        grid-area: score;
+      }
+
+      td:nth-child(4) {
+        grid-area: diff;
+        font-size: 11px;
+      }
+
+      td:nth-child(5) {
+        grid-area: date;
+        font-size: $fs-label;
+        text-align: right;
+      }
+
+      td[colspan] {
+        grid-area: 1 / 1 / -1 / -1;
+        padding-block: $size-2;
+      }
     }
   }
+
+  // ---- Buttons ----
 
   &__actions {
-    @include flex(column, space-between, stretch, $size-2);
+    @include flex(column, flex-start, stretch, $size-1-5);
+    width: min(100%, 320px);
 
     &--row {
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+      width: min(100%, 440px);
+      padding-top: $size-1;
     }
   }
 
-  &__button {
+  &__button,
+  &__button--primary,
+  &__button--accent {
     width: 100%;
-
-    &--primary {
-      @include button-regular(md);
-    }
-
-    &--accent {
-      @include button-accent(md);
-    }
   }
+
+  &__button--primary {
+    @include button-regular(md);
+  }
+
+  &__button--accent {
+    @include button-accent(md);
+  }
+
+  &__window > &__button--primary,
+  &__window > &__button--accent,
+  &__form {
+    width: min(100%, 320px);
+  }
+
+  // ---- Form ----
 
   &__form {
-    @include flex(column, flex-start, stretch, $size-2);
-    width: 100%;
+    @include flex(column, flex-start, stretch, $size-1-5);
   }
 
   &__input {
@@ -121,7 +350,7 @@ html {
 
     &:focus {
       outline: none;
-      border-color: $ash;
+      border-color: $crimson;
       box-shadow: $glow-soft;
     }
 
