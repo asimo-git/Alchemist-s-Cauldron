@@ -90,7 +90,7 @@ export function createMainActions(): HTMLElement {
   });
 
   const continueButton = createElement('button', {
-    className: 'main-actions__button',
+    className: 'main-actions__continue',
     textContent: 'Continue Game',
     attributes: { type: 'button' },
     events: { click: () => gameActions.continueGame() },

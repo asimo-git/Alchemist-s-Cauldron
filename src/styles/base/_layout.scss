@@ -1,7 +1,7 @@
 @use '../abstracts/variables' as *;
 
 body {
-  background: $void;
+  background: $void $bg-page no-repeat fixed;
   font-family: $font-body;
   font-size: $fs-body;
   font-weight: $font-weight-regular;

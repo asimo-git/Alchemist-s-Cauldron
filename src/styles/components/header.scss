@@ -10,22 +10,29 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: $gap-large;
+  padding-bottom: $size-2;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, $oxblood, transparent) 1;
 
   &__side {
-    @include flex(row, flex-start, center, $size-05);
+    @include flex(row, flex-start, center, $size-1);
 
     &--end {
       justify-content: flex-end;
-      gap: $size-1;
+      gap: $size-2;
     }
   }
 
+  &__button {
+    @include button-regular(sm);
+  }
+
   &__lives {
-    @include flex(row, flex-end, center, $size-1);
+    @include flex(row, flex-end, center, $size-05);
   }
 
   &__heart {
-    font-size: $fs-h2;
+    font-size: $fs-h3;
     line-height: 1;
     color: $scarlet;
     text-shadow: $glow-red;
@@ -40,39 +47,28 @@
       transform: scale(0.8);
     }
   }
-}
 
-.header__button {
-  @include button-regular(sm);
-}
-
-.header__score {
-  font-family: $font-accent;
-  font-size: $fs-h3;
-  color: $ember;
-  white-space: nowrap;
-}
-
-.header__difficulty {
-  width: fit-content;
-  padding: $size-05 $size-1-5;
-  font-family: $font-accent;
-  font-size: $fs-label;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border: 1px solid currentColor;
-  border-radius: $r-full;
-
-  &[data-difficulty='easy'] {
-    color: $silver;
+  &__score {
+    font-family: $font-accent;
+    font-size: $fs-h3;
+    font-variant-numeric: tabular-nums;
+    color: $bone;
+    white-space: nowrap;
   }
 
-  &[data-difficulty='medium'] {
-    color: $scarlet;
-  }
+  &__difficulty {
+    @include label;
+    padding: $size-05 $size-1-5;
+    border: 1px solid currentColor;
+    border-radius: $r-full;
 
-  &[data-difficulty='hard'] {
-    color: $ember;
-    box-shadow: $glow-red;
+    &[data-difficulty='medium'] {
+      color: $scarlet;
+    }
+
+    &[data-difficulty='hard'] {
+      color: $ember;
+      box-shadow: $glow-red;
+    }
   }
 }

@@ -2,35 +2,58 @@
 @use '../abstracts/mixins' as *;
 
 .recipe {
-  @include flex(column, flex-start, stretch, $size-2);
+  @include panel;
+  @include flex(column, flex-start, stretch, $size-3);
   padding: $size-3;
   color: $silver;
-  background: $obsidian;
-  border: 1px solid $slate;
-  border-radius: $r-md;
 
   &__title {
-    margin: 0;
+    @include panel-title;
+  }
+
+  // the name and ranges are centered between the title and the counter
+  &__name {
+    margin-top: auto;
+    min-height: 1.15em;
     font-family: $font-accent;
     font-size: $fs-h3;
     font-weight: $font-weight-bold;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: $ash;
+    line-height: 1.15;
+    text-align: center;
+    color: $bone;
+    text-shadow: 0 0 20px rgba($crimson, 0.7);
   }
 
-  &__name {
-    margin: 0;
+  &__list {
+    @include flex(column);
+  }
+
+  &__item {
+    @include flex(row, space-between, baseline, $size-2);
+    padding: $size-1-5 0;
+    border-bottom: 1px solid rgba($slate, 0.6);
+  }
+
+  &__stat {
+    @include label;
+    font-size: $fs-small;
+  }
+
+  &__range {
     font-family: $font-accent;
-    font-size: $fs-h2;
-    font-weight: $font-weight-bold;
+    font-size: $fs-body;
+    font-variant-numeric: tabular-nums;
     color: $bone;
   }
 
+  // the ingredient counter sits at the bottom of the panel
   &__indicator {
-    font-family: $font-body;
-    font-size: $fs-small;
-    color: $ash;
+    @include flex(row, space-between, baseline);
+    @include label;
+    order: 1;
+    margin-top: auto;
+    padding-top: $size-2;
+    border-top: 1px solid rgba($oxblood, 0.6);
     transition: color 0.3s;
 
     &--full {
@@ -39,27 +62,15 @@
   }
 
   &__counter {
+    font-family: $font-accent;
+    font-size: $fs-h3;
+    letter-spacing: 0;
     font-variant-numeric: tabular-nums;
     color: $bone;
   }
 
-  &__list {
-    @include flex(column, flex-start, stretch, $size-1);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  &__item {
-    @include flex(row, space-between, baseline);
-    padding-bottom: $size-05;
-    border-bottom: 1px dashed $slate;
-    font-family: $font-body;
-    font-size: $fs-body;
-  }
-
-  &__range {
-    font-variant-numeric: tabular-nums;
-    color: $bone;
+  &__indicator--full &__counter {
+    color: $ember;
+    text-shadow: $glow-red;
   }
 }

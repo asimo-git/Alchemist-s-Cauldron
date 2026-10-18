@@ -87,6 +87,7 @@ export function createHeader(): HTMLElement {
     const label = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
 
     difficultyBadge.textContent = label;
+    difficultyBadge.dataset.difficulty = difficulty;
     difficultyBadge.setAttribute('aria-label', `Difficulty: ${label}`);
   };
 

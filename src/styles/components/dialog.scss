@@ -22,6 +22,7 @@ html {
   }
 
   &__window {
+    @include panel;
     @include flex(column, flex-start, center, $size-2);
     width: fit-content;
     min-width: min(90vw, 420px);
@@ -30,10 +31,6 @@ html {
     overflow-y: auto;
     padding: $size-4 $size-6;
     text-align: center;
-    background: $obsidian;
-    border: 1px solid $oxblood;
-    border-radius: $r-md;
-    box-shadow: $glow-soft;
   }
 
   &__content {
@@ -45,6 +42,7 @@ html {
     margin: 0;
     font-family: $font-accent;
     font-size: $fs-h1;
+    text-shadow: 0 0 20px rgba($crimson, 0.7);
   }
 
   &__text {
@@ -74,9 +72,7 @@ html {
     }
 
     th {
-      color: $ash;
-      font-size: $fs-label;
-      text-transform: uppercase;
+      @include label;
     }
   }
 
