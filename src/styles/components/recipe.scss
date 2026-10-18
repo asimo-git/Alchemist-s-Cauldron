@@ -11,7 +11,6 @@
     @include panel-title;
   }
 
-  // the name and ranges are centered between the title and the counter
   &__name {
     margin-top: auto;
     min-height: 1.15em;
@@ -46,7 +45,6 @@
     color: $bone;
   }
 
-  // the ingredient counter sits at the bottom of the panel
   &__indicator {
     @include flex(row, space-between, baseline);
     @include label;
@@ -72,5 +70,37 @@
   &__indicator--full &__counter {
     color: $ember;
     text-shadow: $glow-red;
+  }
+
+  @media (max-width: $breakpoint-laptop) {
+    gap: $size-1-5;
+    padding: $size-2;
+
+    &__list {
+      flex-direction: row;
+    }
+
+    &__item {
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: $size-1 $size-05;
+      border-bottom: 0;
+
+      & + & {
+        border-left: 1px solid rgba($slate, 0.6);
+      }
+    }
+
+    &__stat {
+      font-size: $fs-label;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    &__indicator {
+      padding-top: $size-1;
+    }
   }
 }

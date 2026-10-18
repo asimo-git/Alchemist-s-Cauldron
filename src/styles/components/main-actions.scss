@@ -1,8 +1,6 @@
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
-// bars take a full row, the buttons share the row below;
-// with no save the Continue button is hidden and Start Game fills the row
 .main-actions {
   @include flex(row, flex-start, stretch, $size-2);
   flex-wrap: wrap;
@@ -19,6 +17,11 @@
     grid-template-columns: max-content 1fr;
     gap: $size-1 $size-2;
     padding: $size-2 $size-3;
+
+    @media (max-width: $breakpoint-tablet) {
+      gap: $size-1 $size-1-5;
+      padding: $size-1-5 $size-2;
+    }
   }
 
   &__button {
@@ -37,6 +40,10 @@
     @include flex(row, space-between, baseline, $size-1-5);
     @include label;
     font-size: $fs-small;
+
+    @media (max-width: $breakpoint-tablet) {
+      letter-spacing: 0.06em;
+    }
   }
 
   &__value {
@@ -69,7 +76,6 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    // edges as inset shadows: a zero-width zone draws nothing
     --zone-edge: #{$scarlet};
     background: rgba($scarlet, 0.5);
     box-shadow:

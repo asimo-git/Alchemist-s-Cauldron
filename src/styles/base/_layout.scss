@@ -11,37 +11,88 @@ body {
 
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   gap: $gap-large;
   width: 100%;
   max-width: $breakpoint-desktop;
   height: min(100dvh, $layout-max-height);
+  min-height: 600px;
   margin: 0 auto;
   padding: $padding-large;
+
+  @media (max-width: $breakpoint-tablet) {
+    height: auto;
+    min-height: 100dvh;
+  }
 }
+
+// ---- Main area ----
 
 .main {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1.5fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas: 'shelf center recipe';
   gap: inherit;
   min-height: 0;
 
+  > .shelf_container {
+    grid-area: shelf;
+  }
+
+  > .recipe {
+    grid-area: recipe;
+  }
+
   &__center {
+    grid-area: center;
     display: grid;
-    grid-template-rows: 1fr auto;
-    grid-column: span 2;
-    grid-row: 2;
+    grid-template-rows: minmax(0, 1fr) auto;
     gap: inherit;
   }
 
-  @media (min-width: $breakpoint-tablet), (max-height: 520px) and (orientation: landscape) {
-    grid-template-columns: 1fr 1.15fr 1fr;
-    grid-template-rows: 1fr;
+  @media (max-width: $breakpoint-laptop) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      'recipe center'
+      'shelf center';
+  }
 
-    &__center {
-      grid-column: auto;
-      grid-row: auto;
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas:
+      'recipe recipe'
+      'cauldron cauldron'
+      'bars bars'
+      'shelf shelf'
+      'continue brew';
+
+    &__center,
+    .main-actions {
+      display: contents;
+    }
+
+    .cauldron_container {
+      grid-area: cauldron;
+      height: clamp(170px, 32vh, 300px);
+    }
+
+    .main-actions__bars {
+      grid-area: bars;
+    }
+
+    .main-actions__continue {
+      grid-area: continue;
+    }
+
+    .main-actions__button {
+      grid-area: brew;
+    }
+
+    .main-actions__continue[hidden] + .main-actions__button {
+      grid-column: 1 / -1;
     }
   }
 }

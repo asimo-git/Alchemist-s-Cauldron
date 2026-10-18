@@ -9,9 +9,14 @@
   transition: filter 0.4s ease;
   scrollbar-width: thin;
   scrollbar-color: $slate transparent;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: $size-1-5;
+    padding: $size-2;
+    overflow: visible;
+  }
 }
 
-// the cauldron is full: the shelf dims until a brew
 .shelf_container_isLocked {
   filter: brightness(0.65) saturate(0.6);
 }
@@ -22,9 +27,29 @@
 
 .shelf_grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   align-content: start;
   gap: $size-1-5;
+
+  @media (max-width: $breakpoint-laptop) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(150px, 1fr);
+    gap: $size-1;
+    padding-bottom: $size-1;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: $slate transparent;
+
+    > * {
+      scroll-snap-align: start;
+    }
+  }
 
   &:empty::after {
     content: 'Start a game to stock the shelf';
@@ -119,7 +144,8 @@
 
 .shelf_card_stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: $size-05;
   padding-top: $size-05;
   border-top: 1px solid $basalt;
 }
@@ -131,8 +157,11 @@
 
 .shelf_stat_label {
   @include label;
+  max-width: 100%;
+  overflow: hidden;
   font-size: 0.6em;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
 }
 
 .shelf_stat_value {
