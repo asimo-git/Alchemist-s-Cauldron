@@ -94,6 +94,7 @@ export function createHeader(): HTMLElement {
   gameEvents.addEventListener(GAME_EVENTS.score, renderScore);
   gameEvents.addEventListener(GAME_EVENTS.status, renderIdleState);
   gameEvents.addEventListener(GAME_EVENTS.difficulty, renderDifficulty);
+  gameEvents.addEventListener(GAME_EVENTS.difficulty, renderLives);
   renderDifficulty();
   renderLives();
   renderScore();

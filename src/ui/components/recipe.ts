@@ -67,6 +67,7 @@ export function createRecipeSection(): HTMLElement {
 
   gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, render);
   gameEvents.addEventListener(GAME_EVENTS.activeRecipe, render);
+  gameEvents.addEventListener(GAME_EVENTS.difficulty, render);
 
   render();
 

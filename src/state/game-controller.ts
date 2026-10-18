@@ -101,6 +101,7 @@ export const gameActions = {
 
     const { cauldronIngredients, shelfStock } = store.state;
     if (!canAddToCauldron(cauldronIngredients)) return;
+    if ((shelfStock[ingridientId] ?? 0) <= 0) return;
     // show error
 
     const nextIngredients = [...cauldronIngredients, ingredient];
@@ -131,7 +132,7 @@ export const gameActions = {
       setState({
         score: score + getSettings().scorePerBrew,
         cauldronIngredients: [],
-        activeRecipe: getRecipesByDifficulty(),
+        activeRecipe: getRecipesByDifficulty(store.state.difficulty),
       });
       countdown.addTime();
     } else {
@@ -157,7 +158,7 @@ export const gameActions = {
   },
 
   exitToMenu(): void {
-    setState(beforeStartState);
+    setState({ ...beforeStartState, difficulty: store.state.difficulty });
   },
 
   continueGame(): void {

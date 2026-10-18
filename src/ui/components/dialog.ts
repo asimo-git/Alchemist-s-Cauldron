@@ -25,7 +25,6 @@ export function openDialog(...content: HTMLElement[]): void {
 
   if (!dialog.isConnected) document.body.append(dialog);
   if (!dialog.open) {
-    // gameActions.pauseGame();
     dialog.showModal();
   }
 }
