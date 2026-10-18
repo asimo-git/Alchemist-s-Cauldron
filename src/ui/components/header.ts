@@ -5,6 +5,7 @@ import { createTimer } from './timer';
 import { showLeaderboard } from './dialogs/leaderboard-dialog';
 import { showSettings } from './dialogs/settings-dialog';
 import { showHelp } from './dialogs/help-dialog';
+import { showMenu } from './dialogs/menu-dialog';
 import { GAME_EVENTS } from '../../data/game';
 
 export function createHeader(): HTMLElement {
@@ -49,6 +50,19 @@ export function createHeader(): HTMLElement {
     },
   });
 
+  // replaces Help, Settings and Leaderboard on mobile screens
+  const menuButton = createElement('button', {
+    className: 'header__button header__menu',
+    textContent: 'Menu',
+    attributes: { type: 'button', 'aria-haspopup': 'dialog' },
+    events: { click: showMenu },
+  });
+
+  const controls = createElement('div', {
+    className: 'header__side',
+    children: [menuButton, helpButton, settingsButton, leaderboardButton],
+  });
+
   const renderLives = (): void => {
     const { lives: livesLeft } = getState();
     const total = getSettings().lives;
@@ -73,6 +87,8 @@ export function createHeader(): HTMLElement {
 
     leaderboardButton.hidden = !isIdle;
     settingsButton.hidden = !isIdle;
+    menuButton.hidden = !isIdle;
+    controls.classList.toggle('header__side--idle', isIdle);
     lives.hidden = isIdle;
   };
 
@@ -104,10 +120,7 @@ export function createHeader(): HTMLElement {
   return createElement('header', {
     className: 'header',
     children: [
-      createElement('div', {
-        className: 'header__side',
-        children: [helpButton, settingsButton, leaderboardButton],
-      }),
+      controls,
       createTimer(),
 
       createElement('div', {

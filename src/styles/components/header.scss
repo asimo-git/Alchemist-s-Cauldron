@@ -27,6 +27,20 @@
     @include button-regular(sm);
   }
 
+  &__menu {
+    display: none;
+  }
+
+  @media (max-width: ($breakpoint-tablet - 1px)) {
+    &__side--idle &__menu {
+      display: inline-block;
+    }
+
+    &__side--idle &__button:not(.header__menu) {
+      display: none;
+    }
+  }
+
   &__lives {
     @include flex(row, flex-end, center, $size-05);
   }
