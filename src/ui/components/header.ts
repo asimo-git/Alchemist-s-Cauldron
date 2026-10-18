@@ -19,11 +19,6 @@ export function createHeader(): HTMLElement {
     attributes: { 'aria-label': 'Score' },
   });
 
-  const difficultyBadge = createElement('div', {
-    className: 'header__difficulty',
-    attributes: { 'aria-label': 'Difficulty' },
-  });
-
   const leaderboardButton = createElement('button', {
     className: 'header__button',
     textContent: 'Leaderboard',
@@ -50,7 +45,6 @@ export function createHeader(): HTMLElement {
     },
   });
 
-  // replaces Help, Settings and Leaderboard on mobile screens
   const menuButton = createElement('button', {
     className: 'header__button header__menu',
     textContent: 'Menu',
@@ -59,7 +53,7 @@ export function createHeader(): HTMLElement {
   });
 
   const controls = createElement('div', {
-    className: 'header__side',
+    className: 'header__side header__controls',
     children: [menuButton, helpButton, settingsButton, leaderboardButton],
   });
 
@@ -98,21 +92,10 @@ export function createHeader(): HTMLElement {
     score.setAttribute('aria-label', `Score: ${currentScore}`);
   };
 
-  const renderDifficulty = (): void => {
-    const { difficulty } = getState();
-    const label = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-
-    difficultyBadge.textContent = label;
-    difficultyBadge.dataset.difficulty = difficulty;
-    difficultyBadge.setAttribute('aria-label', `Difficulty: ${label}`);
-  };
-
   gameEvents.addEventListener(GAME_EVENTS.lives, renderLives);
   gameEvents.addEventListener(GAME_EVENTS.score, renderScore);
   gameEvents.addEventListener(GAME_EVENTS.status, renderIdleState);
-  gameEvents.addEventListener(GAME_EVENTS.difficulty, renderDifficulty);
   gameEvents.addEventListener(GAME_EVENTS.difficulty, renderLives);
-  renderDifficulty();
   renderLives();
   renderScore();
   renderIdleState();
@@ -125,7 +108,7 @@ export function createHeader(): HTMLElement {
 
       createElement('div', {
         className: 'header__side header__side--end',
-        children: [lives, score, difficultyBadge],
+        children: [lives, score],
       }),
     ],
   });

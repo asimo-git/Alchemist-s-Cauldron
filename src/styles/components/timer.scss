@@ -3,7 +3,8 @@
 
 .timer {
   @include flex(column, flex-start, stretch, $size-1);
-  width: clamp(160px, 24vw, 320px);
+  width: clamp(240px, 24vw, 340px);
+  min-width: min-content;
   color: $bone;
 
   &__text {
@@ -46,15 +47,44 @@
   }
 
   &__top {
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: $size-1;
+  }
+
+  &__difficulty {
+    @include label;
+    justify-self: start;
+    padding: $size-05 $size-1-5;
+    border: 1px solid currentColor;
+    border-radius: $r-full;
+
+    &[data-difficulty='medium'] {
+      color: $scarlet;
+    }
+
+    &[data-difficulty='hard'] {
+      color: $ember;
+      box-shadow: $glow-red;
+    }
   }
 
   &__pause {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    translate: 0 -50%;
     @include button-regular(sm);
+    justify-self: end;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    &__top {
+      gap: $size-05;
+    }
+
+    &__difficulty {
+      padding: 2px 6px;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+    }
   }
 
   &--idle &__pause {
