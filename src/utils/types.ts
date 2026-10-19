@@ -83,3 +83,9 @@ export interface IGameEventTarget extends EventTarget {
     options?: EventListenerOptions,
   ): void;
 }
+
+export interface IIngredientTooltip {
+  element: HTMLElement;
+  show: (anchor: HTMLElement, ingredient: IIngredient) => void;
+  hide: (anchor?: HTMLElement) => void;
+}

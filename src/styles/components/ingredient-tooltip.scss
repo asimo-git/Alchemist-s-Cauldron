@@ -1,0 +1,77 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.ingredient_tooltip {
+  position: fixed;
+  z-index: 10;
+  width: max-content;
+  max-width: 200px;
+  padding: $size-1-5 $size-2;
+  font-family: $font-body;
+  font-size: $fs-small;
+  color: $bone;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  background: linear-gradient(180deg, $basalt, $crypt);
+  border: 1px solid $crimson;
+  border-radius: $r-md;
+  box-shadow: $glow-soft;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    visibility 0s linear 0.3s;
+
+  transform: translateX(-$size-05);
+  &.tooltip--left {
+    transform: translateX($size-05);
+  }
+
+  &.tooltip--up {
+    transform: translateY($size-05);
+  }
+
+  &.tooltip--visible {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+  }
+}
+
+.ingredient_tooltip_title {
+  padding-bottom: $size-1;
+  margin-bottom: $size-1;
+  font-family: $font-accent;
+  font-size: $fs-h3;
+  line-height: 1.1;
+  border-bottom: 1px solid $slate;
+}
+
+.ingredient_tooltip_row {
+  @include flex(row, space-between, baseline, $size-3);
+
+  & + & {
+    margin-top: $size-05;
+  }
+}
+
+.ingredient_tooltip_label {
+  @include label;
+}
+
+.ingredient_tooltip_value {
+  font-family: $font-accent;
+  font-weight: $font-weight-bold;
+  font-variant-numeric: tabular-nums;
+  color: $silver;
+
+  &--positive {
+    color: $ember;
+    text-shadow: $glow-red;
+  }
+
+  &--negative {
+    color: $ash;
+  }
+}

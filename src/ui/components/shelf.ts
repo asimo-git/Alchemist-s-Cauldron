@@ -1,4 +1,4 @@
-import type { IIngredient } from '../../utils/types';
+import type { IIngredient, IIngredientTooltip } from '../../utils/types';
 import { INGREDIENTS } from '../../data/ingredients';
 import { createElement } from '../../utils/helpers';
 import { getState } from '../../state/game-state';
@@ -6,6 +6,11 @@ import { gameActions, gameEvents } from '../../state/game-controller';
 import { canAddToCauldron } from '../../logic/calculate-cauldron';
 import { GAME_EVENTS, GAME_SIGNALS, INGREDIENT_DRAG_ID } from '../../data/game';
 import { canDrag } from '../../logic/stock';
+import { createIngredientTooltip } from './ingredient-tooltip';
+
+const hoverQuery = globalThis.matchMedia('(hover: hover) and (pointer: fine)');
+
+const isTooltipMode = (): boolean => getState().difficulty === 'hard' && hoverQuery.matches;
 
 export function createShelfSection(): HTMLElement {
   const controller = new AbortController();
@@ -19,61 +24,71 @@ export function createShelfSection(): HTMLElement {
     children: [createElement('h3', { className: 'shelf_title', textContent: 'Ingredients' }), grid],
   });
 
-  const cards = new Map<string, HTMLButtonElement>();
+  const tooltip = createIngredientTooltip(signal);
+  shelf.append(tooltip.element);
+
+  shelf.addEventListener('scroll', () => tooltip.hide(), { capture: true, signal });
+
+  let cardsController: AbortController | undefined;
+
+  function clearCards(): void {
+    cardsController?.abort();
+    cardsController = undefined;
+    tooltip.hide();
+    grid.replaceChildren();
+  }
+
+  function syncLocked(): void {
+    const isLocked = !canAddToCauldron(getState().cauldronIngredients);
+    if (isLocked) tooltip.hide();
+    shelf.classList.toggle('shelf_container_isLocked', isLocked);
+    shelf.inert = isLocked;
+  }
+
+  function syncTooltipMode(): void {
+    const isEnabled = isTooltipMode();
+    shelf.classList.toggle('shelf_container_tooltips', isEnabled);
+    if (!isEnabled) tooltip.hide();
+  }
 
   function buildCards(): void {
-    grid.replaceChildren();
-    cards.clear();
+    clearCards();
+    cardsController = new AbortController();
+    const cardsSignal = cardsController.signal;
 
     const { shelfStock } = getState();
     const ingredients = INGREDIENTS.filter((item) => Object.hasOwn(shelfStock, item.id));
 
-    for (const item of ingredients) {
-      const card = createIngredientCard(item, signal);
-      cards.set(item.id, card);
-      grid.append(card);
-    }
+    grid.append(...ingredients.map((item) => createIngredientCard(item, cardsSignal, tooltip)));
+    syncLocked();
   }
 
-  function setLocked(isLocked: boolean): void {
-    shelf.classList.toggle('shelf_container_isLocked', isLocked);
-    shelf.inert = isLocked;
-    shelf.setAttribute('aria-disabled', String(isLocked));
-  }
-
-  function syncLocked(): void {
-    const { cauldronIngredients } = getState();
-    setLocked(!canAddToCauldron(cauldronIngredients));
-  }
-
-  gameEvents.addEventListener(
-    GAME_SIGNALS.gameBegun,
-    () => {
-      buildCards();
-      syncLocked();
-    },
-    { signal },
-  );
-
+  gameEvents.addEventListener(GAME_SIGNALS.gameBegun, buildCards, { signal });
   gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, syncLocked, { signal });
   gameEvents.addEventListener(
     GAME_EVENTS.status,
     () => {
       syncLocked();
-      if (getState().status === 'game-over' || getState().status === 'menu') grid.replaceChildren();
+      const { status } = getState();
+      if (status === 'game-over' || status === 'menu') clearCards();
     },
     { signal },
   );
+  gameEvents.addEventListener(GAME_EVENTS.difficulty, syncTooltipMode, { signal });
+  hoverQuery.addEventListener('change', syncTooltipMode, { signal });
 
-  if (getState().activeRecipe) {
-    buildCards();
-    syncLocked();
-  }
+  syncTooltipMode();
+
+  if (getState().activeRecipe) buildCards();
 
   return shelf;
 }
 
-function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTMLButtonElement {
+function createIngredientCard(
+  ingredient: IIngredient,
+  signal: AbortSignal,
+  tooltip: IIngredientTooltip,
+): HTMLButtonElement {
   const icon = createElement('img', {
     className: 'shelf_card_icon',
     attributes: { src: ingredient.icon, alt: '', 'aria-hidden': 'true', draggable: 'false' },
@@ -81,7 +96,6 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
 
   const stockBadge = createElement('span', {
     className: 'shelf_card_stock',
-    textContent: '0',
     attributes: { 'aria-hidden': 'true' },
   });
 
@@ -94,6 +108,12 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
     ],
   });
 
+  const showTooltip = (): void => {
+    if (element.disabled || !isTooltipMode() || getState().status !== 'playing') return;
+    tooltip.show(element, ingredient);
+  };
+  const hideTooltip = (): void => tooltip.hide(element);
+
   const element = createElement('button', {
     className: 'shelf_card',
     attributes: { type: 'button', draggable: 'true' },
@@ -102,8 +122,8 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
         gameActions.addToCauldron(ingredient.id);
       },
       dragstart: (event) => {
+        hideTooltip();
         if (!canDrag(ingredient) || !(event instanceof DragEvent) || !event.dataTransfer) {
-          console.log('cannot drag');
           event.preventDefault();
           return;
         }
@@ -114,6 +134,14 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
       dragend: () => {
         element.classList.remove('shelf_card_dragging');
       },
+      pointerenter: (event) => {
+        if (event instanceof PointerEvent && event.pointerType === 'mouse') showTooltip();
+      },
+      pointerleave: hideTooltip,
+      focus: () => {
+        if (element.matches(':focus-visible')) showTooltip();
+      },
+      blur: hideTooltip,
     },
 
     children: [
@@ -130,26 +158,24 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
   });
 
   const render = (): void => {
-    const { shelfStock, cauldronIngredients } = getState();
-    const stock = shelfStock[ingredient.id] ?? 0;
+    const stock = getState().shelfStock[ingredient.id] ?? 0;
+    const isEmpty = stock === 0;
 
-    element.disabled = !canAddToCauldron(cauldronIngredients) || stock === 0;
-    element.draggable = !element.disabled;
-    element.classList.toggle('shelf_card_empty', stock === 0);
+    element.disabled = isEmpty;
+    element.draggable = !isEmpty;
+    element.classList.toggle('shelf_card_empty', isEmpty);
     element.setAttribute(
       'aria-label',
-      stock === 0
-        ? `${ingredient.name}, out of stock`
-        : `Add ${ingredient.name}, ${stock} in stock`,
+      isEmpty ? `${ingredient.name}, out of stock` : `Add ${ingredient.name}, ${stock} in stock`,
     );
     stockBadge.textContent = String(stock);
-    icon.src = stock === 0 ? 'potion-empty.png' : ingredient.icon;
+    icon.src = isEmpty ? 'potion-empty.png' : ingredient.icon;
+    if (isEmpty) hideTooltip();
   };
 
   render();
 
   gameEvents.addEventListener(GAME_EVENTS.shelfStock, render, { signal });
-  gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, render, { signal });
 
   return element;
 }
