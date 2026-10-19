@@ -1,6 +1,6 @@
 import type { IIngredient, IRecipe } from '../utils/types';
-import { STATS } from '../data/game';
-import { getSettings } from '../state/game-state';
+import { INGREDIENT_DRAG_ID, STATS } from '../data/game';
+import { getSettings, getState } from '../state/game-state';
 
 export interface IBarData {
   key: (typeof STATS)[number]['key'];
@@ -34,4 +34,15 @@ export function calculateCauldron(ingredients: IIngredient[], recipe: IRecipe): 
       inRange: value >= min && value <= max,
     };
   });
+}
+
+export function canAcceptDrag(event: Event): boolean {
+  const { status, cauldronIngredients } = getState();
+  return (
+    status === 'playing' &&
+    canAddToCauldron(cauldronIngredients) &&
+    event instanceof DragEvent &&
+    event.dataTransfer !== null &&
+    event.dataTransfer.types.includes(INGREDIENT_DRAG_ID)
+  );
 }

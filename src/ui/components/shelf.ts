@@ -4,7 +4,8 @@ import { createElement } from '../../utils/helpers';
 import { getState } from '../../state/game-state';
 import { gameActions, gameEvents } from '../../state/game-controller';
 import { canAddToCauldron } from '../../logic/calculate-cauldron';
-import { GAME_EVENTS, GAME_SIGNALS } from '../../data/game';
+import { GAME_EVENTS, GAME_SIGNALS, INGREDIENT_DRAG_ID } from '../../data/game';
+import { canDrag } from '../../logic/stock';
 
 export function createShelfSection(): HTMLElement {
   const controller = new AbortController();
@@ -95,12 +96,26 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
 
   const element = createElement('button', {
     className: 'shelf_card',
-    attributes: { type: 'button' },
+    attributes: { type: 'button', draggable: 'true' },
     events: {
       click: () => {
         gameActions.addToCauldron(ingredient.id);
       },
+      dragstart: (event) => {
+        if (!canDrag(ingredient) || !(event instanceof DragEvent) || !event.dataTransfer) {
+          console.log('cannot drag');
+          event.preventDefault();
+          return;
+        }
+        event.dataTransfer.setData(INGREDIENT_DRAG_ID, ingredient.id);
+        event.dataTransfer.effectAllowed = 'copy';
+        element.classList.add('shelf_card_dragging');
+      },
+      dragend: () => {
+        element.classList.remove('shelf_card_dragging');
+      },
     },
+
     children: [
       icon,
       stockBadge,
@@ -119,6 +134,7 @@ function createIngredientCard(ingredient: IIngredient, signal: AbortSignal): HTM
     const stock = shelfStock[ingredient.id] ?? 0;
 
     element.disabled = !canAddToCauldron(cauldronIngredients) || stock === 0;
+    element.draggable = !element.disabled;
     element.classList.toggle('shelf_card_empty', stock === 0);
     element.setAttribute(
       'aria-label',

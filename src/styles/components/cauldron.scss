@@ -3,6 +3,7 @@
 .cauldron_container {
   position: relative;
   overflow: hidden;
+  transition: box-shadow 0.2s ease;
 
   &::before {
     content: '';
@@ -24,4 +25,12 @@
   object-fit: contain;
   mix-blend-mode: lighten;
   mask-image: radial-gradient(circle closest-side, #000 82%, transparent 100%);
+}
+
+.cauldron_container_drop-active {
+  box-shadow: inset 0 0 40px rgba($crimson, 0.6);
+
+  &::before {
+    opacity: 1;
+  }
 }
