@@ -1,4 +1,4 @@
-import { gameActions } from '../../state/game-state';
+import { gameActions } from '../../state/game-controller';
 import { createElement } from '../../utils/helpers';
 
 const windowElement = createElement('div', { className: 'dialog__window' });
@@ -25,7 +25,6 @@ export function openDialog(...content: HTMLElement[]): void {
 
   if (!dialog.isConnected) document.body.append(dialog);
   if (!dialog.open) {
-    // gameActions.pauseGame();
     dialog.showModal();
   }
 }

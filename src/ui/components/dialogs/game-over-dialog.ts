@@ -1,9 +1,11 @@
 import { addLeaderboardEntry, isTopScore, validatePlayerName } from '../../../logic/leaderboard';
 import { isOutOfIngredients } from '../../../logic/stock';
-import { gameActions, getState } from '../../../state/game-state';
+import { getState } from '../../../state/game-state';
+import { gameActions } from '../../../state/game-controller';
 import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 import { showLeaderboard } from './leaderboard-dialog';
+import { MAX_NAME_LENGTH } from '../../../data/game';
 
 export function openGameOverDialog(): void {
   const state = getState();
@@ -29,7 +31,7 @@ export function openGameOverDialog(): void {
     },
   });
 
-  if (!isTopScore(state.score)) {
+  if (!isTopScore(state.score, state.difficulty)) {
     openDialog(...summary, playAgainButton);
     return;
   }
@@ -38,7 +40,7 @@ export function openGameOverDialog(): void {
     className: 'dialog__input',
     attributes: {
       type: 'text',
-      maxlength: '15',
+      maxlength: String(MAX_NAME_LENGTH),
       placeholder: 'Your name',
       autocomplete: 'off',
       'aria-label': 'Player name',
@@ -66,7 +68,7 @@ export function openGameOverDialog(): void {
       return;
     }
 
-    if (addLeaderboardEntry(name, state.score) === 'failed') {
+    if (addLeaderboardEntry(name, state.score, state.difficulty) === 'failed') {
       showError('Could not save your result: browser storage is unavailable or full.');
       return;
     }

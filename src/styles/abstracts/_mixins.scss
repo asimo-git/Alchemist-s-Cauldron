@@ -11,19 +11,6 @@
   }
 }
 
-@mixin button-size($size: md) {
-  @if $size == sm {
-    padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1.2vw, 16px);
-    font-size: $fs-label;
-  } @else if $size == lg {
-    padding: clamp(12px, 1vw, 24px) clamp(24px, 3vw, 48px);
-    font-size: $fs-h2;
-  } @else {
-    padding: clamp(8px, 0.8vw, 16px) clamp(16px, 2vw, 32px);
-    font-size: $fs-h3;
-  }
-}
-
 @mixin hover-only {
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
@@ -32,10 +19,101 @@
   }
 }
 
+// ---- Text ----
+
+// small uppercase caption: stat names, table heads, scales
+@mixin label {
+  font-family: $font-body;
+  font-size: $fs-label;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $ash;
+}
+
+// blackletter heading between two fading rules: ——— Title ———
+@mixin panel-title {
+  @include flex(row, center, center, $size-1-5);
+  font-family: $font-accent;
+  font-size: $fs-body;
+  font-weight: $font-weight-regular;
+  color: $silver;
+  white-space: nowrap;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $crimson);
+  }
+
+  &::after {
+    transform: scaleX(-1);
+  }
+}
+
+// ---- Surfaces ----
+
+// dark framed surface with an inner hairline: shelf, recipe, bars, dialogs
+@mixin panel {
+  position: relative;
+  background:
+    radial-gradient(120% 50% at 50% 0%, rgba($wine, 0.45), transparent 70%),
+    linear-gradient(180deg, rgba($obsidian, 0.94), rgba($crypt, 0.97));
+  border: 1px solid $basalt;
+  border-radius: $r-md;
+  outline: 1px solid rgba($oxblood, 0.45);
+  outline-offset: -6px;
+  box-shadow: 0 10px 40px rgba($void, 0.7);
+}
+
+// two crimson corner brackets, top-left and bottom-right
+@mixin corners($color: $crimson, $size: 10px, $inset: 6px) {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: $size;
+    height: $size;
+    border: 1px solid $color;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: $inset;
+    left: $inset;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  &::after {
+    right: $inset;
+    bottom: $inset;
+    border-top: 0;
+    border-left: 0;
+  }
+}
+
+// ---- Buttons: regular and accent, three sizes ----
+
+@mixin button-size($size: md) {
+  @if $size == sm {
+    padding: clamp(4px, 0.4vw, 7px) clamp(10px, 1vw, 16px);
+    font-size: $fs-small;
+  } @else if $size == lg {
+    padding: clamp(10px, 1vw, 16px) clamp(24px, 3vw, 48px);
+    font-size: $fs-h3;
+  } @else {
+    padding: clamp(8px, 0.7vw, 12px) clamp(16px, 2vw, 32px);
+    font-size: $fs-body;
+  }
+}
+
 @mixin button-base($size: md) {
   @include button-size($size);
   font-family: $font-accent;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
   color: $bone;
   border: 1px solid transparent;
   border-radius: $r-md;
@@ -46,7 +124,12 @@
     background 0.15s,
     border-color 0.15s,
     box-shadow 0.15s,
+    color 0.15s,
     transform 0.1s;
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
 
   &:disabled {
     opacity: 0.4;
@@ -61,34 +144,29 @@
 
 @mixin button-regular($size: md) {
   @include button-base($size);
-  background: $obsidian;
+  color: $silver;
+  background: linear-gradient(180deg, $basalt, $obsidian);
   border-color: $slate;
 
   @include hover-only {
-    border-color: $ash;
-  }
-
-  &:active:not(:disabled) {
-    background: $basalt;
-    border-color: $ash;
-    transform: scale(0.97);
+    color: $bone;
+    border-color: $crimson;
+    box-shadow: $glow-soft;
   }
 }
 
 @mixin button-accent($size: md) {
   @include button-base($size);
-  background: $crimson;
+  background: linear-gradient(180deg, $crimson, $oxblood);
   border-color: $scarlet;
+  box-shadow: inset 0 1px 0 rgba($ember, 0.4);
+  text-shadow: 0 1px 2px rgba($void, 0.8);
 
   @include hover-only {
-    background: $scarlet;
+    background: linear-gradient(180deg, $scarlet, $crimson);
     border-color: $ember;
-    box-shadow: $glow-red;
-  }
-
-  &:active:not(:disabled) {
-    background: $oxblood;
-    border-color: $scarlet;
-    transform: scale(0.97);
+    box-shadow:
+      inset 0 1px 0 rgba($ember, 0.5),
+      $glow-red;
   }
 }

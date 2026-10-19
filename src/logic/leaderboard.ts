@@ -1,4 +1,5 @@
 import {
+  DIFFICULTIES,
   MAX_ENTRIES,
   MAX_NAME_LENGTH,
   MIN_NAME_LENGTH,
@@ -6,26 +7,46 @@ import {
   TOP_STORAGE_KEY,
 } from '../data/game';
 import { getStorageItem } from '../utils/storage';
-import type { ILeaderboardEntry } from '../utils/types';
+import type { Difficulty, ILeaderboardEntry } from '../utils/types';
 
 export type SaveStatus = 'saved' | 'failed';
 
+export function validatePlayerName(name: string): string | undefined {
+  if (name.length < MIN_NAME_LENGTH || name.length > MAX_NAME_LENGTH) {
+    return `Name must be ${MIN_NAME_LENGTH}–${MAX_NAME_LENGTH} characters long`;
+  }
+  if (!NAME_PATTERN.test(name)) {
+    return 'Use only letters, digits, spaces, "_" and "-"';
+  }
+  return undefined;
+}
 const isValidLeaderboard = (value: unknown): value is ILeaderboardEntry[] =>
   Array.isArray(value) &&
   value.every((item) => {
     if (typeof item !== 'object' || item === null) return false;
-    const { name, score, date } = item as Record<string, unknown>;
+    const { name, score, date, difficulty } = item as Record<string, unknown>;
     return (
       typeof name === 'string' &&
       typeof score === 'number' &&
       Number.isFinite(score) &&
       typeof date === 'number' &&
-      Number.isFinite(date)
+      Number.isFinite(date) &&
+      typeof difficulty === 'string' &&
+      (DIFFICULTIES as readonly string[]).includes(difficulty)
+      // Object.hasOwn(DIFFICULTY_SETTINGS, difficulty)
     );
   });
 
-const getSortedTop = (entries: ILeaderboardEntry[]): ILeaderboardEntry[] =>
-  entries.toSorted((a, b) => b.score - a.score || a.date - b.date).slice(0, MAX_ENTRIES);
+const compareEntries = (a: ILeaderboardEntry, b: ILeaderboardEntry): number =>
+  b.score - a.score || a.date - b.date;
+
+const getTopPerDifficulty = (entries: ILeaderboardEntry[]): ILeaderboardEntry[] =>
+  DIFFICULTIES.flatMap((difficulty) =>
+    entries
+      .filter((entry) => entry.difficulty === difficulty)
+      .toSorted(compareEntries)
+      .slice(0, MAX_ENTRIES),
+  );
 
 function saveEntries(entries: ILeaderboardEntry[]): SaveStatus {
   try {
@@ -37,27 +58,25 @@ function saveEntries(entries: ILeaderboardEntry[]): SaveStatus {
 }
 
 export const getLeaderboard = (): ILeaderboardEntry[] =>
-  getSortedTop(getStorageItem(TOP_STORAGE_KEY, isValidLeaderboard) ?? []);
+  getTopPerDifficulty(getStorageItem(TOP_STORAGE_KEY, isValidLeaderboard) ?? []).toSorted(
+    compareEntries,
+  );
 
-export function isTopScore(score: number): boolean {
-  const entries = getLeaderboard();
+export function isTopScore(score: number, difficulty: Difficulty): boolean {
+  const entries = getLeaderboard().filter((entry) => entry.difficulty === difficulty);
   const lastScore = entries.at(-1)?.score ?? 0;
 
   return score > 0 && (entries.length < MAX_ENTRIES || score > lastScore);
 }
 
-export function validatePlayerName(name: string): string | undefined {
-  if (name.length < MIN_NAME_LENGTH || name.length > MAX_NAME_LENGTH) {
-    return `Name must be ${MIN_NAME_LENGTH}–${MAX_NAME_LENGTH} characters long`;
-  }
-  if (!NAME_PATTERN.test(name)) {
-    return 'Use only letters, digits, spaces, "_" and "-"';
-  }
-  return undefined;
-}
-
-export const addLeaderboardEntry = (name: string, score: number): SaveStatus =>
-  saveEntries(getSortedTop([...getLeaderboard(), { name, score, date: Date.now() }]));
+export const addLeaderboardEntry = (
+  name: string,
+  score: number,
+  difficulty: Difficulty,
+): SaveStatus =>
+  saveEntries(
+    getTopPerDifficulty([...getLeaderboard(), { name, score, difficulty, date: Date.now() }]),
+  );
 
 export const clearLeaderboard = (): SaveStatus => saveEntries([]);
 
