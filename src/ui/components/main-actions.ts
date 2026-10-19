@@ -46,7 +46,18 @@ function createBar(label: string) {
     element.classList.toggle('bar--in-range', data.inRange);
   };
 
-  return { element, update };
+  // empty bar without a recipe: no target zone, marker at zero
+  const reset = (): void => {
+    correctZone.style.left = '';
+    correctZone.style.width = '0';
+    marker.style.left = '50%';
+    value.textContent = '0';
+    scaleStart.textContent = '0';
+    scaleEnd.textContent = '0';
+    element.classList.remove('bar--in-range');
+  };
+
+  return { element, update, reset };
 }
 
 const isIdle = (): boolean => {
@@ -79,7 +90,7 @@ export function createMainActions(): HTMLElement {
   });
 
   const continueButton = createElement('button', {
-    className: 'main-actions__button',
+    className: 'main-actions__continue',
     textContent: 'Continue Game',
     attributes: { type: 'button' },
     events: { click: () => gameActions.continueGame() },
@@ -93,7 +104,11 @@ export function createMainActions(): HTMLElement {
     brewButton.textContent = isButtonIdle ? 'Start Game' : 'Brew';
     brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
 
-    if (!activeRecipe) return;
+    if (!activeRecipe) {
+      for (const bar of Object.values(bars)) bar.reset();
+      return;
+    }
+
     for (const data of calculateCauldron(cauldronIngredients, activeRecipe)) {
       bars[data.key].update(data);
     }

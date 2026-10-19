@@ -1,13 +1,16 @@
 import { randomInt } from '../utils/helpers';
 import { INGREDIENTS } from '../data/ingredients';
 import { MAX_STOCK, MIN_STOCK } from '../data/game';
-import type { IGameState } from '../utils/types';
+import type { IGameState, IIngredient } from '../utils/types';
 
 export type Stock = Record<string, number>;
 
+export const getShelfIngredients = (shelfIngredients: number): readonly IIngredient[] =>
+  INGREDIENTS.slice(0, shelfIngredients);
+
 export function createShelfStock(shelfIngredients: number): Stock {
   const stock: Stock = {};
-  for (const { id } of INGREDIENTS.slice(0, shelfIngredients)) {
+  for (const { id } of getShelfIngredients(shelfIngredients)) {
     stock[id] = randomInt(MIN_STOCK, MAX_STOCK);
   }
   return stock;

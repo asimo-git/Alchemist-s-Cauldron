@@ -5,6 +5,7 @@ import { createTimer } from './timer';
 import { showLeaderboard } from './dialogs/leaderboard-dialog';
 import { showSettings } from './dialogs/settings-dialog';
 import { showHelp } from './dialogs/help-dialog';
+import { showMenu } from './dialogs/menu-dialog';
 import { GAME_EVENTS } from '../../data/game';
 
 export function createHeader(): HTMLElement {
@@ -16,11 +17,6 @@ export function createHeader(): HTMLElement {
   const score = createElement('div', {
     className: 'header__score',
     attributes: { 'aria-label': 'Score' },
-  });
-
-  const difficultyBadge = createElement('div', {
-    className: 'header__difficulty',
-    attributes: { 'aria-label': 'Difficulty' },
   });
 
   const leaderboardButton = createElement('button', {
@@ -49,6 +45,18 @@ export function createHeader(): HTMLElement {
     },
   });
 
+  const menuButton = createElement('button', {
+    className: 'header__button header__menu',
+    textContent: 'Menu',
+    attributes: { type: 'button', 'aria-haspopup': 'dialog' },
+    events: { click: showMenu },
+  });
+
+  const controls = createElement('div', {
+    className: 'header__side header__controls',
+    children: [menuButton, helpButton, settingsButton, leaderboardButton],
+  });
+
   const renderLives = (): void => {
     const { lives: livesLeft } = getState();
     const total = getSettings().lives;
@@ -73,6 +81,8 @@ export function createHeader(): HTMLElement {
 
     leaderboardButton.hidden = !isIdle;
     settingsButton.hidden = !isIdle;
+    menuButton.hidden = !isIdle;
+    controls.classList.toggle('header__side--idle', isIdle);
     lives.hidden = isIdle;
   };
 
@@ -82,19 +92,10 @@ export function createHeader(): HTMLElement {
     score.setAttribute('aria-label', `Score: ${currentScore}`);
   };
 
-  const renderDifficulty = (): void => {
-    const { difficulty } = getState();
-    const label = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-
-    difficultyBadge.textContent = label;
-    difficultyBadge.setAttribute('aria-label', `Difficulty: ${label}`);
-  };
-
   gameEvents.addEventListener(GAME_EVENTS.lives, renderLives);
   gameEvents.addEventListener(GAME_EVENTS.score, renderScore);
   gameEvents.addEventListener(GAME_EVENTS.status, renderIdleState);
-  gameEvents.addEventListener(GAME_EVENTS.difficulty, renderDifficulty);
-  renderDifficulty();
+  gameEvents.addEventListener(GAME_EVENTS.difficulty, renderLives);
   renderLives();
   renderScore();
   renderIdleState();
@@ -102,15 +103,12 @@ export function createHeader(): HTMLElement {
   return createElement('header', {
     className: 'header',
     children: [
-      createElement('div', {
-        className: 'header__side',
-        children: [helpButton, settingsButton, leaderboardButton],
-      }),
+      controls,
       createTimer(),
 
       createElement('div', {
         className: 'header__side header__side--end',
-        children: [lives, score, difficultyBadge],
+        children: [lives, score],
       }),
     ],
   });

@@ -10,15 +10,18 @@ export function createShelfSection(): HTMLElement {
   const controller = new AbortController();
   const { signal } = controller;
 
+  const grid = createElement('div', { className: 'shelf_grid' });
+
   const shelf = createElement('section', {
     className: 'shelf_container',
     attributes: { 'aria-label': 'Ingredient shelf' },
+    children: [createElement('h3', { className: 'shelf_title', textContent: 'Ingredients' }), grid],
   });
 
   const cards = new Map<string, HTMLButtonElement>();
 
   function buildCards(): void {
-    shelf.replaceChildren();
+    grid.replaceChildren();
     cards.clear();
 
     const { shelfStock } = getState();
@@ -27,7 +30,7 @@ export function createShelfSection(): HTMLElement {
     for (const item of ingredients) {
       const card = createIngredientCard(item, signal);
       cards.set(item.id, card);
-      shelf.append(card);
+      grid.append(card);
     }
   }
 
@@ -56,8 +59,7 @@ export function createShelfSection(): HTMLElement {
     GAME_EVENTS.status,
     () => {
       syncLocked();
-      if (getState().status === 'game-over' || getState().status === 'menu')
-        shelf.replaceChildren();
+      if (getState().status === 'game-over' || getState().status === 'menu') grid.replaceChildren();
     },
     { signal },
   );

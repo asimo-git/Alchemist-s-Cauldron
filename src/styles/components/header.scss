@@ -5,27 +5,143 @@
   display: none !important;
 }
 
+// ---- Header ornaments (inline SVG) ----
+
+$plaque: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M8 .5H28L35.5 8V28L28 35.5H8L.5 28V8Z' fill='%23160f12' stroke='%236a1220'/%3E%3Cpath d='M9.5 3.5H26.5L32.5 9.5V26.5L26.5 32.5H9.5L3.5 26.5V9.5Z' fill='none' stroke='%23a3182b' stroke-opacity='.7'/%3E%3Cg fill='%23cf2a3c'%3E%3Cpath d='M2.5 0 5 2.5 2.5 5 0 2.5Z'/%3E%3Cpath d='M33.5 0 36 2.5 33.5 5 31 2.5Z'/%3E%3Cpath d='M2.5 31 5 33.5 2.5 36 0 33.5Z'/%3E%3Cpath d='M33.5 31 36 33.5 33.5 36 31 33.5Z'/%3E%3C/g%3E%3C/svg%3E");
+
+$flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 32' fill='none' stroke='%23a3182b' stroke-linecap='round'%3E%3Cpath d='M96 16H58'/%3E%3Cpath d='M58 16C50 16 44 10 47 5C49 2 54 3 54 7C54 9 52 10 50.5 9.5'/%3E%3Cpath d='M58 16C50 16 44 22 47 27C49 30 54 29 54 25C54 23 52 22 50.5 22.5'/%3E%3Cpath d='M44 16H14' stroke='%236a1220'/%3E%3Cpath d='M88 16C84 11 77 11 72 16C77 21 84 21 88 16Z' fill='%233a0b14'/%3E%3Ccircle cx='30' cy='16' r='2' fill='%236a1220' stroke='none'/%3E%3Cpath d='M10 16L5 12.5L.5 16L5 19.5Z' fill='%23a3182b' stroke='none'/%3E%3C/svg%3E");
+
+@mixin plaque($rim: 12px) {
+  border: $rim solid transparent;
+  border-image: $plaque 12 fill / $rim stretch;
+  filter: drop-shadow(0 0 10px rgba($crimson, 0.25));
+}
+
 .header {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  align-items: stretch;
   gap: $gap-large;
+  padding-bottom: $size-1-5;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      $oxblood 25%,
+      $crimson 50%,
+      $oxblood 75%,
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .timer {
+    @include plaque;
+    position: relative;
+    justify-content: center;
+    gap: $size-05;
+    padding: 2px $size-1-5;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 96px;
+      height: 32px;
+      translate: 0 -50%;
+      background: $flourish center / contain no-repeat;
+      pointer-events: none;
+    }
+
+    &::before {
+      right: calc(100% + 8px);
+    }
+
+    &::after {
+      left: calc(100% + 8px);
+      scale: -1 1;
+    }
+  }
 
   &__side {
-    @include flex(row, flex-start, center, $size-05);
+    @include flex(row, flex-start, stretch);
+  }
 
-    &--end {
-      justify-content: flex-end;
-      gap: $size-1;
+  // ---- Buttons ----
+
+  &__button {
+    @include button-base(sm);
+    font-size: $fs-body;
+    color: $silver;
+    background: none;
+
+    @include hover-only {
+      color: $bone;
+      text-shadow: $glow-red;
+    }
+  }
+
+  &__menu {
+    display: none;
+  }
+
+  &__controls {
+    justify-self: start;
+  }
+
+  &__controls:not(.header__side--idle) &__button {
+    @include plaque;
+    padding-block: 0;
+    border-radius: 0;
+
+    @include hover-only {
+      filter: drop-shadow(0 0 10px rgba($ember, 0.55));
+    }
+  }
+
+  &__controls.header__side--idle {
+    @include plaque;
+    padding-inline: $size-05;
+
+    .header__button {
+      border-radius: 0;
+    }
+
+    .header__button:not(.header__menu) + .header__button {
+      border-left-color: rgba($oxblood, 0.9);
+    }
+  }
+
+  // ---- Lives and score ----
+
+  &__side--end {
+    @include plaque;
+    justify-self: end;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    gap: $size-05 $size-2;
+    padding: 2px $size-1-5;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
     }
   }
 
   &__lives {
-    @include flex(row, flex-end, center, $size-1);
+    @include flex(row, flex-end, center, $size-05);
   }
 
   &__heart {
-    font-size: $fs-h2;
+    font-size: $fs-h3;
     line-height: 1;
     color: $scarlet;
     text-shadow: $glow-red;
@@ -40,39 +156,77 @@
       transform: scale(0.8);
     }
   }
-}
 
-.header__button {
-  @include button-regular(sm);
-}
-
-.header__score {
-  font-family: $font-accent;
-  font-size: $fs-h3;
-  color: $ember;
-  white-space: nowrap;
-}
-
-.header__difficulty {
-  width: fit-content;
-  padding: $size-05 $size-1-5;
-  font-family: $font-accent;
-  font-size: $fs-label;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border: 1px solid currentColor;
-  border-radius: $r-full;
-
-  &[data-difficulty='easy'] {
-    color: $silver;
+  &__score {
+    font-family: $font-accent;
+    font-size: $fs-body;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: $bone;
+    white-space: nowrap;
   }
 
-  &[data-difficulty='medium'] {
-    color: $scarlet;
+  // no room for the scrollwork beside the timer
+  @media (max-width: $breakpoint-laptop) {
+    .timer::before,
+    .timer::after {
+      display: none;
+    }
   }
 
-  &[data-difficulty='hard'] {
-    color: $ember;
-    box-shadow: $glow-red;
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: auto minmax(min-content, 1fr) auto;
+    gap: $size-05;
+    padding-bottom: $size-1;
+
+    .timer {
+      @include plaque(8px);
+      width: auto;
+      padding: 2px $size-05;
+    }
+
+    .timer__top {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    .timer__difficulty {
+      letter-spacing: 0;
+    }
+
+    .timer__pause {
+      padding: $size-05 $size-1;
+    }
+
+    &__controls.header__side--idle {
+      border: 0;
+      border-image: none;
+      filter: none;
+      padding: 0;
+    }
+
+    &__side--idle &__menu {
+      display: inline-block;
+    }
+
+    &__side--idle &__button:not(.header__menu) {
+      display: none;
+    }
+
+    &__controls:not(.header__side--idle) &__button,
+    &__controls.header__side--idle &__button {
+      @include plaque(6px);
+      padding: 0 $size-05;
+    }
+
+    &__side--end {
+      @include plaque(6px);
+      gap: 2px;
+      padding: 2px $size-05;
+    }
+
+    &__heart,
+    &__score {
+      font-size: $fs-small;
+    }
   }
 }

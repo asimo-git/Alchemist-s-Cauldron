@@ -27,7 +27,7 @@ export function showSettings(): void {
   );
 
   function render(): void {
-    const current = getState().difficulty ?? 'easy';
+    const current = getState().difficulty;
 
     for (const [index, button] of buttons.entries()) {
       const isSelected = DIFFICULTIES[index] === current;

@@ -5,6 +5,7 @@ import { gameActions } from '../../../state/game-controller';
 import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 import { showLeaderboard } from './leaderboard-dialog';
+import { MAX_NAME_LENGTH } from '../../../data/game';
 
 export function openGameOverDialog(): void {
   const state = getState();
@@ -39,7 +40,7 @@ export function openGameOverDialog(): void {
     className: 'dialog__input',
     attributes: {
       type: 'text',
-      maxlength: '15',
+      maxlength: String(MAX_NAME_LENGTH),
       placeholder: 'Your name',
       autocomplete: 'off',
       'aria-label': 'Player name',

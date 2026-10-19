@@ -1,4 +1,4 @@
-import { createElement } from '../../utils/helpers';
+import { capitalize, createElement } from '../../utils/helpers';
 import { getSettings, getState } from '../../state/game-state';
 import { gameActions, gameEvents } from '../../state/game-controller';
 import { calculateTimePercent, formatTime, isTimeLow } from '../../logic/timer';
@@ -15,14 +15,28 @@ export function createTimer(): HTMLElement {
     events: { click: gameActions.pauseGame },
   });
 
+  const difficultyBadge = createElement('span', { className: 'timer__difficulty' });
+
   const element = createElement('div', {
     className: 'timer',
     attributes: { role: 'timer' },
     children: [
-      createElement('div', { className: 'timer__top', children: [text, pauseButton] }),
+      createElement('div', {
+        className: 'timer__top',
+        children: [difficultyBadge, text, pauseButton],
+      }),
       bar,
     ],
   });
+
+  const renderDifficulty = (): void => {
+    const { difficulty } = getState();
+    const label = capitalize(difficulty);
+
+    difficultyBadge.textContent = label;
+    difficultyBadge.dataset.difficulty = difficulty;
+    difficultyBadge.setAttribute('aria-label', `Difficulty: ${label}`);
+  };
 
   const render = (): void => {
     const { timeLeft, status } = getState();
@@ -36,7 +50,9 @@ export function createTimer(): HTMLElement {
 
   gameEvents.addEventListener(GAME_EVENTS.timeLeft, render);
   gameEvents.addEventListener(GAME_EVENTS.status, render);
+  gameEvents.addEventListener(GAME_EVENTS.difficulty, renderDifficulty);
   render();
+  renderDifficulty();
 
   return element;
 }
