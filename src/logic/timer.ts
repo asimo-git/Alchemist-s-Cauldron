@@ -24,6 +24,7 @@ export function createCountdown(
   resume: () => void;
   stop: () => void;
   addTime: () => void;
+  subtractTime: (seconds: number) => void;
 } {
   let endTime = 0;
   let remainingMs = 0;
@@ -96,5 +97,11 @@ export function createCountdown(
     update();
   }
 
-  return { start, pause, resume, stop, addTime };
+  function subtractTime(seconds: number): void {
+    if (intervalId === undefined) return;
+    endTime -= seconds * 1000;
+    update();
+  }
+
+  return { start, pause, resume, stop, addTime, subtractTime };
 }

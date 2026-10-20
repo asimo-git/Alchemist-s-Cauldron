@@ -4,6 +4,7 @@ export const MIN_STOCK = 2;
 export const MAX_STOCK = 15;
 export const SAVE_STORAGE_KEY = 'alchemy-saved-game';
 export const INGREDIENT_DRAG_ID = 'shelf-ingredient-id';
+export const POUR_OUT_COST_SECONDS = 10;
 
 // Timer
 export const LOW_TIME_THRESHOLD = 15;

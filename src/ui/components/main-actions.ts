@@ -46,7 +46,6 @@ function createBar(label: string) {
     element.classList.toggle('bar--in-range', data.inRange);
   };
 
-  // empty bar without a recipe: no target zone, marker at zero
   const reset = (): void => {
     correctZone.style.left = '';
     correctZone.style.width = '0';
@@ -96,6 +95,13 @@ export function createMainActions(): HTMLElement {
     events: { click: () => gameActions.continueGame() },
   });
 
+  const pourOutButton = createElement('button', {
+    className: 'main-actions__continue main-actions__pour-out',
+    textContent: 'Pour Out',
+    attributes: { type: 'button' },
+    events: { click: () => gameActions.pourOut() },
+  });
+
   const render = (): void => {
     const { activeRecipe, cauldronIngredients } = getState();
 
@@ -103,6 +109,8 @@ export function createMainActions(): HTMLElement {
     continueButton.hidden = !isButtonIdle || loadGame() === undefined;
     brewButton.textContent = isButtonIdle ? 'Start Game' : 'Brew';
     brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
+    pourOutButton.hidden = isButtonIdle;
+    pourOutButton.disabled = cauldronIngredients.length === 0;
 
     if (!activeRecipe) {
       for (const bar of Object.values(bars)) bar.reset();
@@ -121,6 +129,6 @@ export function createMainActions(): HTMLElement {
 
   return createElement('div', {
     className: 'main-actions',
-    children: [barSection, continueButton, brewButton],
+    children: [barSection, continueButton, pourOutButton, brewButton],
   });
 }

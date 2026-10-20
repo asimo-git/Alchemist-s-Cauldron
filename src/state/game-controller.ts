@@ -4,7 +4,13 @@ import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
 import { getRecipesByDifficulty } from '../logic/recipe-generator';
 import { isBrewSuccess } from '../logic/brew-check';
-import { DIFFICULTY_SETTINGS, GAME_EVENTS, GAME_SIGNALS, SAVE_TRIGGER_KEYS } from '../data/game';
+import {
+  DIFFICULTY_SETTINGS,
+  GAME_EVENTS,
+  GAME_SIGNALS,
+  POUR_OUT_COST_SECONDS,
+  SAVE_TRIGGER_KEYS,
+} from '../data/game';
 import { createCountdown } from '../logic/timer';
 import { openGameOverDialog } from '../ui/components/dialogs/game-over-dialog';
 import { openPauseDialog } from '../ui/components/dialogs/pause-dialog';
@@ -174,5 +180,14 @@ export const gameActions = {
 
   setDifficulty(difficulty: Difficulty): void {
     setState({ difficulty });
+  },
+
+  pourOut(): void {
+    if (store.state.status !== 'playing' || store.state.cauldronIngredients.length === 0) return;
+
+    countdown.subtractTime(POUR_OUT_COST_SECONDS);
+
+    if (store.state.status !== 'playing') return;
+    gameActions.clearCauldron();
   },
 };
