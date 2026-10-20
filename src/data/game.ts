@@ -3,6 +3,7 @@ import type { Difficulty, IDifficultySettings, IGameState } from '../utils/types
 export const MIN_STOCK = 2;
 export const MAX_STOCK = 15;
 export const SAVE_STORAGE_KEY = 'alchemy-saved-game';
+export const INGREDIENT_DRAG_ID = 'shelf-ingredient-id';
 
 // Timer
 export const LOW_TIME_THRESHOLD = 15;
