@@ -1,3 +1,6 @@
+import type { IngridientsID } from '../data/ingredients';
+import type { IIngredient, IReactionValues } from './types';
+
 export interface CreateElementOptions {
   className?: string;
   textContent?: string;
@@ -58,3 +61,12 @@ export const isNonNegativeNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0 && Number.isSafeInteger(value);
 
 export const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);
+
+export const changeByPercent = (value: number, percent: number): number =>
+  Math.round(value * (1 + percent / 100));
+
+export const hasAllIngridients = (ingredients: IIngredient[], ids: IngridientsID[]): boolean =>
+  ids.every((id) => ingredients.some((item) => item.id === id));
+
+export const getTotal = (ingredients: IIngredient[], key: keyof IReactionValues): number =>
+  ingredients.reduce((sum, item) => sum + item[key], 0);

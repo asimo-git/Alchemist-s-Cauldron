@@ -43,11 +43,20 @@ export interface IReaction {
   name: string;
   difficulty: Exclude<Difficulty, 'easy'>;
   isActive: (ingredients: IIngredient[]) => boolean;
-  apply: (values: { temperature: number; density: number; magicPower: number }) => {
-    temperature: number;
-    density: number;
-    magicPower: number;
-  };
+  apply: (values: IReactionValues) => IReactionValues;
+  sideEffects?: IReactionSideEffects;
+}
+
+export interface IReactionValues {
+  temperature: number;
+  density: number;
+  magicPower: number;
+}
+
+export interface IReactionSideEffects {
+  timeDelta?: number; // sec
+  lives?: number;
+  clearCauldron?: boolean;
 }
 
 export interface ILeaderboardEntry {
