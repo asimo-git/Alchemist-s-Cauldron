@@ -48,6 +48,8 @@ export const GAME_SIGNALS = {
   cauldronFull: 'cauldron-full',
   gameBegun: 'game-begun',
   reactionFired: 'reaction-fired',
+  brewSuccess: 'brew-success',
+  brewFailed: 'brew-failed',
 } as const;
 
 export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];

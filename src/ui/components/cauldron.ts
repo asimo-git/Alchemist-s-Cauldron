@@ -1,15 +1,17 @@
 import { GAME_SIGNALS, INGREDIENT_DRAG_ID } from '../../data/game';
 import { canAcceptDrag } from '../../logic/calculate-cauldron';
 import { gameActions, gameEvents } from '../../state/game-controller';
-import { getState } from '../../state/game-state';
+import { getSettings, getState } from '../../state/game-state';
 import { createElement } from '../../utils/helpers';
 import type { IReactionPopupData } from '../../utils/types';
 
+const RESULT_CLASSES = {
+  success: 'cauldron_frame_success',
+  fail: 'cauldron_frame_fail',
+};
+
 export function createCauldronSection(): HTMLElement {
-  const image = createElement('img', {
-    className: 'cauldron_img',
-    attributes: { src: 'cauldron.gif', alt: 'cauldron', draggable: 'false' },
-  });
+  const cauldronFrame = createCauldronFrame();
 
   const popups = createElement('div', {
     className: 'cauldron_popups',
@@ -18,41 +20,32 @@ export function createCauldronSection(): HTMLElement {
 
   const section = createElement('section', {
     className: 'cauldron_container',
-    children: [createElement('div', { className: 'cauldron_frame', children: [image] }), popups],
+    children: [cauldronFrame, popups],
   });
 
-  // ---- Reaction popup  ----
-  const showReactions = (reactions: IReactionPopupData[]): void => {
-    const popup = createElement('div', {
-      className: 'reaction-popup',
-      attributes: { role: 'status' },
-      children: [
-        createElement('h3', {
-          className: 'reaction-popup_title',
-          textContent: 'A chemical reaction happened!',
-        }),
-        ...reactions.map(({ name, lines }) =>
-          createElement('p', {
-            className: 'reaction-popup_line',
-            textContent: `✠ ${name}: ${lines.join(', ')}`,
-          }),
-        ),
-      ],
-    });
+  // ---- Events ----
 
-    popup.addEventListener('animationend', (event) => {
-      if (event.target === popup) popup.remove();
-    });
+  gameEvents.addEventListener(GAME_SIGNALS.brewSuccess, () => {
+    playBrewResult(cauldronFrame, 'success');
+    const seconds = getSettings().timeBonus;
+    if (seconds > 0) section.append(createTimeBonus(seconds));
+  });
 
-    popups.replaceChildren(popup);
-  };
+  gameEvents.addEventListener(GAME_SIGNALS.brewFailed, () => {
+    playBrewResult(cauldronFrame, 'fail');
+  });
 
   gameEvents.addEventListener(GAME_SIGNALS.reactionFired, (event) => {
-    showReactions((event as CustomEvent<IReactionPopupData[]>).detail);
+    const reactions = (event as CustomEvent<IReactionPopupData[]>).detail;
+    popups.replaceChildren(createReactionPopup(reactions));
   });
 
-  gameEvents.addEventListener(GAME_SIGNALS.gameBegun, () => popups.replaceChildren());
-  // ---- ---- -------- ---- -------- ---- -------- ---- -------- ---- ----
+  gameEvents.addEventListener(GAME_SIGNALS.gameBegun, () => {
+    popups.replaceChildren();
+    cauldronFrame.classList.remove(...Object.values(RESULT_CLASSES));
+  });
+
+  // ---- Drag & drop ----
 
   const setDropActive = (isActive: boolean): void => {
     section.classList.toggle('cauldron_container_drop-active', isActive);
@@ -88,11 +81,76 @@ export function createCauldronSection(): HTMLElement {
     gameActions.addToCauldron(id);
   });
 
-  // ---- TEST: показать попап сразу при создании котла ----
-  // showReactions([
-  //   { name: 'Bubbling', lines: ['Magic Power +50%', '-10 seconds'] },
-  //   { name: 'Solar Frost', lines: ['Temperature set to 0', 'Density +20%'] },
-  // ]);
-
   return section;
+}
+
+function createCauldronFrame(): HTMLElement {
+  const frame = createElement('div', {
+    className: 'cauldron_frame',
+    children: [
+      createElement('img', {
+        className: 'cauldron_img',
+        attributes: { src: 'cauldron.gif', alt: 'cauldron', draggable: 'false' },
+      }),
+    ],
+    events: {
+      animationend: (event) => {
+        if (
+          event.target === frame &&
+          event instanceof AnimationEvent &&
+          event.animationName === 'cauldron-glow'
+        ) {
+          frame.classList.remove(...Object.values(RESULT_CLASSES));
+        }
+      },
+    },
+  });
+
+  return frame;
+}
+
+function playBrewResult(frame: HTMLElement, result: keyof typeof RESULT_CLASSES): void {
+  frame.classList.remove(...Object.values(RESULT_CLASSES));
+  void frame.offsetWidth;
+  frame.classList.add(RESULT_CLASSES[result]);
+}
+
+// ---------- Time bonus ----------
+
+function createTimeBonus(seconds: number): HTMLElement {
+  const timeBonus = createElement('div', {
+    className: 'cauldron_time-bonus',
+    textContent: `+${seconds}s`,
+  });
+
+  timeBonus.addEventListener('animationend', () => timeBonus.remove());
+
+  return timeBonus;
+}
+
+// ---------- Reaction popup ----------
+
+function createReactionPopup(reactions: IReactionPopupData[]): HTMLElement {
+  const popup = createElement('div', {
+    className: 'reaction-popup',
+    attributes: { role: 'status' },
+    children: [
+      createElement('h3', {
+        className: 'reaction-popup_title',
+        textContent: 'A chemical reaction happened!',
+      }),
+      ...reactions.map(({ name, lines }) =>
+        createElement('p', {
+          className: 'reaction-popup_line',
+          textContent: `✠ ${name}: ${lines.join(', ')}`,
+        }),
+      ),
+    ],
+  });
+
+  popup.addEventListener('animationend', (event) => {
+    if (event.target === popup) popup.remove();
+  });
+
+  return popup;
 }

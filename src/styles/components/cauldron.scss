@@ -1,18 +1,13 @@
 @use '../abstracts/variables' as *;
 
 $reaction-popup-duration: 3s;
+$brew-glow-duration: 1.2s;
+$brew-shake-duration: 0.5s;
 
 .cauldron_container {
   position: relative;
   overflow: hidden;
   transition: box-shadow 0.2s ease;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 20% 15% 10%;
-    filter: blur(24px);
-  }
 }
 
 .cauldron_frame {
@@ -25,16 +20,10 @@ $reaction-popup-duration: 3s;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  mix-blend-mode: lighten;
-  mask-image: radial-gradient(circle closest-side, #000 82%, transparent 100%);
 }
 
 .cauldron_container_drop-active {
   box-shadow: inset 0 0 40px rgba($crimson, 0.6);
-
-  &::before {
-    opacity: 1;
-  }
 }
 
 // ---- Reaction popup  ----
@@ -162,3 +151,95 @@ $reaction-popup-duration: 3s;
 //   animation: none;
 //   opacity: 1;
 // }
+
+// ---- Brew result ----
+
+.cauldron_frame_success,
+.cauldron_frame_fail {
+  animation: cauldron-glow $brew-glow-duration ease-out;
+}
+
+.cauldron_frame_success {
+  --glow-color: #{$emerald};
+}
+
+.cauldron_frame_fail {
+  --glow-color: #{$scarlet};
+  animation:
+    cauldron-glow $brew-glow-duration ease-out,
+    cauldron-shake $brew-shake-duration ease-in-out;
+}
+
+@keyframes cauldron-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent);
+  }
+  25% {
+    filter: drop-shadow(0 0 20px var(--glow-color)) drop-shadow(0 0 48px var(--glow-color));
+  }
+}
+
+@keyframes cauldron-shake {
+  0%,
+  100% {
+    transform: none;
+  }
+  20% {
+    transform: translate(-7px, 2px) rotate(-0.6deg);
+  }
+  40% {
+    transform: translate(7px, -2px) rotate(0.6deg);
+  }
+  60% {
+    transform: translate(-5px, 1px) rotate(-0.4deg);
+  }
+  80% {
+    transform: translate(3px, -1px);
+  }
+}
+
+// ---- Time bonus ----
+
+.cauldron_time-bonus {
+  position: absolute;
+  top: 35%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  text-align: center;
+  pointer-events: none;
+  font-family: $font-accent;
+  font-weight: $font-weight-bold;
+  font-size: $fs-h2;
+  color: $emerald;
+  text-shadow:
+    0 0 14px rgba($emerald, 0.8),
+    0 0 6px $void;
+  animation: cauldron-time-bonus-rise 2s ease-out both;
+}
+
+@keyframes cauldron-time-bonus-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cauldron_frame_fail {
+    animation-name: cauldron-glow;
+  }
+
+  .cauldron_time-bonus {
+    animation-name: reaction-popup-life-reduced;
+  }
+}

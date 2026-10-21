@@ -188,11 +188,13 @@ export const gameActions = {
         activeRecipe: getRecipesByDifficulty(store.state.difficulty),
       });
       countdown.adjustTime(getSettings().timeBonus);
+      gameEvents.dispatchEvent(new Event(GAME_SIGNALS.brewSuccess));
     } else {
       setState({
         lives: lives - 1,
         cauldronIngredients: [],
       });
+      gameEvents.dispatchEvent(new Event(GAME_SIGNALS.brewFailed));
     }
 
     if (store.state.lives === 0 || isOutOfIngredients(store.state)) {
