@@ -3,6 +3,8 @@
 $reaction-popup-duration: 3s;
 $brew-glow-duration: 1.2s;
 $brew-shake-duration: 0.5s;
+$cauldron-ingredient-size: clamp(28px, 4vw, 56px);
+$cauldron-ingredient-opacity: 0.55;
 
 .cauldron_container {
   position: relative;
@@ -234,6 +236,65 @@ $brew-shake-duration: 0.5s;
   }
 }
 
+// ---- Floating ingredients ----
+$cauldron-ingredient-slots:
+  (-1.1, -0.3), (1.1, -0.2), (0, 0.3), (-0.5, -0.8), (0.7, 0), (-1.3, 0.5);
+
+.cauldron_ingredients {
+  --ingredient-size: #{$cauldron-ingredient-size};
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cauldron_ingredient {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  width: var(--ingredient-size);
+  height: var(--ingredient-size);
+  margin: calc(var(--ingredient-size) / -2) 0 0 calc(var(--ingredient-size) / -2);
+  object-fit: contain;
+  translate: calc(var(--slot-x, 0) * var(--ingredient-size))
+    calc(var(--slot-y, 0) * var(--ingredient-size));
+  animation:
+    cauldron-ingredient-appear 0.4s ease-out,
+    cauldron-ingredient-drift 6s ease-in-out infinite alternate;
+}
+
+@for $i from 1 through length($cauldron-ingredient-slots) {
+  $slot: nth($cauldron-ingredient-slots, $i);
+
+  .cauldron_ingredient:nth-child(#{$i}) {
+    --slot-x: #{nth($slot, 1)};
+    --slot-y: #{nth($slot, 2)};
+    animation-duration:
+      0.4s,
+      #{5s + $i * 0.7s};
+    animation-delay:
+      0s,
+      #{$i * -1.3s};
+  }
+}
+
+@keyframes cauldron-ingredient-appear {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+@keyframes cauldron-ingredient-drift {
+  from {
+    transform: translate(-6px, 4px) rotate(-5deg);
+  }
+  to {
+    transform: translate(6px, -8px) rotate(5deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cauldron_frame_fail {
     animation-name: cauldron-glow;
@@ -241,5 +302,10 @@ $brew-shake-duration: 0.5s;
 
   .cauldron_time-bonus {
     animation-name: reaction-popup-life-reduced;
+  }
+
+  .cauldron_ingredient {
+    animation-name: cauldron-ingredient-appear;
+    animation-iteration-count: 1;
   }
 }

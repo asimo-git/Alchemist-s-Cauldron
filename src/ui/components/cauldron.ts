@@ -1,9 +1,9 @@
-import { GAME_SIGNALS, INGREDIENT_DRAG_ID } from '../../data/game';
+import { GAME_EVENTS, GAME_SIGNALS, INGREDIENT_DRAG_ID } from '../../data/game';
 import { canAcceptDrag } from '../../logic/calculate-cauldron';
 import { gameActions, gameEvents } from '../../state/game-controller';
 import { getSettings, getState } from '../../state/game-state';
 import { createElement } from '../../utils/helpers';
-import type { IReactionPopupData } from '../../utils/types';
+import type { IIngredient, IReactionPopupData } from '../../utils/types';
 
 const RESULT_CLASSES = {
   success: 'cauldron_frame_success',
@@ -18,9 +18,14 @@ export function createCauldronSection(): HTMLElement {
     attributes: { 'aria-live': 'polite' },
   });
 
+  const floatingIngredients = createElement('div', {
+    className: 'cauldron_ingredients',
+    attributes: { 'aria-hidden': 'true' },
+  });
+
   const section = createElement('section', {
     className: 'cauldron_container',
-    children: [cauldronFrame, popups],
+    children: [cauldronFrame, floatingIngredients, popups],
   });
 
   // ---- Events ----
@@ -43,6 +48,11 @@ export function createCauldronSection(): HTMLElement {
   gameEvents.addEventListener(GAME_SIGNALS.gameBegun, () => {
     popups.replaceChildren();
     cauldronFrame.classList.remove(...Object.values(RESULT_CLASSES));
+    floatingIngredients.replaceChildren();
+  });
+
+  gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, () => {
+    syncFloatingIngredients(floatingIngredients);
   });
 
   // ---- Drag & drop ----
@@ -153,4 +163,25 @@ function createReactionPopup(reactions: IReactionPopupData[]): HTMLElement {
   });
 
   return popup;
+}
+
+// ---------- Floating ingredients ----------
+
+function syncFloatingIngredients(layer: HTMLElement): void {
+  const { cauldronIngredients } = getState();
+
+  while (layer.childElementCount > cauldronIngredients.length) {
+    layer.lastElementChild?.remove();
+  }
+
+  for (let index = layer.childElementCount; index < cauldronIngredients.length; index++) {
+    layer.append(createFloatingIngredient(cauldronIngredients[index]!));
+  }
+}
+
+function createFloatingIngredient(ingredient: IIngredient): HTMLElement {
+  return createElement('img', {
+    className: 'cauldron_ingredient',
+    attributes: { src: ingredient.icon, alt: '', draggable: 'false' },
+  });
 }
