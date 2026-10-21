@@ -99,3 +99,8 @@ export interface IIngredientTooltip {
   show: (anchor: HTMLElement, ingredient: IIngredient) => void;
   hide: (anchor?: HTMLElement) => void;
 }
+
+export interface IReactionPopupData {
+  name: string;
+  lines: string[];
+}

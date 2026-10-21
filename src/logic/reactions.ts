@@ -1,5 +1,13 @@
+import { STATS } from '../data/game';
 import { REACTIONS } from '../data/reaction';
-import type { Difficulty, IIngredient, IReaction, IReactionSideEffects } from '../utils/types';
+import type {
+  Difficulty,
+  IIngredient,
+  IReaction,
+  IReactionPopupData,
+  IReactionSideEffects,
+  IReactionValues,
+} from '../utils/types';
 
 export function pickReactionsForGame(difficulty: Difficulty): IReaction[] {
   const count = difficulty === 'easy' ? 0 : difficulty === 'medium' ? 2 : 3;
@@ -49,4 +57,31 @@ export function mergeSideEffects(reactions: readonly IReaction[]): Required<IRea
   }
 
   return result;
+}
+
+const signed = (value: number): string => `${value > 0 ? '+' : '−'}${Math.abs(value)}`;
+
+function describeStat(reaction: IReaction, key: keyof IReactionValues): string | undefined {
+  const probe = (n: number): number =>
+    reaction.apply({ temperature: n, density: n, magicPower: n })[key];
+  const at100 = probe(100);
+  const at0 = probe(0);
+
+  if (at100 === 100 && at0 === 0) return undefined; // стат не затронут
+  if (at0 === 0 && at100 !== 0) return `${key} ${signed(at100 - 100)}%`;
+  if (at100 - 100 === at0) return `${key} ${signed(at0)}`;
+  return `${key} set to ${at0}`;
+}
+
+export function describeReaction(reaction: IReaction): IReactionPopupData {
+  const { timeDelta, lives, clearCauldron = false } = reaction.sideEffects ?? {};
+
+  const lines = [
+    ...STATS.map(({ key }) => describeStat(reaction, key)),
+    timeDelta ? `${signed(timeDelta)} seconds` : undefined,
+    lives ? `${signed(lives)} ${Math.abs(lives) === 1 ? 'life' : 'lives'}` : undefined,
+    clearCauldron ? 'The cauldron is emptied' : undefined,
+  ].filter((line): line is string => line !== undefined);
+
+  return { name: reaction.name, lines };
 }

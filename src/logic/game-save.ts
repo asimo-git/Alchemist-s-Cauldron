@@ -1,5 +1,6 @@
 import { DIFFICULTIES, DIFFICULTY_SETTINGS, MAX_STOCK, SAVE_STORAGE_KEY } from '../data/game';
 import { INGREDIENTS } from '../data/ingredients';
+import { REACTIONS } from '../data/reaction';
 import { RECIPES } from '../data/recipes';
 import { isNonNegativeNumber, isPlainObject } from '../utils/helpers';
 import { getStorageItem } from '../utils/storage';
@@ -38,6 +39,10 @@ const isValidCauldron = (value: unknown, shelfIds: string[], capacity: number): 
     (item) => isPlainObject(item) && typeof item.id === 'string' && shelfIds.includes(item.id),
   );
 
+const isValidActiveReactionIds = (value: unknown): value is string[] =>
+  Array.isArray(value) &&
+  value.every((id) => typeof id === 'string' && REACTIONS.some((reaction) => reaction.id === id));
+
 function isValidSave(data: unknown): data is SavedGame {
   if (!isPlainObject(data)) return false;
 
@@ -50,6 +55,7 @@ function isValidSave(data: unknown): data is SavedGame {
     activeRecipe,
     cauldronIngredients,
     shelfStock,
+    activeReactionIds,
   } = data;
 
   if (!isDifficulty(difficulty)) return false;
@@ -67,7 +73,8 @@ function isValidSave(data: unknown): data is SavedGame {
     lives <= settings.lives &&
     isKnownRecipe(activeRecipe) &&
     isValidCauldron(cauldronIngredients, shelfIds, settings.cauldronCapacity) &&
-    isValidShelfStock(shelfStock, shelfIds)
+    isValidShelfStock(shelfStock, shelfIds) &&
+    isValidActiveReactionIds(activeReactionIds)
   );
 }
 
@@ -106,5 +113,6 @@ export function loadGame(): SavedGame | undefined {
     cauldronIngredients: save.cauldronIngredients.flatMap(({ id }) => findIngredient(id) ?? []),
     shelfStock: save.shelfStock,
     lastReactionId: typeof save.lastReactionId === 'string' ? save.lastReactionId : undefined,
+    activeReactionIds: save.activeReactionIds,
   };
 }

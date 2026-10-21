@@ -1,5 +1,11 @@
 import { createShelfStock, isOutOfIngredients, takePortion } from '../logic/stock';
-import type { IIngredient, IGameState, Difficulty, IGameEventTarget } from '../utils/types';
+import type {
+  IIngredient,
+  IGameState,
+  Difficulty,
+  IGameEventTarget,
+  IReactionPopupData,
+} from '../utils/types';
 import { INGREDIENTS } from '../data/ingredients';
 import { canAddToCauldron } from '../logic/calculate-cauldron';
 import { getRecipesByDifficulty } from '../logic/recipe-generator';
@@ -17,6 +23,7 @@ import { openPauseDialog } from '../ui/components/dialogs/pause-dialog';
 import { clearSave, loadGame, saveGame } from '../logic/game-save';
 import { beforeStartState, getSettings, getState, store } from './game-state';
 import {
+  describeReaction,
   getFiredReactions,
   getReactionsByIds,
   mergeSideEffects,
@@ -104,7 +111,6 @@ export const gameActions = {
       ),
       lastReactionId: undefined,
     });
-
     console.log(store.state.activeReactionIds);
     gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
     countdown.start(getSettings().startTime);
@@ -128,7 +134,12 @@ export const gameActions = {
       cauldronIngredients,
       nextIngredients,
     );
-    console.log('fired', fired);
+
+    if (fired.length > 0) {
+      const detail: IReactionPopupData[] = fired.map((reaction) => describeReaction(reaction));
+      gameEvents.dispatchEvent(new CustomEvent(GAME_SIGNALS.reactionFired, { detail }));
+    }
+
     const effects = mergeSideEffects(fired);
     const finalIngredients = effects.clearCauldron ? [] : nextIngredients;
 

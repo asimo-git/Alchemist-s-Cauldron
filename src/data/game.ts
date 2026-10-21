@@ -47,6 +47,7 @@ export const GAME_EVENTS = {
 export const GAME_SIGNALS = {
   cauldronFull: 'cauldron-full',
   gameBegun: 'game-begun',
+  reactionFired: 'reaction-fired',
 } as const;
 
 export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
