@@ -1,9 +1,10 @@
 import { createElement } from '../../utils/helpers';
 import { gameActions, gameEvents } from '../../state/game-controller';
 import { getState } from '../../state/game-state';
-import { calculateCauldron, type IBarData } from '../../logic/calculate-cauldron';
+import { calculateCauldronBars, type IBarData } from '../../logic/calculate-cauldron';
 import { loadGame } from '../../logic/game-save';
 import { GAME_EVENTS } from '../../data/game';
+import { getReactionsByIds } from '../../logic/reactions';
 
 function createBar(label: string) {
   const correctZone = createElement('div', { className: 'bar__correct-zone' });
@@ -117,7 +118,8 @@ export function createMainActions(): HTMLElement {
       return;
     }
 
-    for (const data of calculateCauldron(cauldronIngredients, activeRecipe)) {
+    const reactions = getReactionsByIds(getState().activeReactionIds);
+    for (const data of calculateCauldronBars(cauldronIngredients, activeRecipe, reactions)) {
       bars[data.key].update(data);
     }
   };

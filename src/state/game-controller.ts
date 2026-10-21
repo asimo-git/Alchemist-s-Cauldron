@@ -16,6 +16,12 @@ import { openGameOverDialog } from '../ui/components/dialogs/game-over-dialog';
 import { openPauseDialog } from '../ui/components/dialogs/pause-dialog';
 import { clearSave, loadGame, saveGame } from '../logic/game-save';
 import { beforeStartState, getSettings, getState, store } from './game-state';
+import {
+  getFiredReactions,
+  getReactionsByIds,
+  mergeSideEffects,
+  pickReactionsForGame,
+} from '../logic/reactions';
 
 export const gameEvents = new EventTarget() as IGameEventTarget;
 
@@ -93,7 +99,13 @@ export const gameActions = {
       activeRecipe: getRecipesByDifficulty(store.state.difficulty),
       shelfStock: createShelfStock(DIFFICULTY_SETTINGS[store.state.difficulty].shelfIngredients),
       cauldronIngredients: [],
+      activeReactionIds: pickReactionsForGame(store.state.difficulty).map(
+        (reaction) => reaction.id,
+      ),
+      lastReactionId: undefined,
     });
+
+    console.log(store.state.activeReactionIds);
     gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
     countdown.start(getSettings().startTime);
   },
@@ -105,20 +117,38 @@ export const gameActions = {
     );
     if (!ingredient) return;
 
-    const { cauldronIngredients, shelfStock } = store.state;
+    const { cauldronIngredients, shelfStock, lives } = store.state;
     if (!canAddToCauldron(cauldronIngredients)) return;
     if ((shelfStock[ingridientId] ?? 0) <= 0) return;
     // show error
 
     const nextIngredients = [...cauldronIngredients, ingredient];
+    const fired = getFiredReactions(
+      getReactionsByIds(store.state.activeReactionIds),
+      cauldronIngredients,
+      nextIngredients,
+    );
+    console.log('fired', fired);
+    const effects = mergeSideEffects(fired);
+    const finalIngredients = effects.clearCauldron ? [] : nextIngredients;
 
     setState({
-      cauldronIngredients: nextIngredients,
+      cauldronIngredients: finalIngredients,
       shelfStock: takePortion(shelfStock, ingridientId),
+      lives: Math.max(0, lives + effects.lives),
+      ...(fired.length > 0 && { lastReactionId: fired.at(-1)!.id }),
     });
 
-    if (!canAddToCauldron(nextIngredients)) {
+    if (effects.timeDelta !== 0) countdown.adjustTime(effects.timeDelta);
+
+    if (!canAddToCauldron(finalIngredients)) {
       gameEvents.dispatchEvent(new Event(GAME_SIGNALS.cauldronFull));
+    }
+
+    const isOutOfLives = store.state.lives === 0;
+    const outOfStock = effects.clearCauldron && isOutOfIngredients(store.state);
+    if (store.state.status === 'playing' && (isOutOfLives || outOfStock)) {
+      setState({ status: 'game-over' });
     }
   },
 
@@ -134,13 +164,19 @@ export const gameActions = {
     const { activeRecipe, cauldronIngredients, score, lives } = store.state;
     if (!activeRecipe || cauldronIngredients.length === 0) return;
 
-    if (isBrewSuccess(cauldronIngredients, activeRecipe)) {
+    if (
+      isBrewSuccess(
+        cauldronIngredients,
+        activeRecipe,
+        getReactionsByIds(store.state.activeReactionIds),
+      )
+    ) {
       setState({
         score: score + getSettings().scorePerBrew,
         cauldronIngredients: [],
         activeRecipe: getRecipesByDifficulty(store.state.difficulty),
       });
-      countdown.addTime();
+      countdown.adjustTime(getSettings().timeBonus);
     } else {
       setState({
         lives: lives - 1,
@@ -185,7 +221,7 @@ export const gameActions = {
   pourOut(): void {
     if (store.state.status !== 'playing' || store.state.cauldronIngredients.length === 0) return;
 
-    countdown.subtractTime(POUR_OUT_COST_SECONDS);
+    countdown.adjustTime(POUR_OUT_COST_SECONDS);
 
     if (store.state.status !== 'playing') return;
     gameActions.clearCauldron();

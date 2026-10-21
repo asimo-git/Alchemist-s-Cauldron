@@ -35,7 +35,8 @@ export interface IGameState {
   cauldronIngredients: IIngredient[];
   shelfStock: Record<string, number>; // ingredient id -> portions left
   difficulty: Difficulty;
-  lastReactionId?: string | undefined; // Level 3+
+  lastReactionId?: string | undefined;
+  activeReactionIds: string[];
 }
 
 export interface IReaction {

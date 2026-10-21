@@ -29,7 +29,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'rooted-steam',
     name: 'Rooted Steam',
-    difficulty: 'medium',
+    difficulty: 'hard',
     isActive: (index) => hasAllIngridients(index, ['mandrake-root', 'toad-slime']),
     apply: (v) => ({
       ...v,
@@ -40,7 +40,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'ashen-bloom',
     name: 'Ashen Bloom',
-    difficulty: 'medium',
+    difficulty: 'hard',
     isActive: (index) => hasAllIngridients(index, ['phoenix-feather', 'fairy-dust']),
     apply: (v) => ({
       ...v,
@@ -79,7 +79,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'deep-freeze',
     name: 'Deep Freeze',
-    difficulty: 'medium',
+    difficulty: 'hard',
     isActive: (index) => getTotal(index, 'temperature') <= -20,
     apply: (v) => ({
       ...v,
@@ -90,7 +90,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'arcane-saturation',
     name: 'Arcane Saturation',
-    difficulty: 'medium',
+    difficulty: 'hard',
     isActive: (index) => getTotal(index, 'magicPower') >= 80,
     apply: (v) => ({ ...v, magicPower: 80, temperature: v.temperature + 5 }),
   },
@@ -99,7 +99,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'steam-burst',
     name: 'Steam Burst',
-    difficulty: 'hard',
+    difficulty: 'medium',
     isActive: (index) =>
       hasAllIngridients(index, ['dragon-tears', 'caustic-acid']) &&
       getTotal(index, 'temperature') >= 35,
@@ -109,7 +109,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'black-ice',
     name: 'Black Ice',
-    difficulty: 'hard',
+    difficulty: 'medium',
     isActive: (index) =>
       hasAllIngridients(index, ['frost-lotus', 'essence-of-the-void']) &&
       getTotal(index, 'density') <= 0,
@@ -122,7 +122,7 @@ export const REACTIONS: IReaction[] = [
   {
     id: 'heavy-spark',
     name: 'Heavy Spark',
-    difficulty: 'hard',
+    difficulty: 'medium',
     isActive: (index) =>
       hasAllIngridients(index, ['fairy-dust', 'toad-slime']) && getTotal(index, 'density') >= 40,
     apply: (v) => ({
