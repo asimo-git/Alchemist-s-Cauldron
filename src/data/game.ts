@@ -4,6 +4,7 @@ export const MIN_STOCK = 2;
 export const MAX_STOCK = 15;
 export const SAVE_STORAGE_KEY = 'alchemy-saved-game';
 export const INGREDIENT_DRAG_ID = 'shelf-ingredient-id';
+export const POUR_OUT_COST_SECONDS = -10;
 
 // Timer
 export const LOW_TIME_THRESHOLD = 15;
@@ -40,11 +41,13 @@ export const GAME_EVENTS = {
   shelfStock: 'shelf-stock-changed',
   difficulty: 'difficulty-changed',
   lastReactionId: 'last-reaction-changed',
+  activeReactionIds: 'active-reactions-changed',
 } as const satisfies Record<keyof IGameState, string>;
 
 export const GAME_SIGNALS = {
   cauldronFull: 'cauldron-full',
   gameBegun: 'game-begun',
+  reactionFired: 'reaction-fired',
 } as const;
 
 export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];

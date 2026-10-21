@@ -66,3 +66,5 @@ export const INGREDIENTS: readonly IIngredient[] = [
     magicPower: 0,
   },
 ] as const;
+
+export type IngridientsID = (typeof INGREDIENTS)[number]['id'];

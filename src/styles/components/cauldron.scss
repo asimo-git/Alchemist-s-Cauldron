@@ -1,5 +1,7 @@
 @use '../abstracts/variables' as *;
 
+$reaction-popup-duration: 3s;
+
 .cauldron_container {
   position: relative;
   overflow: hidden;
@@ -34,3 +36,129 @@
     opacity: 1;
   }
 }
+
+// ---- Reaction popup  ----
+
+.cauldron_popups {
+  position: absolute;
+  top: $size-3;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.reaction-popup {
+  position: relative;
+  isolation: isolate;
+  min-width: 220px;
+  max-width: 90%;
+  padding: $size-4 $size-6;
+  text-align: center;
+  color: $bone;
+  animation: reaction-popup-life $reaction-popup-duration ease both;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -$size-2;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse at center,
+      rgba($wine, 0.96) 0%,
+      rgba($oxblood, 0.8) 40%,
+      rgba($crypt, 0.45) 65%,
+      transparent 80%
+    );
+    filter: blur(14px);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -$size-4 (-$size-6);
+    z-index: -2;
+    background: radial-gradient(
+      ellipse at center,
+      rgba($crimson, 0.4) 0%,
+      rgba($crimson, 0.15) 45%,
+      transparent 75%
+    );
+    filter: blur(24px);
+  }
+}
+
+.reaction-popup_title {
+  margin: 0 0 $size-1;
+  font-family: $font-accent;
+  font-weight: $font-weight-bold;
+  font-size: $fs-h3;
+  letter-spacing: 0.08em;
+  color: $bone;
+  text-shadow:
+    0 0 12px rgba($ember, 0.7),
+    0 0 6px $void;
+}
+
+.reaction-popup_line {
+  margin: 0;
+  font-family: $font-body;
+  font-size: $fs-body;
+  color: $silver;
+  text-shadow: 0 0 6px $void;
+
+  & + & {
+    margin-top: $size-05;
+  }
+}
+
+@keyframes reaction-popup-life {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.94);
+    filter: blur(4px);
+  }
+
+  12%,
+  85% {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.98);
+    filter: blur(3px);
+  }
+}
+
+@keyframes reaction-popup-life-reduced {
+  0% {
+    opacity: 0;
+  }
+
+  12%,
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reaction-popup {
+    animation-name: reaction-popup-life-reduced;
+  }
+}
+
+// ---- TEST: попап висит постоянно ----
+// .reaction-popup {
+//   animation: none;
+//   opacity: 1;
+// }
