@@ -100,7 +100,6 @@ export const gameActions = {
       ),
       lastReactionId: undefined,
     });
-    console.log(store.state.activeReactionIds);
     gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
     countdown.start(getSettings().startTime);
   },
