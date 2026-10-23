@@ -3,15 +3,15 @@ import { gameActions, gameEvents } from '../../state/game-controller';
 import { getState } from '../../state/game-state';
 import { calculateCauldronBars, type IBarData } from '../../logic/calculate-cauldron';
 import { loadGame } from '../../logic/game-save';
-import { GAME_EVENTS } from '../../data/game';
+import { BAR_LIMIT, GAME_EVENTS, POUR_OUT_COST_SECONDS } from '../../data/game';
 import { getReactionsByIds } from '../../logic/reactions';
 
 function createBar(label: string) {
   const correctZone = createElement('div', { className: 'bar__correct-zone' });
   const marker = createElement('div', { className: 'bar__marker' });
   const value = createElement('span', { className: 'bar__value', textContent: '0' });
-  const scaleStart = createElement('span', { textContent: '0' });
-  const scaleEnd = createElement('span', { textContent: '0' });
+  const scaleStart = createElement('span', { textContent: String(-BAR_LIMIT) });
+  const scaleEnd = createElement('span', { textContent: String(BAR_LIMIT) });
   const track = createElement('div', {
     className: 'bar__track-container',
     children: [
@@ -42,8 +42,8 @@ function createBar(label: string) {
     correctZone.style.width = `${data.zoneWidth}%`;
     marker.style.left = `${data.markerPosition}%`;
     value.textContent = String(data.value);
-    scaleStart.textContent = String(-data.limit);
-    scaleEnd.textContent = String(data.limit);
+    // scaleStart.textContent = String(-data.limit);
+    // scaleEnd.textContent = String(data.limit);
     element.classList.toggle('bar--in-range', data.inRange);
   };
 
@@ -52,8 +52,8 @@ function createBar(label: string) {
     correctZone.style.width = '0';
     marker.style.left = '50%';
     value.textContent = '0';
-    scaleStart.textContent = '0';
-    scaleEnd.textContent = '0';
+    // scaleStart.textContent = '0';
+    // scaleEnd.textContent = '0';
     element.classList.remove('bar--in-range');
   };
 
@@ -100,7 +100,12 @@ export function createMainActions(): HTMLElement {
     className: 'main-actions__continue main-actions__pour-out',
     textContent: 'Pour Out',
     attributes: { type: 'button' },
-    events: { click: () => gameActions.pourOut() },
+    events: {
+      click: () => {
+        gameActions.pourOut();
+        showTimePenalty(pourOutButton);
+      },
+    },
   });
 
   const render = (): void => {
@@ -133,4 +138,21 @@ export function createMainActions(): HTMLElement {
     className: 'main-actions',
     children: [barSection, continueButton, pourOutButton, brewButton],
   });
+}
+
+function showTimePenalty(button: HTMLElement): void {
+  const penalty = createElement('span', {
+    className: 'time-penalty',
+    textContent: `${POUR_OUT_COST_SECONDS} sec`,
+  });
+
+  button.append(penalty);
+
+  penalty.addEventListener(
+    'animationend',
+    () => {
+      penalty.remove();
+    },
+    { once: true },
+  );
 }

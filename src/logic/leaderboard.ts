@@ -33,7 +33,6 @@ const isValidLeaderboard = (value: unknown): value is ILeaderboardEntry[] =>
       Number.isFinite(date) &&
       typeof difficulty === 'string' &&
       (DIFFICULTIES as readonly string[]).includes(difficulty)
-      // Object.hasOwn(DIFFICULTY_SETTINGS, difficulty)
     );
   });
 

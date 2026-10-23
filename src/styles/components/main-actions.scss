@@ -127,3 +127,35 @@
     color: $ash;
   }
 }
+
+.main-actions__pour-out {
+  position: relative;
+}
+
+.time-penalty {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  color: $scarlet;
+  font-size: 1.5rem;
+  font-weight: 700;
+  pointer-events: none;
+  animation: time-penalty-float 2s ease-out forwards;
+}
+
+@keyframes time-penalty-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -70px);
+  }
+}

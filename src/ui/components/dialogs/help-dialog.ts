@@ -5,6 +5,7 @@ const RULES = [
   'Each recipe asks for <strong>Temperature</strong>, <strong>Density</strong> and <strong>Magic Power</strong> to fall inside target ranges.',
   'Click ingredients on the shelf to add them to the cauldron. Its capacity is limited.',
   'When you think the mix matches the recipe, press the <strong>Brew</strong> button or the <strong>B</strong> key.',
+  "Don't worry, you don't need to hit the exact values ​for the potion—there is a small margin of tolerance for the stats at each level.",
   'A correct brew gives you points and extra time, and you get a new recipe.',
   'A wrong brew costs one life and empties the cauldron.',
   'You can empty the cauldron at any time with the <strong>Pour Out</strong> button or the <strong>X</strong> key. This costs you some time, and the ingredients are spent — they are not returned.',

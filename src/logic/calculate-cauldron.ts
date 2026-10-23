@@ -1,5 +1,5 @@
 import type { IIngredient, IReaction, IReactionValues, IRecipe } from '../utils/types';
-import { INGREDIENT_DRAG_ID, STATS } from '../data/game';
+import { BAR_LIMIT, INGREDIENT_DRAG_ID, STATS } from '../data/game';
 import { getSettings, getState } from '../state/game-state';
 import { getTotal } from '../utils/helpers';
 
@@ -27,7 +27,8 @@ export function calculateCauldronBars(
     const { min, max } = recipe[key];
     const value = values[key];
 
-    const limit = Math.max(Math.abs(min), Math.abs(max)) * 2;
+    // const limit = Math.max(Math.abs(min), Math.abs(max)) * 2;
+    const limit = BAR_LIMIT;
     const toPercent = (v: number): number =>
       ((Math.min(limit, Math.max(-limit, v)) + limit) / (2 * limit)) * 100;
 
