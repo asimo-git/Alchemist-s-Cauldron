@@ -14,12 +14,7 @@ export function openPauseDialog(): void {
     className: 'dialog__button--primary',
     textContent: 'Exit to Menu',
     attributes: { type: 'button' },
-    events: {
-      click: () => {
-        gameActions.exitToMenu();
-        closeDialog();
-      },
-    },
+    events: { click: openExitConfirmDialog },
   });
 
   openDialog(
@@ -29,4 +24,39 @@ export function openPauseDialog(): void {
       children: [resumeButton, exitButton],
     }),
   );
+}
+
+export function openExitConfirmDialog(): void {
+  const cancelButton = createElement('button', {
+    className: 'dialog__button--primary',
+    textContent: 'Cancel',
+    attributes: { type: 'button' },
+    events: { click: openPauseDialog },
+  });
+
+  const confirmButton = createElement('button', {
+    className: 'dialog__button dialog__button--accent',
+    textContent: 'Exit',
+    attributes: { type: 'button' },
+    events: {
+      click: () => {
+        gameActions.exitToMenu();
+        closeDialog();
+      },
+    },
+  });
+
+  openDialog(
+    createElement('h2', { className: 'dialog__title', textContent: 'Exit to Menu?' }),
+    createElement('p', {
+      className: 'dialog__text',
+      textContent: 'Are you sure you want to exit? Your game progress will be lost.',
+    }),
+    createElement('div', {
+      className: 'dialog__actions',
+      children: [cancelButton, confirmButton],
+    }),
+  );
+
+  cancelButton.focus();
 }

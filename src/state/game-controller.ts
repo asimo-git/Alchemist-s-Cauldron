@@ -74,17 +74,6 @@ export function initGameState(): void {
     if (document.hidden) gameActions.pauseGame();
   });
 
-  document.addEventListener(
-    'keydown',
-    (event) => {
-      if (event.key !== 'Escape' || event.repeat) return;
-      if (document.querySelector('dialog[open]')) return;
-      event.preventDefault();
-      gameActions.pauseGame();
-    },
-    { capture: true },
-  );
-
   gameEvents.addEventListener(GAME_EVENTS.status, () => {
     if (getState().status !== 'game-over') return;
     openGameOverDialog();
@@ -111,7 +100,6 @@ export const gameActions = {
       ),
       lastReactionId: undefined,
     });
-    console.log(store.state.activeReactionIds);
     gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
     countdown.start(getSettings().startTime);
   },
@@ -126,7 +114,6 @@ export const gameActions = {
     const { cauldronIngredients, shelfStock, lives } = store.state;
     if (!canAddToCauldron(cauldronIngredients)) return;
     if ((shelfStock[ingridientId] ?? 0) <= 0) return;
-    // show error
 
     const nextIngredients = [...cauldronIngredients, ingredient];
     const fired = getFiredReactions(
@@ -188,11 +175,13 @@ export const gameActions = {
         activeRecipe: getRecipesByDifficulty(store.state.difficulty),
       });
       countdown.adjustTime(getSettings().timeBonus);
+      gameEvents.dispatchEvent(new Event(GAME_SIGNALS.brewSuccess));
     } else {
       setState({
         lives: lives - 1,
         cauldronIngredients: [],
       });
+      gameEvents.dispatchEvent(new Event(GAME_SIGNALS.brewFailed));
     }
 
     if (store.state.lives === 0 || isOutOfIngredients(store.state)) {
