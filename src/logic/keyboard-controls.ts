@@ -1,5 +1,6 @@
 import { gameActions } from '../state/game-controller';
 import { getState } from '../state/game-state';
+import { openExitConfirmDialog } from '../ui/components/dialogs/pause-dialog';
 
 const SHORTCUTS: Record<string, () => void> = {
   Escape: () => gameActions.pauseGame(),
@@ -7,7 +8,10 @@ const SHORTCUTS: Record<string, () => void> = {
   Pause: () => gameActions.pauseGame(),
   KeyB: () => gameActions.brew(),
   KeyX: () => gameActions.pourOut(),
-  KeyM: () => gameActions.exitToMenu(),
+  KeyM: () => {
+    gameActions.pauseGame();
+    openExitConfirmDialog();
+  },
 };
 
 function isTypingTarget(target: EventTarget | null): boolean {
