@@ -116,6 +116,11 @@ $rhombus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view
     text-align: left;
     color: $silver;
 
+    li strong {
+      font-weight: 600;
+      color: $ember;
+    }
+
     li {
       position: relative;
       padding: $size-1 0 $size-1 $size-3;

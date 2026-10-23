@@ -74,17 +74,6 @@ export function initGameState(): void {
     if (document.hidden) gameActions.pauseGame();
   });
 
-  document.addEventListener(
-    'keydown',
-    (event) => {
-      if (event.key !== 'Escape' || event.repeat) return;
-      if (document.querySelector('dialog[open]')) return;
-      event.preventDefault();
-      gameActions.pauseGame();
-    },
-    { capture: true },
-  );
-
   gameEvents.addEventListener(GAME_EVENTS.status, () => {
     if (getState().status !== 'game-over') return;
     openGameOverDialog();
@@ -126,7 +115,6 @@ export const gameActions = {
     const { cauldronIngredients, shelfStock, lives } = store.state;
     if (!canAddToCauldron(cauldronIngredients)) return;
     if ((shelfStock[ingridientId] ?? 0) <= 0) return;
-    // show error
 
     const nextIngredients = [...cauldronIngredients, ingredient];
     const fired = getFiredReactions(
