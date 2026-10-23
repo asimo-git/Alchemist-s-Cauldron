@@ -35,7 +35,8 @@ export interface IGameState {
   cauldronIngredients: IIngredient[];
   shelfStock: Record<string, number>; // ingredient id -> portions left
   difficulty: Difficulty;
-  lastReactionId?: string | undefined; // Level 3+
+  lastReactionId?: string | undefined;
+  activeReactionIds: string[];
 }
 
 export interface IReaction {
@@ -43,11 +44,20 @@ export interface IReaction {
   name: string;
   difficulty: Exclude<Difficulty, 'easy'>;
   isActive: (ingredients: IIngredient[]) => boolean;
-  apply: (values: { temperature: number; density: number; magicPower: number }) => {
-    temperature: number;
-    density: number;
-    magicPower: number;
-  };
+  apply: (values: IReactionValues) => IReactionValues;
+  sideEffects?: IReactionSideEffects;
+}
+
+export interface IReactionValues {
+  temperature: number;
+  density: number;
+  magicPower: number;
+}
+
+export interface IReactionSideEffects {
+  timeDelta?: number; // sec
+  lives?: number;
+  clearCauldron?: boolean;
 }
 
 export interface ILeaderboardEntry {
@@ -82,4 +92,15 @@ export interface IGameEventTarget extends EventTarget {
     listener: EventListener,
     options?: EventListenerOptions,
   ): void;
+}
+
+export interface IIngredientTooltip {
+  element: HTMLElement;
+  show: (anchor: HTMLElement, ingredient: IIngredient) => void;
+  hide: (anchor?: HTMLElement) => void;
+}
+
+export interface IReactionPopupData {
+  name: string;
+  lines: string[];
 }

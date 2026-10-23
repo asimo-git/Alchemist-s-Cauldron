@@ -23,7 +23,7 @@ export function createCountdown(
   pause: () => void;
   resume: () => void;
   stop: () => void;
-  addTime: () => void;
+  adjustTime: (seconds: number) => void;
 } {
   let endTime = 0;
   let remainingMs = 0;
@@ -31,16 +31,17 @@ export function createCountdown(
   let isPaused = false;
   let hasEnded = false;
 
+  function finish(): void {
+    stop();
+    if (hasEnded) return;
+    hasEnded = true;
+    onEnd?.();
+  }
+
   function update(): void {
     const timeLeft = calculateTimeLeft(endTime, Date.now());
 
-    if (timeLeft === 0) {
-      stop();
-      if (!hasEnded) {
-        hasEnded = true;
-        onEnd?.();
-      }
-    }
+    if (timeLeft === 0) finish();
 
     onTick(timeLeft);
   }
@@ -81,20 +82,23 @@ export function createCountdown(
     run(remainingMs);
   }
 
-  function addTime(): void {
+  function adjustTime(seconds: number): void {
+    if (seconds === 0) return;
     if (!isPaused && intervalId === undefined) return;
 
+    const deltaMs = seconds * 1000;
     const maxMs = getSettings().startTime * 1000;
 
     if (isPaused) {
-      remainingMs = Math.min(remainingMs + getSettings().timeBonus * 1000, maxMs);
+      remainingMs = Math.min(Math.max(0, remainingMs + deltaMs), maxMs);
       onTick(Math.ceil(remainingMs / 1000));
+      if (remainingMs === 0) finish();
       return;
     }
 
-    endTime = Math.min(endTime + getSettings().timeBonus * 1000, Date.now() + maxMs);
+    endTime = Math.min(endTime + deltaMs, Date.now() + maxMs);
     update();
   }
 
-  return { start, pause, resume, stop, addTime };
+  return { start, pause, resume, stop, adjustTime };
 }

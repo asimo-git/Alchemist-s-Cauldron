@@ -1,12 +1,18 @@
 import { STATS } from '../data/game';
 import { getSettings } from '../state/game-state';
-import type { IIngredient, IRecipe } from '../utils/types';
+import type { IIngredient, IReaction, IRecipe } from '../utils/types';
+import { calculateCauldronValues } from './calculate-cauldron';
 
-export function isBrewSuccess(ingredients: IIngredient[], recipe: IRecipe): boolean {
+export function isBrewSuccess(
+  cauldronIngredients: IIngredient[],
+  recipe: IRecipe,
+  reactions: IReaction[],
+): boolean {
   const tolerance = getSettings().recipeTolerance;
+  const values = calculateCauldronValues(cauldronIngredients, reactions);
+
   return STATS.every(({ key }) => {
-    const value = ingredients.reduce((sum, item) => sum + item[key], 0);
     const { min, max } = recipe[key];
-    return value >= min - tolerance && value <= max + tolerance;
+    return values[key] >= min - tolerance && values[key] <= max + tolerance;
   });
 }
