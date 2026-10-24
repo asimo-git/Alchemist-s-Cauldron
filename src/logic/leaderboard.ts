@@ -20,7 +20,10 @@ export function validatePlayerName(name: string): string | undefined {
   }
   return undefined;
 }
-const isValidLeaderboard = (value: unknown): value is ILeaderboardEntry[] =>
+
+const storageKey = (difficulty: Difficulty): string => `${TOP_STORAGE_KEY}-${difficulty}`;
+
+const isValidEntries = (value: unknown): value is ILeaderboardEntry[] =>
   Array.isArray(value) &&
   value.every((item) => {
     if (typeof item !== 'object' || item === null) return false;
@@ -39,30 +42,23 @@ const isValidLeaderboard = (value: unknown): value is ILeaderboardEntry[] =>
 const compareEntries = (a: ILeaderboardEntry, b: ILeaderboardEntry): number =>
   b.score - a.score || a.date - b.date;
 
-const getTopPerDifficulty = (entries: ILeaderboardEntry[]): ILeaderboardEntry[] =>
-  DIFFICULTIES.flatMap((difficulty) =>
-    entries
-      .filter((entry) => entry.difficulty === difficulty)
-      .toSorted(compareEntries)
-      .slice(0, MAX_ENTRIES),
-  );
+const sortTop = (entries: ILeaderboardEntry[]): ILeaderboardEntry[] =>
+  entries.toSorted(compareEntries).slice(0, MAX_ENTRIES);
 
-function saveEntries(entries: ILeaderboardEntry[]): SaveStatus {
+function saveEntries(difficulty: Difficulty, entries: ILeaderboardEntry[]): SaveStatus {
   try {
-    localStorage.setItem(TOP_STORAGE_KEY, JSON.stringify(entries));
+    localStorage.setItem(storageKey(difficulty), JSON.stringify(entries));
     return 'saved';
   } catch {
     return 'failed';
   }
 }
 
-export const getLeaderboard = (): ILeaderboardEntry[] =>
-  getTopPerDifficulty(getStorageItem(TOP_STORAGE_KEY, isValidLeaderboard) ?? []).toSorted(
-    compareEntries,
-  );
+export const getLeaderboard = (difficulty: Difficulty): ILeaderboardEntry[] =>
+  sortTop(getStorageItem(storageKey(difficulty), isValidEntries) ?? []);
 
 export function isTopScore(score: number, difficulty: Difficulty): boolean {
-  const entries = getLeaderboard().filter((entry) => entry.difficulty === difficulty);
+  const entries = getLeaderboard(difficulty);
   const lastScore = entries.at(-1)?.score ?? 0;
 
   return score > 0 && (entries.length < MAX_ENTRIES || score > lastScore);
@@ -74,10 +70,14 @@ export const addLeaderboardEntry = (
   difficulty: Difficulty,
 ): SaveStatus =>
   saveEntries(
-    getTopPerDifficulty([...getLeaderboard(), { name, score, difficulty, date: Date.now() }]),
+    difficulty,
+    sortTop([...getLeaderboard(difficulty), { name, score, difficulty, date: Date.now() }]),
   );
 
-export const clearLeaderboard = (): SaveStatus => saveEntries([]);
+export const clearLeaderboard = (): SaveStatus =>
+  DIFFICULTIES.map((difficulty) => saveEntries(difficulty, [])).includes('failed')
+    ? 'failed'
+    : 'saved';
 
 const pad = (value: number): string => String(value).padStart(2, '0');
 
