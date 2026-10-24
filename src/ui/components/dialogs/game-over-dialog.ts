@@ -6,15 +6,14 @@ import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 import { showLeaderboard } from './leaderboard-dialog';
 import { MAX_NAME_LENGTH } from '../../../data/game';
+import type { IGameState } from '../../../utils/types';
 
 export function openGameOverDialog(): void {
   const state = getState();
 
   const summary = [
-    createElement('h2', {
-      className: 'dialog__title',
-      textContent: isOutOfIngredients(state) ? 'Out of Ingredients Game Over' : 'Game Over',
-    }),
+    createElement('h2', { className: 'dialog__title', textContent: 'Game Over' }),
+    createElement('p', { className: 'dialog__reason', textContent: getGameOverReason(state) }),
     createElement('p', { className: 'dialog__text', textContent: 'Final score' }),
     createElement('p', { className: 'dialog__score', textContent: String(state.score) }),
   ];
@@ -103,4 +102,10 @@ export function openGameOverDialog(): void {
   });
 
   openDialog(...summary, form, playAgainButton);
+}
+
+function getGameOverReason(state: Readonly<IGameState>): string {
+  if (state.lives <= 0) return 'You ran out of lives';
+  if (isOutOfIngredients(state)) return 'You ran out of ingredients';
+  return 'Your time is up!';
 }

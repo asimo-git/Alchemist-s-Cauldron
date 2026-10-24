@@ -66,7 +66,10 @@ function createRow(entry: ILeaderboardEntry, rank: number): HTMLElement {
   });
 }
 
-function createDifficultyTable(difficulty: Difficulty, entries: ILeaderboardEntry[]): HTMLElement {
+function createDifficultyTable(
+  difficulty: Difficulty,
+  entries: ILeaderboardEntry[],
+): HTMLElement[] {
   const rows =
     entries.length > 0
       ? entries.map((entry, index) => createRow(entry, index + 1))
@@ -87,19 +90,16 @@ function createDifficultyTable(difficulty: Difficulty, entries: ILeaderboardEntr
     ),
   });
 
-  return createElement('section', {
-    className: 'dialog__board',
-    children: [
-      createElement('h3', { className: 'dialog__subtitle', textContent: capitalize(difficulty) }),
-      createElement('table', {
-        className: 'dialog__table',
-        children: [
-          createElement('thead', { children: [headRow] }),
-          createElement('tbody', { children: rows }),
-        ],
-      }),
-    ],
-  });
+  return [
+    createElement('h3', { className: 'dialog__subtitle', textContent: capitalize(difficulty) }),
+    createElement('table', {
+      className: 'dialog__table',
+      children: [
+        createElement('thead', { children: [headRow] }),
+        createElement('tbody', { children: rows }),
+      ],
+    }),
+  ];
 }
 
 function createLeaderboardView(): HTMLElement {
@@ -120,12 +120,7 @@ function createLeaderboardView(): HTMLElement {
     className: 'dialog__content',
     children: [
       createElement('h2', { className: 'dialog__title', textContent: 'Leaderboard' }),
-      createElement('div', {
-        className: 'dialog__boards',
-        children: boards.map(({ difficulty, entries }) =>
-          createDifficultyTable(difficulty, entries),
-        ),
-      }),
+      ...boards.flatMap(({ difficulty, entries }) => createDifficultyTable(difficulty, entries)),
       createElement('div', {
         className: 'dialog__actions dialog__actions--row',
         children: [
