@@ -23,21 +23,28 @@ export function validatePlayerName(name: string): string | undefined {
 
 const storageKey = (difficulty: Difficulty): string => `${TOP_STORAGE_KEY}-${difficulty}`;
 
-const isValidEntries = (value: unknown): value is ILeaderboardEntry[] =>
-  Array.isArray(value) &&
-  value.every((item) => {
-    if (typeof item !== 'object' || item === null) return false;
-    const { name, score, date, difficulty } = item as Record<string, unknown>;
-    return (
-      typeof name === 'string' &&
-      typeof score === 'number' &&
-      Number.isFinite(score) &&
-      typeof date === 'number' &&
-      Number.isFinite(date) &&
-      typeof difficulty === 'string' &&
-      (DIFFICULTIES as readonly string[]).includes(difficulty)
-    );
-  });
+const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
+
+function isValidEntry(item: unknown, difficulty: Difficulty): item is ILeaderboardEntry {
+  if (typeof item !== 'object' || item === null) return false;
+  const { name, score, date, difficulty: entryDifficulty } = item as Record<string, unknown>;
+
+  return (
+    typeof name === 'string' &&
+    validatePlayerName(name) === undefined &&
+    typeof score === 'number' &&
+    Number.isSafeInteger(score) &&
+    score >= 0 &&
+    typeof date === 'number' &&
+    Number.isFinite(new Date(date).getTime()) &&
+    entryDifficulty === difficulty
+  );
+}
+
+const readEntries = (difficulty: Difficulty): ILeaderboardEntry[] =>
+  (getStorageItem(storageKey(difficulty), isArray) ?? []).filter(
+    (item): item is ILeaderboardEntry => isValidEntry(item, difficulty),
+  );
 
 const compareEntries = (a: ILeaderboardEntry, b: ILeaderboardEntry): number =>
   b.score - a.score || a.date - b.date;
@@ -55,7 +62,7 @@ function saveEntries(difficulty: Difficulty, entries: ILeaderboardEntry[]): Save
 }
 
 export const getLeaderboard = (difficulty: Difficulty): ILeaderboardEntry[] =>
-  sortTop(getStorageItem(storageKey(difficulty), isValidEntries) ?? []);
+  sortTop(readEntries(difficulty));
 
 export function isTopScore(score: number, difficulty: Difficulty): boolean {
   const entries = getLeaderboard(difficulty);
