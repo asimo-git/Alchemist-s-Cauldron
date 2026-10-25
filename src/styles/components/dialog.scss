@@ -101,7 +101,7 @@ $rhombus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view
     margin: 0;
     font-family: $font-accent;
     font-size: $fs-display;
-    line-height: 1;
+    line-height: 0.6;
     color: $ember;
     text-shadow:
       0 0 24px rgba($ember, 0.6),
@@ -180,17 +180,22 @@ $rhombus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view
       color: $ash;
     }
 
-    tbody tr:nth-child(1) td:nth-child(1) {
-      color: $ember;
-      text-shadow: $glow-red;
-    }
-
-    tbody tr:nth-child(2) td:nth-child(1) {
-      color: $bone;
-    }
-
+    tbody tr:nth-child(1) td:nth-child(1),
+    tbody tr:nth-child(2) td:nth-child(1),
     tbody tr:nth-child(3) td:nth-child(1) {
-      color: $scarlet;
+      color: $bone;
+      font-weight: 600;
+      text-shadow:
+        0 0 6px rgba($ember, 0.8),
+        0 0 14px rgba($scarlet, 0.5);
+
+      background: radial-gradient(
+        circle at center,
+        rgba($ember, 0.3) 0%,
+        rgba($scarlet, 0.16) 35%,
+        rgba($crimson, 0.06) 60%,
+        transparent 80%
+      );
     }
 
     td:nth-child(2) {

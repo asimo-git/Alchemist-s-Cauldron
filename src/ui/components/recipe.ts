@@ -10,7 +10,7 @@ export function createRecipeSection(): HTMLElement {
   const indicator = createElement('div', {
     className: 'recipe__indicator',
     attributes: { role: 'status', 'aria-live': 'polite' },
-    textContent: 'Ingredients: ',
+    textContent: 'Ingredients in the cauldron: ',
     children: [counter],
   });
 

@@ -76,15 +76,28 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    --zone-edge: #{$scarlet};
-    background: rgba($scarlet, 0.5);
-    box-shadow:
-      inset 1px 0 var(--zone-edge),
-      inset -1px 0 var(--zone-edge);
-    transition:
-      left $move,
-      width $move,
-      background-color $move;
+    background: rgba($emerald, 0.3);
+    pointer-events: none;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: min($size-1-5, 100%);
+      pointer-events: none;
+    }
+
+    &::before {
+      right: 100%;
+      background: linear-gradient(to left, rgba($emerald, 0.3), transparent);
+    }
+
+    &::after {
+      left: 100%;
+      background: linear-gradient(to right, rgba($emerald, 0.3), transparent);
+    }
   }
 
   &__center {
@@ -125,5 +138,37 @@
     font-size: 11px;
     letter-spacing: 0;
     color: $ash;
+  }
+}
+
+.main-actions__pour-out {
+  position: relative;
+}
+
+.time-penalty {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  color: $scarlet;
+  font-size: 1.5rem;
+  font-weight: 700;
+  pointer-events: none;
+  animation: time-penalty-float 2s ease-out forwards;
+}
+
+@keyframes time-penalty-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -70px);
   }
 }
