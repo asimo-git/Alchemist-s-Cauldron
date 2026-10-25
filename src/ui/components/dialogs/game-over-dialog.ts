@@ -57,6 +57,25 @@ export function openGameOverDialog(): void {
     input.focus();
   };
 
+  const limitMessage = `Name can be at most ${MAX_NAME_LENGTH} characters`;
+
+  input.addEventListener('beforeinput', (event) => {
+    if (event.isComposing || !event.inputType.startsWith('insert')) return;
+
+    const inserted = event.data?.length ?? 0;
+    const selected = (input.selectionEnd ?? 0) - (input.selectionStart ?? 0);
+
+    if (input.value.length - selected + inserted > MAX_NAME_LENGTH) {
+      error.textContent = limitMessage;
+    }
+  });
+
+  input.addEventListener('input', () => {
+    if (error.textContent === limitMessage && input.value.length < MAX_NAME_LENGTH) {
+      error.textContent = '';
+    }
+  });
+
   const handleSubmit = (event: Event): void => {
     event.preventDefault();
 
