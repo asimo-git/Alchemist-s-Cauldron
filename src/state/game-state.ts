@@ -14,6 +14,7 @@ export const beforeStartState: IGameState = {
   shelfStock: {},
   difficulty: DEFAULT_DIFFICULTY,
   lastReactionId: undefined,
+  activeReactionIds: [],
 };
 
 export const store: { state: IGameState } = {

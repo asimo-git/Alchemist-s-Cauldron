@@ -5,10 +5,8 @@
   @include panel;
   @include flex(column, flex-start, stretch, $size-2);
   padding: $size-3;
-  overflow-y: auto;
+  overflow: hidden;
   transition: filter 0.4s ease;
-  scrollbar-width: thin;
-  scrollbar-color: $slate transparent;
 
   @media (max-width: $breakpoint-tablet) {
     gap: $size-1-5;
@@ -31,20 +29,29 @@
   align-content: start;
   gap: $size-1-5;
 
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $slate transparent;
+
+  padding: $size-05;
+  margin: -$size-05;
+
   @media (max-width: $breakpoint-laptop) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (max-width: $breakpoint-tablet) {
+    flex: none;
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: minmax(150px, 1fr);
     gap: $size-1;
     padding-bottom: $size-1;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: $slate transparent;
 
     > * {
       scroll-snap-align: start;
@@ -105,13 +112,12 @@
   position: absolute;
   top: $size-1;
   right: $size-1;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 $size-05;
+  width: $size-2-5;
+  height: $size-2-5;
   font-family: $font-accent;
-  font-size: $fs-label;
+  font-size: $fs-small;
   font-weight: $font-weight-bold;
-  line-height: 22px;
+  line-height: $size-2;
   color: $bone;
   background: radial-gradient(circle at 30% 30%, $scarlet, $oxblood);
   border: 1px solid $ember;
@@ -175,4 +181,8 @@
 .shelf_stat_magic .shelf_stat_value {
   color: $ember;
   text-shadow: $glow-red;
+}
+
+.shelf_container_tooltips .shelf_card_stats {
+  display: none;
 }
