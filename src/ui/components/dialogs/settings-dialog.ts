@@ -1,57 +1,61 @@
 import { DIFFICULTIES } from '../../../data/game';
+import { getLocale, LOCALES, setLocale, translate, type Locale } from '../../../i18n';
 import { gameActions } from '../../../state/game-controller';
 import { getState } from '../../../state/game-state';
 import { createElement } from '../../../utils/helpers';
 import type { Difficulty } from '../../../utils/types';
 import { closeDialog, openDialog } from '../dialog';
+import { createStepper } from '../stepper';
 
-const LABELS: Record<Difficulty, string> = {
-  easy: 'Easy',
-  medium: 'Medium',
-  hard: 'Hard',
+const LOCALE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  ru: 'Русский',
 };
 
 export function showSettings(): void {
-  const buttons = DIFFICULTIES.map((difficulty) =>
-    createElement('button', {
-      className: 'dialog__button',
-      textContent: LABELS[difficulty],
-      attributes: { type: 'button' },
-      events: {
-        click: () => {
-          gameActions.setDifficulty(difficulty);
-          render();
-        },
-      },
-    }),
-  );
+  let pendingLocale: Locale = getLocale();
 
-  function render(): void {
-    const current = getState().difficulty;
-
-    for (const [index, button] of buttons.entries()) {
-      const isSelected = DIFFICULTIES[index] === current;
-      button.classList.toggle('dialog__button--accent', isSelected);
-      button.classList.toggle('dialog__button--primary', !isSelected);
-      button.setAttribute('aria-pressed', String(isSelected));
-    }
+  function applyLocale(): void {
+    if (pendingLocale !== getLocale()) setLocale(pendingLocale);
   }
 
-  render();
+  const difficulty = createStepper<Difficulty>({
+    label: translate('settings.difficulty'),
+    values: DIFFICULTIES,
+    getValue: () => getState().difficulty,
+    format: (value) => translate(`difficulty.${value}`),
+    onChange: gameActions.setDifficulty,
+  });
+
+  const language = createStepper<Locale>({
+    label: translate('settings.language'),
+    values: Object.keys(LOCALES) as Locale[],
+    getValue: () => pendingLocale,
+    format: (value) => LOCALE_NAMES[value],
+    onChange: (value) => {
+      pendingLocale = value;
+    },
+  });
+
+  const button = createElement('button', {
+    className: 'dialog__button dialog__button--primary',
+    textContent: translate('settings.apply'),
+    attributes: { type: 'button' },
+    events: {
+      click: () => {
+        closeDialog();
+        applyLocale();
+      },
+    },
+  });
 
   openDialog(
-    createElement('h2', { className: 'dialog__title', textContent: 'Difficulty' }),
+    createElement('h2', { className: 'dialog__title', textContent: translate('settings.title') }),
     createElement('div', {
       className: 'dialog__actions',
-      children: [
-        ...buttons,
-        createElement('button', {
-          className: 'dialog__button dialog__button--primary',
-          textContent: 'Close',
-          attributes: { type: 'button' },
-          events: { click: closeDialog },
-        }),
-      ],
+      children: [difficulty, language, button],
     }),
   );
+
+  language.closest('dialog')?.addEventListener('close', applyLocale, { once: true });
 }

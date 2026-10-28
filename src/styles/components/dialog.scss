@@ -302,6 +302,17 @@ $rhombus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view
     }
   }
 
+  &__setting {
+    @include flex(column, flex-start, stretch, $size-05);
+    width: 100%;
+  }
+
+  &__setting-label {
+    @include label;
+    text-align: center;
+    color: $ash;
+  }
+
   // ---- Buttons ----
 
   &__actions {

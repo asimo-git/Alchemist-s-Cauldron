@@ -25,6 +25,8 @@ const rules = new Intl.PluralRules(locale);
 
 document.documentElement.lang = locale;
 
+export const getLocale = (): Locale => locale;
+
 export function setLocale(next: Locale): void {
   console.log(next);
   if (next === locale) return;
