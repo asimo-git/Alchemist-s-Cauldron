@@ -5,6 +5,7 @@ import { calculateCauldronBars, type IBarData } from '../../logic/calculate-caul
 import { loadGame } from '../../logic/game-save';
 import { BAR_LIMIT, GAME_EVENTS, POUR_OUT_COST_SECONDS } from '../../data/game';
 import { getReactionsByIds } from '../../logic/reactions';
+import { translate } from '../../i18n';
 
 function createBar(label: string) {
   const correctZone = createElement('div', { className: 'bar__correct-zone' });
@@ -113,7 +114,7 @@ export function createMainActions(): HTMLElement {
 
     const isButtonIdle = isIdle();
     continueButton.hidden = !isButtonIdle || loadGame() === undefined;
-    brewButton.textContent = isButtonIdle ? 'Start Game' : 'Brew';
+    brewButton.textContent = isButtonIdle ? translate('menu.start') : 'Brew';
     brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
     pourOutButton.hidden = isButtonIdle;
     pourOutButton.disabled = cauldronIngredients.length === 0;
