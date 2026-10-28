@@ -1,5 +1,6 @@
 import type { IIngredient, IIngredientTooltip } from '../../utils/types';
 import { INGREDIENTS } from '../../data/ingredients';
+import { translate } from '../../i18n';
 import { createElement } from '../../utils/helpers';
 import { getState } from '../../state/game-state';
 import { gameActions, gameEvents } from '../../state/game-controller';
@@ -16,12 +17,18 @@ export function createShelfSection(): HTMLElement {
   const controller = new AbortController();
   const { signal } = controller;
 
-  const grid = createElement('div', { className: 'shelf_grid' });
+  const grid = createElement('div', {
+    className: 'shelf_grid',
+    attributes: { 'data-empty-text': translate('shelf.empty') },
+  });
 
   const shelf = createElement('section', {
     className: 'shelf_container',
-    attributes: { 'aria-label': 'Ingredient shelf' },
-    children: [createElement('h3', { className: 'shelf_title', textContent: 'Ingredients' }), grid],
+    attributes: { 'aria-label': translate('shelf.ariaLabel') },
+    children: [
+      createElement('h3', { className: 'shelf_title', textContent: translate('shelf.title') }),
+      grid,
+    ],
   });
 
   const tooltip = createIngredientTooltip(signal);
@@ -89,6 +96,8 @@ function createIngredientCard(
   signal: AbortSignal,
   tooltip: IIngredientTooltip,
 ): HTMLButtonElement {
+  const name = translate(`ingredient.${ingredient.id}`);
+
   const icon = createElement('img', {
     className: 'shelf_card_icon',
     attributes: { src: ingredient.icon, alt: '', 'aria-hidden': 'true', draggable: 'false' },
@@ -102,9 +111,9 @@ function createIngredientCard(
   const stats = createElement('ul', {
     className: 'shelf_card_stats',
     children: [
-      createStat('Temp', ingredient.temperature, 'temperature'),
-      createStat('Density', ingredient.density, 'density'),
-      createStat('Magic', ingredient.magicPower, 'magic'),
+      createStat('shelf.stat.temperature', ingredient.temperature, 'temperature'),
+      createStat('shelf.stat.density', ingredient.density, 'density'),
+      createStat('shelf.stat.magicPower', ingredient.magicPower, 'magic'),
     ],
   });
 
@@ -150,7 +159,7 @@ function createIngredientCard(
       createElement('div', {
         className: 'shelf_card_text',
         children: [
-          createElement('span', { className: 'shelf_card_name', textContent: ingredient.name }),
+          createElement('span', { className: 'shelf_card_name', textContent: name }),
           stats,
         ],
       }),
@@ -166,7 +175,7 @@ function createIngredientCard(
     element.classList.toggle('shelf_card_empty', isEmpty);
     element.setAttribute(
       'aria-label',
-      isEmpty ? `${ingredient.name}, out of stock` : `Add ${ingredient.name}, ${stock} in stock`,
+      translate(isEmpty ? 'shelf.card.empty' : 'shelf.card.add', { name, stock }),
     );
     stockBadge.textContent = String(stock);
     icon.src = isEmpty ? 'potion-empty.png' : ingredient.icon;
@@ -180,11 +189,11 @@ function createIngredientCard(
   return element;
 }
 
-function createStat(label: string, value: number, modifier: string): HTMLElement {
+function createStat(labelKey: string, value: number, modifier: string): HTMLElement {
   return createElement('li', {
     className: `shelf_stat shelf_stat_${modifier}`,
     children: [
-      createElement('span', { className: 'shelf_stat_label', textContent: label }),
+      createElement('span', { className: 'shelf_stat_label', textContent: translate(labelKey) }),
       createElement('span', { className: 'shelf_stat_value', textContent: String(value) }),
     ],
   });

@@ -7,35 +7,36 @@ import { showSettings } from './dialogs/settings-dialog';
 import { showHelp } from './dialogs/help-dialog';
 import { showMenu } from './dialogs/menu-dialog';
 import { GAME_EVENTS } from '../../data/game';
+import { translate } from '../../i18n';
 
 export function createHeader(): HTMLElement {
   const lives = createElement('div', {
     className: 'header__lives',
-    attributes: { 'aria-label': 'Lives' },
+    attributes: { 'aria-label': translate('header.lives') },
   });
 
   const score = createElement('div', {
     className: 'header__score',
-    attributes: { 'aria-label': 'Score' },
+    attributes: { 'aria-label': translate('header.score') },
   });
 
   const leaderboardButton = createElement('button', {
     className: 'header__button',
-    textContent: 'Leaderboard',
+    textContent: translate('menu.leaderboard'),
     attributes: { type: 'button' },
     events: { click: showLeaderboard },
   });
 
   const settingsButton = createElement('button', {
     className: 'header__button',
-    textContent: 'Settings',
+    textContent: translate('settings.title'),
     attributes: { type: 'button' },
     events: { click: showSettings },
   });
 
   const helpButton = createElement('button', {
     className: 'header__button',
-    textContent: 'Help',
+    textContent: translate('header.help'),
     attributes: { type: 'button' },
     events: {
       click: () => {
@@ -47,7 +48,7 @@ export function createHeader(): HTMLElement {
 
   const menuButton = createElement('button', {
     className: 'header__button header__menu',
-    textContent: 'Menu',
+    textContent: translate('header.menu'),
     attributes: { type: 'button', 'aria-haspopup': 'dialog' },
     events: { click: showMenu },
   });
@@ -72,7 +73,7 @@ export function createHeader(): HTMLElement {
     for (const [index, heart] of [...lives.children].entries()) {
       heart.classList.toggle('header__heart--lost', index >= livesLeft);
     }
-    lives.setAttribute('aria-label', `Lives: ${livesLeft}`);
+    lives.setAttribute('aria-label', translate('header.livesCount', { lives: livesLeft }));
   };
 
   const renderIdleState = (): void => {
@@ -88,8 +89,9 @@ export function createHeader(): HTMLElement {
 
   const renderScore = (): void => {
     const { score: currentScore } = getState();
-    score.textContent = `Score: ${currentScore}`;
-    score.setAttribute('aria-label', `Score: ${currentScore}`);
+    const text = translate('header.score', { score: currentScore });
+    score.textContent = text;
+    score.setAttribute('aria-label', text);
   };
 
   gameEvents.addEventListener(GAME_EVENTS.lives, renderLives);

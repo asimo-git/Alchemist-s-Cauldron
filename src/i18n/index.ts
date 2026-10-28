@@ -32,18 +32,19 @@ export function setLocale(next: Locale): void {
   location.reload();
 }
 
-export function translate(key: string, count?: number): string {
+export function translate(key: string, parameters: Record<string, string | number> = {}): string {
+  const { count } = parameters;
   let template: string | undefined;
 
-  if (count === undefined) {
-    template = dict[key] ?? en[key];
-  } else {
+  if (typeof count === 'number') {
     const specific = `${key}_${rules.select(count)}`;
     const fallback = `${key}_other`;
     template = dict[specific] ?? dict[fallback] ?? en[specific] ?? en[fallback];
+  } else {
+    template = dict[key] ?? en[key];
   }
 
-  const text = template ?? key;
-
-  return count === undefined ? text : text.replaceAll('{count}', () => String(count));
+  return (template ?? key).replaceAll(/\{(\w+)\}/g, (match, name: string) =>
+    Object.hasOwn(parameters, name) ? String(parameters[name]) : match,
+  );
 }

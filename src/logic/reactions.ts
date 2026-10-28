@@ -1,5 +1,6 @@
 import { STATS } from '../data/game';
 import { REACTIONS } from '../data/reaction';
+import { translate } from '../i18n';
 import type {
   Difficulty,
   IIngredient,
@@ -67,10 +68,17 @@ function describeStat(reaction: IReaction, key: keyof IReactionValues): string |
   const at100 = probe(100);
   const at0 = probe(0);
 
-  if (at100 === 100 && at0 === 0) return undefined; // стат не затронут
-  if (at0 === 0 && at100 !== 0) return `${key} ${signed(at100 - 100)}%`;
-  if (at100 - 100 === at0) return `${key} ${signed(at0)}`;
-  return `${key} set to ${at0}`;
+  if (at100 === 100 && at0 === 0) return undefined;
+
+  const stat = translate(`stat.${key}`);
+
+  if (at0 === 0 && at100 !== 0) {
+    return translate('reaction.statPercent', { stat, value: signed(at100 - 100) });
+  }
+  if (at100 - 100 === at0) {
+    return translate('reaction.statFlat', { stat, value: signed(at0) });
+  }
+  return translate('reaction.statSet', { stat, value: at0 });
 }
 
 export function describeReaction(reaction: IReaction): IReactionPopupData {
@@ -78,10 +86,14 @@ export function describeReaction(reaction: IReaction): IReactionPopupData {
 
   const lines = [
     ...STATS.map(({ key }) => describeStat(reaction, key)),
-    timeDelta ? `${signed(timeDelta)} seconds` : undefined,
-    lives ? `${signed(lives)} ${Math.abs(lives) === 1 ? 'life' : 'lives'}` : undefined,
-    clearCauldron ? 'The cauldron is emptied' : undefined,
+    timeDelta
+      ? translate('reaction.seconds', { count: Math.abs(timeDelta), value: signed(timeDelta) })
+      : undefined,
+    lives
+      ? translate('reaction.lives', { count: Math.abs(lives), value: signed(lives) })
+      : undefined,
+    clearCauldron ? translate('reaction.cauldronEmptied') : undefined,
   ].filter((line): line is string => line !== undefined);
 
-  return { name: reaction.name, lines };
+  return { name: translate(`reaction.${reaction.id}.name`), lines };
 }

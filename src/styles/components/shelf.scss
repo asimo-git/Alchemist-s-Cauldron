@@ -59,7 +59,7 @@
   }
 
   &:empty::after {
-    content: 'Start a game to stock the shelf';
+    content: attr(data-empty-text);
     grid-column: 1 / -1;
     padding-top: $size-4;
     font-style: italic;

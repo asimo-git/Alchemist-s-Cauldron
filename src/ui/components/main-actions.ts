@@ -68,9 +68,9 @@ const isIdle = (): boolean => {
 
 export function createMainActions(): HTMLElement {
   const bars = {
-    temperature: createBar('Temperature'),
-    density: createBar('Density'),
-    magicPower: createBar('Magic Power'),
+    temperature: createBar(translate('stat.temperature')),
+    density: createBar(translate('stat.density')),
+    magicPower: createBar(translate('stat.magicPower')),
   };
 
   const barSection = createElement('div', {
@@ -80,7 +80,7 @@ export function createMainActions(): HTMLElement {
 
   const brewButton = createElement('button', {
     className: 'main-actions__button',
-    textContent: 'Start Game',
+    textContent: translate('menu.start'),
     attributes: { type: 'button' },
     events: {
       click: () => {
@@ -92,14 +92,14 @@ export function createMainActions(): HTMLElement {
 
   const continueButton = createElement('button', {
     className: 'main-actions__continue',
-    textContent: 'Continue Game',
+    textContent: translate('menu.continue'),
     attributes: { type: 'button' },
     events: { click: () => gameActions.continueGame() },
   });
 
   const pourOutButton = createElement('button', {
     className: 'main-actions__continue main-actions__pour-out',
-    textContent: 'Pour Out',
+    textContent: translate('action.pourOut'),
     attributes: { type: 'button' },
     events: {
       click: () => {
@@ -114,7 +114,7 @@ export function createMainActions(): HTMLElement {
 
     const isButtonIdle = isIdle();
     continueButton.hidden = !isButtonIdle || loadGame() === undefined;
-    brewButton.textContent = isButtonIdle ? translate('menu.start') : 'Brew';
+    brewButton.textContent = translate(isButtonIdle ? 'menu.start' : 'action.brew');
     brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
     pourOutButton.hidden = isButtonIdle;
     pourOutButton.disabled = cauldronIngredients.length === 0;
@@ -144,7 +144,9 @@ export function createMainActions(): HTMLElement {
 function showTimePenalty(button: HTMLElement): void {
   const penalty = createElement('span', {
     className: 'time-penalty',
-    textContent: `${POUR_OUT_COST_SECONDS} sec`,
+    textContent: translate('action.timePenalty', {
+      seconds: POUR_OUT_COST_SECONDS,
+    }),
   });
 
   button.append(penalty);

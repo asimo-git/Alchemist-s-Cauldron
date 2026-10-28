@@ -6,21 +6,28 @@ import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 import { showLeaderboard } from './leaderboard-dialog';
 import { MAX_NAME_LENGTH } from '../../../data/game';
+import { translate } from '../../../i18n';
 import type { IGameState } from '../../../utils/types';
 
 export function openGameOverDialog(): void {
   const state = getState();
 
   const summary = [
-    createElement('h2', { className: 'dialog__title', textContent: 'Game Over' }),
+    createElement('h2', {
+      className: 'dialog__title',
+      textContent: translate('dialog.gameOver.title'),
+    }),
     createElement('p', { className: 'dialog__reason', textContent: getGameOverReason(state) }),
-    createElement('p', { className: 'dialog__text', textContent: 'Final score' }),
+    createElement('p', {
+      className: 'dialog__text',
+      textContent: translate('dialog.gameOver.finalScore'),
+    }),
     createElement('p', { className: 'dialog__score', textContent: String(state.score) }),
   ];
 
   const playAgainButton = createElement('button', {
     className: 'dialog__button--accent',
-    textContent: 'Play again',
+    textContent: translate('dialog.gameOver.playAgain'),
     attributes: { type: 'button' },
     events: {
       click: () => {
@@ -40,9 +47,9 @@ export function openGameOverDialog(): void {
     attributes: {
       type: 'text',
       maxlength: String(MAX_NAME_LENGTH),
-      placeholder: 'Your name',
+      placeholder: translate('dialog.gameOver.namePlaceholder'),
       autocomplete: 'off',
-      'aria-label': 'Player name',
+      'aria-label': translate('dialog.gameOver.nameLabel'),
     },
   });
 
@@ -57,7 +64,7 @@ export function openGameOverDialog(): void {
     input.focus();
   };
 
-  const limitMessage = `Name can be at most ${MAX_NAME_LENGTH} characters`;
+  const limitMessage = translate('dialog.gameOver.nameMax', { max: MAX_NAME_LENGTH });
 
   input.addEventListener('beforeinput', (event) => {
     if (event.isComposing || !event.inputType.startsWith('insert')) return;
@@ -87,16 +94,19 @@ export function openGameOverDialog(): void {
     }
 
     if (addLeaderboardEntry(name, state.score, state.difficulty) === 'failed') {
-      showError('Could not save your result: browser storage is unavailable or full.');
+      showError(translate('dialog.gameOver.saveFailed'));
       return;
     }
 
     openDialog(
       ...summary,
-      createElement('p', { className: 'dialog__text', textContent: 'Result saved!' }),
+      createElement('p', {
+        className: 'dialog__text',
+        textContent: translate('dialog.gameOver.saved'),
+      }),
       createElement('button', {
         className: 'dialog__button--accent',
-        textContent: 'Leaderboard',
+        textContent: translate('menu.leaderboard'),
         attributes: { type: 'button' },
         events: { click: showLeaderboard },
       }),
@@ -109,12 +119,15 @@ export function openGameOverDialog(): void {
     attributes: { novalidate: '' },
     events: { submit: handleSubmit },
     children: [
-      createElement('p', { className: 'dialog__text', textContent: 'New record! Enter your name' }),
+      createElement('p', {
+        className: 'dialog__text',
+        textContent: translate('dialog.gameOver.newRecord'),
+      }),
       input,
       error,
       createElement('button', {
         className: 'dialog__button dialog__button--primary',
-        textContent: 'Save',
+        textContent: translate('dialog.gameOver.save'),
         attributes: { type: 'submit' },
       }),
     ],
@@ -124,7 +137,7 @@ export function openGameOverDialog(): void {
 }
 
 function getGameOverReason(state: Readonly<IGameState>): string {
-  if (state.lives <= 0) return 'You ran out of lives';
-  if (isOutOfIngredients(state)) return 'You ran out of ingredients';
-  return 'Your time is up!';
+  if (state.lives <= 0) return translate('dialog.gameOver.reason.lives');
+  if (isOutOfIngredients(state)) return translate('dialog.gameOver.reason.ingredients');
+  return translate('dialog.gameOver.reason.time');
 }
