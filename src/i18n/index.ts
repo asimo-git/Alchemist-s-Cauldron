@@ -1,11 +1,10 @@
-import { getStorageItem } from '../utils/storage';
+import { getPreference, setPreference } from '../utils/preferences';
 import { en } from './locales/en';
 import { ru } from './locales/ru';
 
 export const LOCALES = { en, ru } as const;
 export type Locale = keyof typeof LOCALES;
 
-const STORAGE_KEY = 'alchemy-locale';
 const DEFAULT_LOCALE: Locale = 'en';
 
 const isLocale = (value: unknown): value is Locale =>
@@ -13,7 +12,7 @@ const isLocale = (value: unknown): value is Locale =>
 
 // 1) saved language, 2) browser language, 3) default
 function detectLocale(): Locale {
-  const saved = getStorageItem(STORAGE_KEY, isLocale);
+  const saved = getPreference('locale', isLocale);
   if (saved) return saved;
   const browser = navigator.language.slice(0, 2);
   return isLocale(browser) ? browser : DEFAULT_LOCALE;
@@ -28,9 +27,8 @@ document.documentElement.lang = locale;
 export const getLocale = (): Locale => locale;
 
 export function setLocale(next: Locale): void {
-  console.log(next);
   if (next === locale) return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  setPreference('locale', next);
   location.reload();
 }
 
