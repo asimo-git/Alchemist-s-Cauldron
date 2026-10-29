@@ -11,6 +11,25 @@ $plaque: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width
 
 $flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 32' fill='none' stroke='%23a3182b' stroke-linecap='round'%3E%3Cpath d='M96 16H58'/%3E%3Cpath d='M58 16C50 16 44 10 47 5C49 2 54 3 54 7C54 9 52 10 50.5 9.5'/%3E%3Cpath d='M58 16C50 16 44 22 47 27C49 30 54 29 54 25C54 23 52 22 50.5 22.5'/%3E%3Cpath d='M44 16H14' stroke='%236a1220'/%3E%3Cpath d='M88 16C84 11 77 11 72 16C77 21 84 21 88 16Z' fill='%233a0b14'/%3E%3Ccircle cx='30' cy='16' r='2' fill='%236a1220' stroke='none'/%3E%3Cpath d='M10 16L5 12.5L.5 16L5 19.5Z' fill='%23a3182b' stroke='none'/%3E%3C/svg%3E");
 
+$icon-leaderboard: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h8v5a4 4 0 0 1-8 0V4Z'/%3E%3Cpath d='M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4'/%3E%3Cpath d='M12 13v4M9.5 17h5M8 20h8'/%3E%3C/svg%3E");
+
+$icon-settings: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Ccircle cx='12' cy='12' r='6.5'/%3E%3Cpath d='M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1'/%3E%3C/svg%3E");
+
+$icon-help: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.8.5-1.1 1-1.1 1.8'/%3E%3Ccircle cx='12' cy='17' r='.7' fill='black'/%3E%3C/svg%3E");
+
+$icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M4 7h16M4 12h16M4 17h16'/%3E%3C/svg%3E");
+
+@mixin icon($image) {
+  content: '';
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+  background: currentColor;
+  -webkit-mask: $image center / contain no-repeat;
+  mask: $image center / contain no-repeat;
+  transition: filter 0.2s;
+}
+
 @mixin plaque($rim: 12px) {
   border: $rim solid transparent;
   border-image: $plaque 12 fill / $rim stretch;
@@ -22,24 +41,7 @@ $flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: stretch;
-  gap: $gap-large;
   padding-bottom: $size-1-5;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: auto 0 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      $oxblood 25%,
-      $crimson 50%,
-      $oxblood 75%,
-      transparent
-    );
-    pointer-events: none;
-  }
 
   .timer {
     @include plaque;
@@ -90,6 +92,11 @@ $flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
 
   &__menu {
     display: none;
+    aspect-ratio: 1;
+  }
+
+  &__menu::before {
+    @include icon($icon-menu);
   }
 
   &__controls {
@@ -108,7 +115,6 @@ $flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
 
   &__controls.header__side--idle {
     @include plaque;
-    padding-inline: $size-05;
 
     .header__button {
       border-radius: 0;
@@ -117,6 +123,25 @@ $flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
     .header__button:not(.header__menu) + .header__button {
       border-left-color: rgba($oxblood, 0.9);
     }
+  }
+
+  &__button--leaderboard,
+  &__button--settings,
+  &__button--help {
+    @include flex(row, center, center);
+    padding-inline: $size-1-5;
+  }
+
+  &__button--leaderboard::before {
+    @include icon($icon-leaderboard);
+  }
+
+  &__button--settings::before {
+    @include icon($icon-settings);
+  }
+
+  &__button--help::before {
+    @include icon($icon-help);
   }
 
   // ---- Lives and score ----
@@ -205,7 +230,8 @@ $flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
     }
 
     &__side--idle &__menu {
-      display: inline-block;
+      display: grid;
+      place-items: center;
     }
 
     &__side--idle &__button:not(.header__menu) {

@@ -1,4 +1,5 @@
 import { GAME_EVENTS, GAME_SIGNALS, INGREDIENT_DRAG_ID } from '../../data/game';
+import { translate } from '../../i18n';
 import { canAcceptDrag } from '../../logic/calculate-cauldron';
 import { gameActions, gameEvents } from '../../state/game-controller';
 import { getSettings, getState } from '../../state/game-state';
@@ -100,7 +101,11 @@ function createCauldronFrame(): HTMLElement {
     children: [
       createElement('img', {
         className: 'cauldron_img',
-        attributes: { src: 'cauldron.gif', alt: 'cauldron', draggable: 'false' },
+        attributes: {
+          src: 'cauldron.gif',
+          alt: translate('cauldron.alt'),
+          draggable: 'false',
+        },
       }),
     ],
     events: {
@@ -130,7 +135,7 @@ function playBrewResult(frame: HTMLElement, result: keyof typeof RESULT_CLASSES)
 function createTimeBonus(seconds: number): HTMLElement {
   const timeBonus = createElement('div', {
     className: 'cauldron_time-bonus',
-    textContent: `+${seconds}s`,
+    textContent: translate('cauldron.timeBonus', { seconds }),
   });
 
   timeBonus.addEventListener('animationend', () => timeBonus.remove());
@@ -147,7 +152,7 @@ function createReactionPopup(reactions: IReactionPopupData[]): HTMLElement {
     children: [
       createElement('h3', {
         className: 'reaction-popup_title',
-        textContent: 'A chemical reaction happened!',
+        textContent: translate('cauldron.reactionTitle'),
       }),
       ...reactions.map(({ name, lines }) =>
         createElement('p', {

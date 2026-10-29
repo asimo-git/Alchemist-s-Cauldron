@@ -1,8 +1,13 @@
-import type { IGameState, IDifficultySettings } from '../utils/types';
+import type { IGameState, IDifficultySettings, Difficulty } from '../utils/types';
+import { DEFAULT_DIFFICULTY, DIFFICULTIES, DIFFICULTY_SETTINGS } from '../data/game';
+import { getPreference } from '../utils/preferences';
 
-import { DEFAULT_DIFFICULTY, DIFFICULTY_SETTINGS } from '../data/game';
+const isDifficulty = (value: unknown): value is Difficulty =>
+  typeof value === 'string' && (DIFFICULTIES as readonly string[]).includes(value);
 
-const initialSettings = DIFFICULTY_SETTINGS[DEFAULT_DIFFICULTY];
+const initialDifficulty = getPreference('difficulty', isDifficulty) ?? DEFAULT_DIFFICULTY;
+
+const initialSettings = DIFFICULTY_SETTINGS[initialDifficulty];
 
 export const beforeStartState: IGameState = {
   status: 'menu',
@@ -12,7 +17,7 @@ export const beforeStartState: IGameState = {
   activeRecipe: undefined,
   cauldronIngredients: [],
   shelfStock: {},
-  difficulty: DEFAULT_DIFFICULTY,
+  difficulty: initialDifficulty,
   lastReactionId: undefined,
   activeReactionIds: [],
 };

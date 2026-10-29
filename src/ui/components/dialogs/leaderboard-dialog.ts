@@ -1,10 +1,17 @@
 import { DIFFICULTIES } from '../../../data/game';
+import { translate } from '../../../i18n';
 import { clearLeaderboard, formatDate, getLeaderboard } from '../../../logic/leaderboard';
-import { capitalize, createElement } from '../../../utils/helpers';
+import { createElement } from '../../../utils/helpers';
 import type { Difficulty, ILeaderboardEntry } from '../../../utils/types';
 import { closeDialog, openDialog } from '../dialog';
 
-const COLUMNS = ['Rank', 'Name', 'Score', 'Difficulty', 'Date'];
+const COLUMN_KEYS = [
+  'leaderboard.column.rank',
+  'leaderboard.column.name',
+  'leaderboard.column.score',
+  'leaderboard.column.difficulty',
+  'leaderboard.column.date',
+];
 
 export const showLeaderboard = (): void => openDialog(createLeaderboardView());
 
@@ -16,7 +23,7 @@ function createConfirmView(): HTMLElement {
 
   const handleClear = (): void => {
     if (clearLeaderboard() === 'failed') {
-      error.textContent = 'Could not clear the leaderboard: browser storage is unavailable.';
+      error.textContent = translate('leaderboard.clearFailed');
       return;
     }
     showLeaderboard();
@@ -25,10 +32,13 @@ function createConfirmView(): HTMLElement {
   return createElement('div', {
     className: 'dialog__content',
     children: [
-      createElement('h2', { className: 'dialog__title', textContent: 'Clear leaderboard?' }),
+      createElement('h2', {
+        className: 'dialog__title',
+        textContent: translate('leaderboard.confirm.title'),
+      }),
       createElement('p', {
         className: 'dialog__text',
-        textContent: 'All results on every difficulty will be permanently deleted.',
+        textContent: translate('leaderboard.confirm.text'),
       }),
       error,
       createElement('div', {
@@ -36,13 +46,13 @@ function createConfirmView(): HTMLElement {
         children: [
           createElement('button', {
             className: 'dialog__button--primary',
-            textContent: 'Cancel',
+            textContent: translate('common.cancel'),
             attributes: { type: 'button' },
             events: { click: showLeaderboard },
           }),
           createElement('button', {
             className: 'dialog__button dialog__button--accent',
-            textContent: 'Clear',
+            textContent: translate('leaderboard.confirm.clear'),
             attributes: { type: 'button' },
             events: { click: handleClear },
           }),
@@ -57,7 +67,7 @@ function createRow(entry: ILeaderboardEntry, rank: number): HTMLElement {
     String(rank),
     entry.name,
     String(entry.score),
-    capitalize(entry.difficulty),
+    translate(`difficulty.${entry.difficulty}`),
     formatDate(entry.date),
   ];
 
@@ -77,21 +87,24 @@ function createDifficultyTable(
           createElement('tr', {
             children: [
               createElement('td', {
-                textContent: 'No results yet',
-                attributes: { colspan: String(COLUMNS.length) },
+                textContent: translate('leaderboard.empty'),
+                attributes: { colspan: String(COLUMN_KEYS.length) },
               }),
             ],
           }),
         ];
 
   const headRow = createElement('tr', {
-    children: COLUMNS.map((title) =>
-      createElement('th', { textContent: title, attributes: { scope: 'col' } }),
+    children: COLUMN_KEYS.map((key) =>
+      createElement('th', { textContent: translate(key), attributes: { scope: 'col' } }),
     ),
   });
 
   return [
-    createElement('h3', { className: 'dialog__subtitle', textContent: capitalize(difficulty) }),
+    createElement('h3', {
+      className: 'dialog__subtitle',
+      textContent: translate(`difficulty.${difficulty}`),
+    }),
     createElement('table', {
       className: 'dialog__table',
       children: [
@@ -110,7 +123,7 @@ function createLeaderboardView(): HTMLElement {
 
   const clearButton = createElement('button', {
     className: 'dialog__button dialog__button--accent',
-    textContent: 'Clear Leaderboard',
+    textContent: translate('leaderboard.clear'),
     attributes: { type: 'button' },
     events: { click: () => openDialog(createConfirmView()) },
   });
@@ -119,7 +132,10 @@ function createLeaderboardView(): HTMLElement {
   return createElement('div', {
     className: 'dialog__content',
     children: [
-      createElement('h2', { className: 'dialog__title', textContent: 'Leaderboard' }),
+      createElement('h2', {
+        className: 'dialog__title',
+        textContent: translate('menu.leaderboard'),
+      }),
       ...boards.flatMap(({ difficulty, entries }) => createDifficultyTable(difficulty, entries)),
       createElement('div', {
         className: 'dialog__actions dialog__actions--row',
@@ -127,7 +143,7 @@ function createLeaderboardView(): HTMLElement {
           clearButton,
           createElement('button', {
             className: 'dialog__button--primary',
-            textContent: 'Close',
+            textContent: translate('common.close'),
             attributes: { type: 'button' },
             events: { click: closeDialog },
           }),

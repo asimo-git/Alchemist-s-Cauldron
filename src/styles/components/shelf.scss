@@ -59,7 +59,7 @@
   }
 
   &:empty::after {
-    content: 'Start a game to stock the shelf';
+    content: attr(data-empty-text);
     grid-column: 1 / -1;
     padding-top: $size-4;
     font-style: italic;
@@ -117,7 +117,7 @@
   font-family: $font-accent;
   font-size: $fs-small;
   font-weight: $font-weight-bold;
-  line-height: $size-2;
+  line-height: $size-2-5;
   color: $bone;
   background: radial-gradient(circle at 30% 30%, $scarlet, $oxblood);
   border: 1px solid $ember;
