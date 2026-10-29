@@ -21,23 +21,32 @@ export function createHeader(): HTMLElement {
   });
 
   const leaderboardButton = createElement('button', {
-    className: 'header__button',
-    textContent: translate('menu.leaderboard'),
-    attributes: { type: 'button' },
+    className: 'header__button header__button--leaderboard',
+    attributes: {
+      type: 'button',
+      'aria-label': translate('menu.leaderboard'),
+      title: translate('menu.leaderboard'),
+    },
     events: { click: showLeaderboard },
   });
 
   const settingsButton = createElement('button', {
-    className: 'header__button',
-    textContent: translate('settings.title'),
-    attributes: { type: 'button' },
+    className: 'header__button header__button--settings',
+    attributes: {
+      type: 'button',
+      'aria-label': translate('settings.title'),
+      title: translate('settings.title'),
+    },
     events: { click: showSettings },
   });
 
   const helpButton = createElement('button', {
-    className: 'header__button',
-    textContent: translate('header.help'),
-    attributes: { type: 'button' },
+    className: 'header__button header__button--help',
+    attributes: {
+      type: 'button',
+      'aria-label': translate('header.help'),
+      title: translate('header.help'),
+    },
     events: {
       click: () => {
         gameActions.pauseGame();
@@ -48,8 +57,12 @@ export function createHeader(): HTMLElement {
 
   const menuButton = createElement('button', {
     className: 'header__button header__menu',
-    textContent: translate('header.menu'),
-    attributes: { type: 'button', 'aria-haspopup': 'dialog' },
+    attributes: {
+      type: 'button',
+      'aria-haspopup': 'dialog',
+      'aria-label': translate('header.menu'),
+      title: translate('header.menu'),
+    },
     events: { click: showMenu },
   });
 
