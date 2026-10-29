@@ -23,7 +23,7 @@
 
 // small uppercase caption: stat names, table heads, scales
 @mixin label {
-  font-family: $font-body;
+  font-family: $font-accent;
   font-size: $fs-label;
   letter-spacing: 0.14em;
   text-transform: uppercase;
