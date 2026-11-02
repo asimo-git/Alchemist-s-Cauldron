@@ -44,8 +44,8 @@ export function openExitConfirmDialog(): void {
     attributes: { type: 'button' },
     events: {
       click: () => {
-        gameActions.exitToMenu();
         closeDialog();
+        gameActions.exitToMenu();
       },
     },
   });

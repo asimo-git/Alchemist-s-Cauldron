@@ -12,6 +12,7 @@ const dialog = createElement('dialog', {
     },
 
     close: () => {
+      if (dialog.open) return;
       document.body.style.overflow = '';
       windowElement.replaceChildren();
       gameActions.resumeGame();

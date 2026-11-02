@@ -165,4 +165,7 @@ export const en: Record<string, string> = {
   'updateDialog.text': 'A new version of the game is ready.',
   'updateDialog.update': 'Update',
   'updateDialog.later': 'Later',
+  'updateDialog.updating': 'Updating…',
+  'updateDialog.failed': 'Update failed',
+  'updateDialog.retry': 'Retry',
 } as const;

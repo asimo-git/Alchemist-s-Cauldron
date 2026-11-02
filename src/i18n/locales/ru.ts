@@ -170,4 +170,7 @@ export const ru: Record<string, string> = {
   'updateDialog.text': 'Новая версия игры готова.',
   'updateDialog.update': 'Обновить',
   'updateDialog.later': 'Позже',
+  'updateDialog.updating': 'Обновление…',
+  'updateDialog.failed': 'Не удалось обновить',
+  'updateDialog.retry': 'Повторить',
 } as const;
