@@ -1,4 +1,5 @@
 import { initKeyboardControls } from '../logic/keyboard-controls';
+import { initPwa } from '../pwa/register-sw';
 import { initGameState } from '../state/game-controller';
 import { createElement } from '../utils/helpers';
 import { createCauldronSection } from './components/cauldron';
@@ -20,6 +21,7 @@ export function createMainLayout(): HTMLElement {
 
   initGameState();
   initKeyboardControls();
+  initPwa();
 
   return createElement('div', {
     className: 'layout',
