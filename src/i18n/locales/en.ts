@@ -160,4 +160,12 @@ export const en: Record<string, string> = {
   'reaction.statPercent': '{stat} {value}%',
   'reaction.statFlat': '{stat} {value}',
   'reaction.statSet': '{stat} set to {value}',
+
+  'updateDialog.title': 'Update available',
+  'updateDialog.text': 'A new version of the game is ready.',
+  'updateDialog.update': 'Update',
+  'updateDialog.later': 'Later',
+  'updateDialog.updating': 'Updating…',
+  'updateDialog.failed': 'Update failed',
+  'updateDialog.retry': 'Retry',
 } as const;

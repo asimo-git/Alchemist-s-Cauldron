@@ -165,4 +165,12 @@ export const ru: Record<string, string> = {
   'reaction.statPercent': '{stat} {value}%',
   'reaction.statFlat': '{stat} {value}',
   'reaction.statSet': '{stat}: {value}',
-};
+
+  'updateDialog.title': 'Доступно обновление',
+  'updateDialog.text': 'Новая версия игры готова.',
+  'updateDialog.update': 'Обновить',
+  'updateDialog.later': 'Позже',
+  'updateDialog.updating': 'Обновление…',
+  'updateDialog.failed': 'Не удалось обновить',
+  'updateDialog.retry': 'Повторить',
+} as const;
