@@ -41,7 +41,7 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: stretch;
-  padding-bottom: $size-1-5;
+  padding-bottom: $size-1;
 
   .timer {
     @include plaque;

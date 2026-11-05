@@ -14,9 +14,9 @@ export const ru: Record<string, string> = {
 
   'shelf.title': 'Ингредиенты',
   'shelf.ariaLabel': 'Полка с ингредиентами',
-  'shelf.stat.temperature': 'Темп.',
-  'shelf.stat.density': 'Плотн.',
-  'shelf.stat.magicPower': 'Магия',
+  'shelf.stat.temperature': 'Т.',
+  'shelf.stat.density': 'Пл.',
+  'shelf.stat.magicPower': 'М.c.',
   'shelf.card.empty': '{name}, нет в наличии',
   'shelf.card.add': 'Добавить: {name}, в наличии: {stock}',
   'shelf.empty': 'Начните игру, чтобы наполнить полку',

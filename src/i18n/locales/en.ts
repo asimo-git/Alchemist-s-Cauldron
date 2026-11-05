@@ -14,9 +14,9 @@ export const en: Record<string, string> = {
 
   'shelf.title': 'Ingredients',
   'shelf.ariaLabel': 'Ingredient shelf',
-  'shelf.stat.temperature': 'Temp',
-  'shelf.stat.density': 'Density',
-  'shelf.stat.magicPower': 'Magic',
+  'shelf.stat.temperature': 'T.',
+  'shelf.stat.density': 'D.',
+  'shelf.stat.magicPower': 'M.p.',
   'shelf.card.empty': '{name}, out of stock',
   'shelf.card.add': 'Add {name}, {stock} in stock',
   'shelf.empty': 'Start a game to stock the shelf',
