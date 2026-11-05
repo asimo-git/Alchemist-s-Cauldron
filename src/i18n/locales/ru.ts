@@ -4,9 +4,9 @@ export const ru: Record<string, string> = {
   'menu.leaderboard': 'Таблица рекордов',
   'menu.difficulty': 'Сложность',
 
-  'difficulty.easy': 'Лёгкая',
-  'difficulty.medium': 'Средняя',
-  'difficulty.hard': 'Сложная',
+  'difficulty.easy': 'Новичок',
+  'difficulty.medium': 'Знаток',
+  'difficulty.hard': 'Эксперт',
 
   'stat.temperature': 'Температура',
   'stat.density': 'Плотность',

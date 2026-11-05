@@ -1,6 +1,6 @@
 import { createElement } from '../../utils/helpers';
 import { getSettings, getState } from '../../state/game-state';
-import { gameActions, gameEvents } from '../../state/game-controller';
+import { gameEvents } from '../../state/game-controller';
 import { calculateTimePercent, formatTime, isTimeLow } from '../../logic/timer';
 import { GAME_EVENTS } from '../../data/game';
 import { translate } from '../../i18n';
@@ -9,12 +9,6 @@ export function createTimer(): HTMLElement {
   const text = createElement('span', { className: 'timer__text', textContent: '00:00' });
   const fill = createElement('div', { className: 'timer__fill' });
   const bar = createElement('div', { className: 'timer__bar', children: [fill] });
-  const pauseButton = createElement('button', {
-    className: 'timer__pause',
-    textContent: translate('dialog.pause.title'),
-    attributes: { type: 'button' },
-    events: { click: gameActions.pauseGame },
-  });
 
   const difficultyBadge = createElement('span', { className: 'timer__difficulty' });
 
@@ -24,7 +18,7 @@ export function createTimer(): HTMLElement {
     children: [
       createElement('div', {
         className: 'timer__top',
-        children: [difficultyBadge, text, pauseButton],
+        children: [text, difficultyBadge],
       }),
       bar,
     ],

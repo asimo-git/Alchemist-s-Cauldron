@@ -66,9 +66,19 @@ export function createHeader(): HTMLElement {
     events: { click: showMenu },
   });
 
+  const pauseButton = createElement('button', {
+    className: 'header__button header__button--pause',
+    attributes: {
+      type: 'button',
+      'aria-label': translate('dialog.pause.title'),
+      title: translate('dialog.pause.title'),
+    },
+    events: { click: gameActions.pauseGame },
+  });
+
   const controls = createElement('div', {
     className: 'header__side header__controls',
-    children: [menuButton, helpButton, settingsButton, leaderboardButton],
+    children: [menuButton, helpButton, pauseButton, settingsButton, leaderboardButton],
   });
 
   const renderLives = (): void => {
@@ -89,6 +99,11 @@ export function createHeader(): HTMLElement {
     lives.setAttribute('aria-label', translate('header.livesCount', { lives: livesLeft }));
   };
 
+  const gameStats = createElement('div', {
+    className: 'header__side header__side--end',
+    children: [lives, score],
+  });
+
   const renderIdleState = (): void => {
     const { status } = getState();
     const isIdle = status === 'menu' || status === 'game-over';
@@ -97,7 +112,8 @@ export function createHeader(): HTMLElement {
     settingsButton.hidden = !isIdle;
     menuButton.hidden = !isIdle;
     controls.classList.toggle('header__side--idle', isIdle);
-    lives.hidden = isIdle;
+    pauseButton.hidden = isIdle;
+    gameStats.hidden = isIdle;
   };
 
   const renderScore = (): void => {
@@ -117,14 +133,6 @@ export function createHeader(): HTMLElement {
 
   return createElement('header', {
     className: 'header',
-    children: [
-      controls,
-      createTimer(),
-
-      createElement('div', {
-        className: 'header__side header__side--end',
-        children: [lives, score],
-      }),
-    ],
+    children: [controls, createTimer(), gameStats],
   });
 }
