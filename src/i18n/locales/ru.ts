@@ -166,6 +166,12 @@ export const ru: Record<string, string> = {
   'reaction.heavy-spark.name': 'Тяжёлая искра',
   'reaction.burning-root.name': 'Горящий корень',
   'reaction.void-resonance.name': 'Резонанс Пустоты',
+  'reaction.lunar-echo.name': 'Лунное эхо',
+  'reaction.scorched-bloom.name': 'Опалённый цветок',
+  'reaction.corrosive-storm.name': 'Едкая буря',
+  'reaction.haunting.name': 'Призрачное наваждение',
+  'reaction.venom-sweat.name': 'Ядовитый пот',
+  'reaction.silt-press.name': 'Давление ила',
 
   'reaction.seconds_one': '{value} секунда',
   'reaction.seconds_few': '{value} секунды',

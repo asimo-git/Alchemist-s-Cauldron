@@ -165,6 +165,12 @@ export const en: Record<string, string> = {
   'reaction.heavy-spark.name': 'Heavy Spark',
   'reaction.burning-root.name': 'Burning Root',
   'reaction.void-resonance.name': 'Void Resonance',
+  'reaction.lunar-echo.name': 'Lunar Echo',
+  'reaction.scorched-bloom.name': 'Scorched Bloom',
+  'reaction.corrosive-storm.name': 'Corrosive Storm',
+  'reaction.haunting.name': 'Haunting',
+  'reaction.venom-sweat.name': 'Venom Sweat',
+  'reaction.silt-press.name': 'Silt Press',
 
   'reaction.seconds_one': '{value} second',
   'reaction.seconds_other': '{value} seconds',
