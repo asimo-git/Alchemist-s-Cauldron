@@ -47,6 +47,7 @@ export const en: Record<string, string> = {
 
   'recipe.title': 'Current recipe',
   'recipe.cauldronCount': 'Ingredients in the cauldron: ',
+  'recipe.empty': 'Start a game to see the recipe',
   // ---- Easy ----
   'recipe.pale-dew': 'Pale Dew',
   'recipe.amber-silt': 'Amber Silt',

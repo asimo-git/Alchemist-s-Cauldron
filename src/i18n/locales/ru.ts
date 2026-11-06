@@ -47,6 +47,7 @@ export const ru: Record<string, string> = {
 
   'recipe.title': 'Текущий рецепт',
   'recipe.cauldronCount': 'Ингредиенты в котле: ',
+  'recipe.empty': 'Начните игру, чтобы увидеть рецепт',
   // ---- Easy ----
   'recipe.pale-dew': 'Бледная роса',
   'recipe.amber-silt': 'Янтарный ил',
