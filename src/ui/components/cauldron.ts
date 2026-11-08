@@ -50,6 +50,15 @@ export function createCauldronSection(): HTMLElement {
     popups.replaceChildren();
     cauldronFrame.classList.remove(...Object.values(RESULT_CLASSES));
     floatingIngredients.replaceChildren();
+    syncFloatingIngredients(floatingIngredients);
+  });
+
+  gameEvents.addEventListener(GAME_EVENTS.status, () => {
+    const { status } = getState();
+    if (status !== 'game-over' && status !== 'menu') return;
+
+    floatingIngredients.replaceChildren();
+    popups.replaceChildren();
   });
 
   gameEvents.addEventListener(GAME_EVENTS.cauldronIngredients, () => {
