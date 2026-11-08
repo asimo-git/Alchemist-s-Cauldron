@@ -20,11 +20,6 @@ function pickShelfIngredients(count: number): IIngredient[] {
   return pool.slice(0, count);
 }
 
-export const getShelfIngredients = (): readonly IIngredient[] => {
-  const ids = Object.keys(getState().shelfStock);
-  return INGREDIENTS.filter((item) => ids.includes(item.id));
-};
-
 export function createShelfStock(shelfIngredients: number): Stock {
   const stock: Stock = {};
   for (const { id } of pickShelfIngredients(shelfIngredients)) {

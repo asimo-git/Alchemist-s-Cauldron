@@ -43,8 +43,6 @@ function createBar(label: string) {
     correctZone.style.width = `${data.zoneWidth}%`;
     marker.style.left = `${data.markerPosition}%`;
     value.textContent = String(data.value);
-    // scaleStart.textContent = String(-data.limit);
-    // scaleEnd.textContent = String(data.limit);
     element.classList.toggle('bar--in-range', data.inRange);
   };
 
@@ -53,8 +51,6 @@ function createBar(label: string) {
     correctZone.style.width = '0';
     marker.style.left = '50%';
     value.textContent = '0';
-    // scaleStart.textContent = '0';
-    // scaleEnd.textContent = '0';
     element.classList.remove('bar--in-range');
   };
 

@@ -59,11 +59,6 @@
     color: $scarlet;
   }
 
-  &__pause {
-    @include button-regular(sm);
-    justify-self: end;
-  }
-
   @media (max-width: $breakpoint-tablet) {
     &__top {
       gap: $size-05;

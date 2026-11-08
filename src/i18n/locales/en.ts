@@ -2,7 +2,6 @@ export const en: Record<string, string> = {
   'menu.start': 'Start game',
   'menu.continue': 'Continue',
   'menu.leaderboard': 'Leaderboard',
-  'menu.difficulty': 'Difficulty',
 
   'difficulty.easy': 'Easy',
   'difficulty.medium': 'Medium',

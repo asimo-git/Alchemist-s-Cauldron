@@ -153,17 +153,6 @@ function createIngredientCard(
       blur: hideTooltip,
     },
 
-    // children: [
-    //   icon,
-    //   stockBadge,
-    //   createElement('div', {
-    //     className: 'shelf_card_text',
-    //     children: [
-    //       createElement('span', { className: 'shelf_card_name', textContent: name }),
-    //       stats,
-    //     ],
-    //   }),
-    // ],
     children: [
       icon,
       stockBadge,

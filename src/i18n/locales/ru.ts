@@ -2,7 +2,6 @@ export const ru: Record<string, string> = {
   'menu.start': 'Начать игру',
   'menu.continue': 'Продолжить',
   'menu.leaderboard': 'Таблица рекордов',
-  'menu.difficulty': 'Сложность',
 
   'difficulty.easy': 'Новичок',
   'difficulty.medium': 'Знаток',
