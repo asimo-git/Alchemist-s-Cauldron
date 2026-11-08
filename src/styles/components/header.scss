@@ -19,6 +19,8 @@ $icon-help: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 
 $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M4 7h16M4 12h16M4 17h16'/%3E%3C/svg%3E");
 
+$icon-pause: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M9 5.5v13M15 5.5v13'/%3E%3C/svg%3E");
+
 @mixin icon($image) {
   content: '';
   display: block;
@@ -41,7 +43,7 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: stretch;
-  padding-bottom: $size-1-5;
+  padding-bottom: $size-1;
 
   .timer {
     @include plaque;
@@ -101,33 +103,22 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 
   &__controls {
     justify-self: start;
-  }
-
-  &__controls:not(.header__side--idle) &__button {
-    @include plaque;
-    padding-block: 0;
-    border-radius: 0;
-
-    @include hover-only {
-      filter: drop-shadow(0 0 10px rgba($ember, 0.55));
-    }
-  }
-
-  &__controls.header__side--idle {
     @include plaque;
 
     .header__button {
       border-radius: 0;
     }
 
-    .header__button:not(.header__menu) + .header__button {
+    // разделитель между видимыми кнопками (скрытые через [hidden] не считаются)
+    .header__button:not([hidden]):not(.header__menu) ~ .header__button {
       border-left-color: rgba($oxblood, 0.9);
     }
   }
 
   &__button--leaderboard,
   &__button--settings,
-  &__button--help {
+  &__button--help,
+  &__button--pause {
     @include flex(row, center, center);
     padding-inline: $size-1-5;
   }
@@ -142,6 +133,10 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 
   &__button--help::before {
     @include icon($icon-help);
+  }
+
+  &__button--pause::before {
+    @include icon($icon-pause);
   }
 
   // ---- Lives and score ----
@@ -166,6 +161,8 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   }
 
   &__heart {
+    position: relative;
+    top: -0.12em;
     font-size: $fs-h3;
     line-height: 1;
     color: $scarlet;
@@ -189,6 +186,8 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     font-variant-numeric: tabular-nums;
     color: $bone;
     white-space: nowrap;
+    min-width: 11ch;
+    text-align: center;
   }
 
   // no room for the scrollwork beside the timer
@@ -211,15 +210,16 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     }
 
     .timer__top {
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: 1fr auto;
     }
-
     .timer__difficulty {
       letter-spacing: 0;
     }
 
-    .timer__pause {
-      padding: $size-05 $size-1;
+    &__side--end {
+      @include plaque(6px);
+      gap: 2px;
+      padding: 2px $size-05;
     }
 
     &__controls.header__side--idle {
@@ -238,16 +238,16 @@ $icon-menu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
       display: none;
     }
 
-    &__controls:not(.header__side--idle) &__button,
-    &__controls.header__side--idle &__button {
+    &__controls {
       @include plaque(6px);
+    }
+
+    &__controls .header__button {
       padding: 0 $size-05;
     }
 
-    &__side--end {
+    &__controls.header__side--idle .header__button {
       @include plaque(6px);
-      gap: 2px;
-      padding: 2px $size-05;
     }
 
     &__heart,

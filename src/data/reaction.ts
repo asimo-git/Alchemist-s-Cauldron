@@ -27,6 +27,32 @@ export const REACTIONS: IReaction[] = [
     apply: (v) => ({ ...v, temperature: 0, density: changeByPercent(v.density, 20) }),
   },
   {
+    id: 'lunar-echo',
+    name: 'Lunar Echo',
+    difficulty: 'medium',
+    isActive: (index) => hasAllIngridients(index, ['lunar-pollen', 'tempest-shard']),
+    apply: (v) => ({ ...v, magicPower: changeByPercent(v.magicPower, 25) }),
+  },
+  {
+    id: 'scorched-bloom',
+    name: 'Scorched Bloom',
+    difficulty: 'medium',
+    isActive: (index) => hasAllIngridients(index, ['dawn-petal', 'smolder-ember']),
+    apply: (v) => ({
+      ...v,
+      temperature: v.temperature + 10,
+      density: changeByPercent(v.density, -10),
+    }),
+  },
+  {
+    id: 'corrosive-storm',
+    name: 'Corrosive Storm',
+    difficulty: 'medium',
+    isActive: (index) => hasAllIngridients(index, ['basilisk-bile', 'tempest-shard']),
+    apply: (v) => ({ ...v, magicPower: changeByPercent(v.magicPower, 40) }),
+    sideEffects: { timeDelta: -10 },
+  },
+  {
     id: 'rooted-steam',
     name: 'Rooted Steam',
     difficulty: 'hard',
@@ -48,6 +74,29 @@ export const REACTIONS: IReaction[] = [
       magicPower: changeByPercent(v.magicPower, 25),
     }),
   },
+  {
+    id: 'haunting',
+    name: 'Haunting',
+    difficulty: 'hard',
+    isActive: (index) => hasAllIngridients(index, ['wraith-orchid', 'grave-ash']),
+    apply: (v) => ({
+      ...v,
+      temperature: v.temperature - 10,
+      magicPower: changeByPercent(v.magicPower, 30),
+    }),
+  },
+  {
+    id: 'venom-sweat',
+    name: 'Venom Sweat',
+    difficulty: 'hard',
+    isActive: (index) => hasAllIngridients(index, ['basilisk-bile', 'troll-resin']),
+    apply: (v) => ({
+      ...v,
+      density: changeByPercent(v.density, 20),
+      magicPower: changeByPercent(v.magicPower, -15),
+    }),
+    sideEffects: { timeDelta: -8 },
+  },
 
   // ---- Stats ----
   {
@@ -62,8 +111,8 @@ export const REACTIONS: IReaction[] = [
     id: 'pressure-spike',
     name: 'Pressure Spike',
     difficulty: 'medium',
-    isActive: (index) => getTotal(index, 'density') >= 70,
-    apply: (v) => ({ ...v, density: 70, magicPower: changeByPercent(v.magicPower, 10) }),
+    isActive: (index) => getTotal(index, 'density') >= 60,
+    apply: (v) => ({ ...v, density: 60, magicPower: changeByPercent(v.magicPower, 10) }),
   },
   {
     id: 'magma-flux',
@@ -80,7 +129,7 @@ export const REACTIONS: IReaction[] = [
     id: 'deep-freeze',
     name: 'Deep Freeze',
     difficulty: 'hard',
-    isActive: (index) => getTotal(index, 'temperature') <= -20,
+    isActive: (index) => getTotal(index, 'temperature') <= -15,
     apply: (v) => ({
       ...v,
       density: changeByPercent(v.density, 15),
@@ -91,8 +140,8 @@ export const REACTIONS: IReaction[] = [
     id: 'arcane-saturation',
     name: 'Arcane Saturation',
     difficulty: 'hard',
-    isActive: (index) => getTotal(index, 'magicPower') >= 80,
-    apply: (v) => ({ ...v, magicPower: 80, temperature: v.temperature + 5 }),
+    isActive: (index) => getTotal(index, 'magicPower') >= 90,
+    apply: (v) => ({ ...v, magicPower: 90, temperature: v.temperature + 5 }),
   },
 
   // ---- Mix ----
@@ -155,6 +204,18 @@ export const REACTIONS: IReaction[] = [
       ...v,
       magicPower: changeByPercent(v.magicPower, 30),
       temperature: v.temperature - 5,
+    }),
+  },
+  {
+    id: 'silt-press',
+    name: 'Silt Press',
+    difficulty: 'hard',
+    isActive: (index) =>
+      hasAllIngridients(index, ['lunar-pollen', 'grave-ash']) && getTotal(index, 'density') >= 30,
+    apply: (v) => ({
+      ...v,
+      density: changeByPercent(v.density, 15),
+      magicPower: changeByPercent(v.magicPower, 10),
     }),
   },
 ];

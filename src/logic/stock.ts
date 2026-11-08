@@ -7,12 +7,22 @@ import { canAddToCauldron } from './calculate-cauldron';
 
 export type Stock = Record<string, number>;
 
-export const getShelfIngredients = (shelfIngredients: number): readonly IIngredient[] =>
-  INGREDIENTS.slice(0, shelfIngredients);
+function pickShelfIngredients(count: number): IIngredient[] {
+  const pool = [...INGREDIENTS];
+
+  for (let index = 0; index < count; index++) {
+    const randomIndex = randomInt(index, pool.length - 1);
+    const ingredient = pool[index]!;
+    pool[index] = pool[randomIndex]!;
+    pool[randomIndex] = ingredient;
+  }
+
+  return pool.slice(0, count);
+}
 
 export function createShelfStock(shelfIngredients: number): Stock {
   const stock: Stock = {};
-  for (const { id } of getShelfIngredients(shelfIngredients)) {
+  for (const { id } of pickShelfIngredients(shelfIngredients)) {
     stock[id] = randomInt(MIN_STOCK, MAX_STOCK);
   }
   return stock;

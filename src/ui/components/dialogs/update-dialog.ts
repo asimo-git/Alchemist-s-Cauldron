@@ -36,10 +36,6 @@ export function openUpdateDialog(onUpdate: () => Promise<void>): void {
       className: 'dialog__text',
       textContent: translate('updateDialog.text'),
     }),
-    createElement('p', {
-      className: 'dialog__text',
-      textContent: translate('updateDialog.text'),
-    }),
     status,
     updateButton,
     createElement('button', {

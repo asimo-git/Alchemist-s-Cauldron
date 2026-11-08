@@ -5,45 +5,53 @@ import { getState } from '../state/game-state';
 import { openUpdateDialog } from '../ui/components/dialogs/update-dialog';
 
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
-const UPDATE_TIMEOUT_MS = 5000;
 
 export function initPwa(): void {
   let isUpdateAvailable = false;
+  let swRegistration: ServiceWorkerRegistration | undefined;
 
   const updateSW = registerSW({
     onNeedRefresh() {
       isUpdateAvailable = true;
-      offerUpdateIfSafe();
+      offerUpdate();
     },
-    onRegisteredSW(swUrl, registration) {
+
+    onRegisteredSW(_swUrl, registration) {
       if (!registration) return;
+      swRegistration = registration;
 
       setInterval(async () => {
-        if (registration.installing || !navigator.onLine) return;
-
-        const response = await fetch(swUrl, {
-          cache: 'no-store',
-          headers: { 'cache-control': 'no-cache' },
-        });
-
-        if (response.status === 200) await registration.update();
+        try {
+          await registration.update();
+        } catch {
+          // do nothing: the next check will try again
+        }
       }, CHECK_INTERVAL_MS);
     },
   });
 
-  async function applyUpdate(): Promise<void> {
-    await updateSW(true);
-    await new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Update timed out')), UPDATE_TIMEOUT_MS);
+  // the promise rejects only if the new version was discarded
+  function applyUpdate(): Promise<void> {
+    return new Promise((_, reject) => {
+      const worker = swRegistration?.waiting;
+
+      // the update was already applied (e.g. in another tab)
+      if (!worker) {
+        location.reload();
+        return;
+      }
+
+      worker.addEventListener('statechange', () => {
+        if (worker.state === 'redundant') reject(new Error('The new version was discarded'));
+      });
+
+      void updateSW(true); // sends SKIP_WAITING to the waiting worker
     });
   }
 
-  gameEvents.addEventListener(GAME_EVENTS.status, offerUpdateIfSafe);
-
-  function offerUpdateIfSafe(): void {
-    if (!isUpdateAvailable) return;
-    if (getState().status !== 'menu') return;
-
-    openUpdateDialog(applyUpdate);
+  function offerUpdate(): void {
+    if (isUpdateAvailable && getState().status === 'menu') openUpdateDialog(applyUpdate);
   }
+
+  gameEvents.addEventListener(GAME_EVENTS.status, offerUpdate);
 }

@@ -34,7 +34,7 @@
 @mixin panel-title {
   @include flex(row, center, center, $size-1-5);
   font-family: $font-accent;
-  font-size: $fs-body;
+  font-size: $fs-h3;
   font-weight: $font-weight-regular;
   color: $silver;
   white-space: nowrap;
@@ -81,16 +81,16 @@
 
   &::before {
     top: $inset;
-    left: $inset;
-    border-right: 0;
+    right: $inset;
+    border-left: 0;
     border-bottom: 0;
   }
 
   &::after {
-    right: $inset;
+    left: $inset;
     bottom: $inset;
     border-top: 0;
-    border-left: 0;
+    border-right: 0;
   }
 }
 
@@ -169,4 +169,11 @@
       inset 0 1px 0 rgba($ember, 0.5),
       $glow-red;
   }
+}
+
+@mixin empty-state-text {
+  padding-top: $size-4;
+  font-style: italic;
+  text-align: center;
+  color: $iron;
 }

@@ -8,6 +8,11 @@ export function createRecipeSection(): HTMLElement {
   const name = createElement('p', { className: 'recipe__name' });
   const counter = createElement('span', { className: 'recipe__counter' });
 
+  const empty = createElement('p', {
+    className: 'recipe__empty',
+    textContent: translate('recipe.empty'),
+  });
+
   const indicator = createElement('div', {
     className: 'recipe__indicator',
     attributes: { role: 'status', 'aria-live': 'polite' },
@@ -41,6 +46,7 @@ export function createRecipeSection(): HTMLElement {
     className: 'recipe',
     children: [
       createElement('h3', { className: 'recipe__title', textContent: translate('recipe.title') }),
+      empty,
       name,
       indicator,
       list,
@@ -50,6 +56,8 @@ export function createRecipeSection(): HTMLElement {
   function render(): void {
     const { cauldronIngredients, activeRecipe } = getState();
     const count = cauldronIngredients.length;
+
+    section.classList.toggle('recipe--empty', !activeRecipe);
 
     counter.textContent = `${count} / ${getSettings().cauldronCapacity}`;
     indicator.classList.toggle('recipe__indicator--full', count >= getSettings().cauldronCapacity);

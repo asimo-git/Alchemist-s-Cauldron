@@ -45,7 +45,7 @@ export function createStepper<T extends string>(options: StepperOptions<T>): HTM
       arrow(1, '›', translate('settings.next')),
     ],
     events: {
-      keydownement: (event) => {
+      keydown: (event) => {
         const { key } = event as KeyboardEvent;
         if (key === 'ArrowLeft') step(-1);
         else if (key === 'ArrowRight') step(1);

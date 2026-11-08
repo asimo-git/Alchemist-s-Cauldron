@@ -29,13 +29,6 @@ export function getReactionsByIds(ids: readonly string[]): IReaction[] {
   return REACTIONS.filter((reaction) => ids.includes(reaction.id));
 }
 
-export function getActiveReactions(
-  reactions: readonly IReaction[],
-  ingredients: IIngredient[],
-): IReaction[] {
-  return reactions.filter((reaction) => reaction.isActive(ingredients));
-}
-
 export function getFiredReactions(
   reactions: readonly IReaction[],
   before: IIngredient[],
