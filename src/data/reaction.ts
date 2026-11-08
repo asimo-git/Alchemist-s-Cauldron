@@ -30,14 +30,14 @@ export const REACTIONS: IReaction[] = [
     id: 'lunar-echo',
     name: 'Lunar Echo',
     difficulty: 'medium',
-    isActive: (index) => hasAllIngridients(index, ['moonstone-powder', 'storm-shard']),
+    isActive: (index) => hasAllIngridients(index, ['lunar-pollen', 'tempest-shard']),
     apply: (v) => ({ ...v, magicPower: changeByPercent(v.magicPower, 25) }),
   },
   {
     id: 'scorched-bloom',
     name: 'Scorched Bloom',
     difficulty: 'medium',
-    isActive: (index) => hasAllIngridients(index, ['sun-petal', 'ember-moss']),
+    isActive: (index) => hasAllIngridients(index, ['dawn-petal', 'smolder-ember']),
     apply: (v) => ({
       ...v,
       temperature: v.temperature + 10,
@@ -48,7 +48,7 @@ export const REACTIONS: IReaction[] = [
     id: 'corrosive-storm',
     name: 'Corrosive Storm',
     difficulty: 'medium',
-    isActive: (index) => hasAllIngridients(index, ['basilisk-venom', 'storm-shard']),
+    isActive: (index) => hasAllIngridients(index, ['basilisk-bile', 'tempest-shard']),
     apply: (v) => ({ ...v, magicPower: changeByPercent(v.magicPower, 40) }),
     sideEffects: { timeDelta: -10 },
   },
@@ -78,7 +78,7 @@ export const REACTIONS: IReaction[] = [
     id: 'haunting',
     name: 'Haunting',
     difficulty: 'hard',
-    isActive: (index) => hasAllIngridients(index, ['ghost-orchid', 'grave-dust']),
+    isActive: (index) => hasAllIngridients(index, ['wraith-orchid', 'grave-ash']),
     apply: (v) => ({
       ...v,
       temperature: v.temperature - 10,
@@ -89,7 +89,7 @@ export const REACTIONS: IReaction[] = [
     id: 'venom-sweat',
     name: 'Venom Sweat',
     difficulty: 'hard',
-    isActive: (index) => hasAllIngridients(index, ['basilisk-venom', 'troll-sweat']),
+    isActive: (index) => hasAllIngridients(index, ['basilisk-bile', 'troll-resin']),
     apply: (v) => ({
       ...v,
       density: changeByPercent(v.density, 20),
@@ -211,8 +211,7 @@ export const REACTIONS: IReaction[] = [
     name: 'Silt Press',
     difficulty: 'hard',
     isActive: (index) =>
-      hasAllIngridients(index, ['moonstone-powder', 'grave-dust']) &&
-      getTotal(index, 'density') >= 30,
+      hasAllIngridients(index, ['lunar-pollen', 'grave-ash']) && getTotal(index, 'density') >= 30,
     apply: (v) => ({
       ...v,
       density: changeByPercent(v.density, 15),
