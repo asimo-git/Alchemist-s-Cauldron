@@ -22,6 +22,7 @@ export default defineConfig([
 
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
+      'unicorn/max-nested-calls': ['error', { max: 4 }],
     },
   },
 

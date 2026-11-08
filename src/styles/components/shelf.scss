@@ -24,10 +24,14 @@
 }
 
 .shelf_grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  align-content: start;
-  gap: $size-1-5;
+  --shelf-gap: #{$size-1-5};
+  --card-min: 15em;
+  --shelf-bleed: #{$size-1};
+
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--shelf-gap);
 
   flex: 1 1 auto;
   min-height: 0;
@@ -35,49 +39,51 @@
   scrollbar-width: thin;
   scrollbar-color: $slate transparent;
 
-  padding: $size-05;
-  margin: -$size-05;
-
-  @media (max-width: $breakpoint-laptop) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  padding: var(--shelf-bleed);
+  margin: calc(-1 * var(--shelf-bleed));
 
   @media (max-width: $breakpoint-tablet) {
+    --shelf-gap: #{$size-1};
+
     flex: none;
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(150px, 1fr);
-    gap: $size-1;
+    flex-wrap: nowrap;
     padding-bottom: $size-1;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
 
     > * {
+      flex: 0 0 max(min-content, var(--card-min));
       scroll-snap-align: start;
     }
   }
 
   &:empty::after {
-    content: 'Start a game to stock the shelf';
-    grid-column: 1 / -1;
-    padding-top: $size-4;
-    font-style: italic;
-    text-align: center;
-    color: $iron;
+    @include empty-state-text;
+    content: attr(data-empty-text);
+    flex: 1 1 100%;
   }
 }
 
 .shelf_card {
-  @include flex(column, flex-start, center, $size-05);
   @include corners($oxblood, 8px, 5px);
   position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  column-gap: $size-1-5;
+
+  flex: 1 1 calc((100% - var(--shelf-gap)) / 2);
+  min-width: max(min-content, var(--card-min));
+  max-width: 100%;
+
   padding: $size-1;
   font-family: $font-body;
+  font-size: $fs-body;
   color: $bone;
-  text-align: center;
+  text-align: left;
   background:
-    radial-gradient(90% 70% at 50% 25%, rgba($oxblood, 0.35), transparent 70%),
+    radial-gradient(70% 90% at 25% 50%, rgba($oxblood, 0.35), transparent 70%),
     linear-gradient(180deg, $basalt, $obsidian);
   border: 1px solid $slate;
   border-radius: $r-md;
@@ -110,24 +116,29 @@
 
 .shelf_card_stock {
   position: absolute;
-  top: $size-1;
-  right: $size-1;
+  top: -$size-05;
+  left: -$size-05;
   width: $size-2-5;
   height: $size-2-5;
   font-family: $font-accent;
   font-size: $fs-small;
   font-weight: $font-weight-bold;
-  line-height: $size-2;
+  line-height: $size-2-5;
+  text-align: center;
   color: $bone;
   background: radial-gradient(circle at 30% 30%, $scarlet, $oxblood);
   border: 1px solid $ember;
   border-radius: $r-full;
-  box-shadow: $glow-red;
 }
 
 .shelf_card_icon {
-  width: auto;
-  height: clamp(32px, 5vh, 60px);
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: clamp(52px, 7vh, 84px);
+  max-width: none;
+  aspect-ratio: 1;
+  object-fit: contain;
   filter: drop-shadow(0 0 6px rgba($ember, 0.45));
   transition: filter 0.2s ease;
 
@@ -136,38 +147,44 @@
   }
 }
 
-.shelf_card_text {
-  @include flex(column, flex-start, stretch, $size-05);
-  width: 100%;
-}
-
 .shelf_card_name {
+  grid-column: 2;
+  align-self: center;
+  min-height: 2lh;
+  display: grid;
+  place-items: center;
   font-family: $font-accent;
   font-size: $fs-body;
   line-height: 1.15;
+  text-align: center;
+  text-wrap: balance;
   text-shadow: 0 0 8px rgba($crimson, 0.6);
 }
 
 .shelf_card_stats {
+  grid-column: 2;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: $size-05;
-  padding-top: $size-05;
-  border-top: 1px solid $basalt;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: $size-05;
+  border: 1px solid $slate;
+  border-radius: $r-sm;
+  background: rgba($void, 0.35);
 }
 
 .shelf_stat {
   @include flex(column, flex-start, center);
-  min-width: 0;
+  padding: 2px $size-05;
+
+  & + & {
+    border-left: 1px solid $slate;
+  }
 }
 
 .shelf_stat_label {
   @include label;
-  max-width: 100%;
-  overflow: hidden;
   font-size: 0.6em;
   letter-spacing: 0.02em;
-  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .shelf_stat_value {

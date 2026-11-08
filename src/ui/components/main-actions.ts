@@ -5,6 +5,7 @@ import { calculateCauldronBars, type IBarData } from '../../logic/calculate-caul
 import { loadGame } from '../../logic/game-save';
 import { BAR_LIMIT, GAME_EVENTS, POUR_OUT_COST_SECONDS } from '../../data/game';
 import { getReactionsByIds } from '../../logic/reactions';
+import { translate } from '../../i18n';
 
 function createBar(label: string) {
   const correctZone = createElement('div', { className: 'bar__correct-zone' });
@@ -42,8 +43,6 @@ function createBar(label: string) {
     correctZone.style.width = `${data.zoneWidth}%`;
     marker.style.left = `${data.markerPosition}%`;
     value.textContent = String(data.value);
-    // scaleStart.textContent = String(-data.limit);
-    // scaleEnd.textContent = String(data.limit);
     element.classList.toggle('bar--in-range', data.inRange);
   };
 
@@ -52,8 +51,6 @@ function createBar(label: string) {
     correctZone.style.width = '0';
     marker.style.left = '50%';
     value.textContent = '0';
-    // scaleStart.textContent = '0';
-    // scaleEnd.textContent = '0';
     element.classList.remove('bar--in-range');
   };
 
@@ -67,9 +64,9 @@ const isIdle = (): boolean => {
 
 export function createMainActions(): HTMLElement {
   const bars = {
-    temperature: createBar('Temperature'),
-    density: createBar('Density'),
-    magicPower: createBar('Magic Power'),
+    temperature: createBar(translate('stat.temperature')),
+    density: createBar(translate('stat.density')),
+    magicPower: createBar(translate('stat.magicPower')),
   };
 
   const barSection = createElement('div', {
@@ -79,7 +76,7 @@ export function createMainActions(): HTMLElement {
 
   const brewButton = createElement('button', {
     className: 'main-actions__button',
-    textContent: 'Start Game',
+    textContent: translate('menu.start'),
     attributes: { type: 'button' },
     events: {
       click: () => {
@@ -91,14 +88,14 @@ export function createMainActions(): HTMLElement {
 
   const continueButton = createElement('button', {
     className: 'main-actions__continue',
-    textContent: 'Continue Game',
+    textContent: translate('menu.continue'),
     attributes: { type: 'button' },
     events: { click: () => gameActions.continueGame() },
   });
 
   const pourOutButton = createElement('button', {
     className: 'main-actions__continue main-actions__pour-out',
-    textContent: 'Pour Out',
+    textContent: translate('action.pourOut'),
     attributes: { type: 'button' },
     events: {
       click: () => {
@@ -113,7 +110,7 @@ export function createMainActions(): HTMLElement {
 
     const isButtonIdle = isIdle();
     continueButton.hidden = !isButtonIdle || loadGame() === undefined;
-    brewButton.textContent = isButtonIdle ? 'Start Game' : 'Brew';
+    brewButton.textContent = translate(isButtonIdle ? 'menu.start' : 'action.brew');
     brewButton.disabled = !isButtonIdle && cauldronIngredients.length === 0;
     pourOutButton.hidden = isButtonIdle;
     pourOutButton.disabled = cauldronIngredients.length === 0;
@@ -143,7 +140,9 @@ export function createMainActions(): HTMLElement {
 function showTimePenalty(button: HTMLElement): void {
   const penalty = createElement('span', {
     className: 'time-penalty',
-    textContent: `${POUR_OUT_COST_SECONDS} sec`,
+    textContent: translate('action.timePenalty', {
+      seconds: POUR_OUT_COST_SECONDS,
+    }),
   });
 
   button.append(penalty);

@@ -1,0 +1,62 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.stepper {
+  @include flex(row, space-between, center, $size-1);
+  padding: $size-05;
+  background: $crypt;
+  border: 1px solid $slate;
+  border-radius: $r-md;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  &:focus-within {
+    border-color: $crimson;
+    box-shadow: $glow-soft;
+  }
+
+  &__value {
+    flex: 1;
+    min-width: 0;
+    font-family: $font-accent;
+    font-size: $fs-h3;
+    text-align: center;
+    color: $bone;
+    text-shadow: 0 0 12px rgba($crimson, 0.6);
+  }
+
+  &__arrow {
+    flex: none;
+    width: $size-6;
+    height: $size-4;
+    padding: 0;
+    font-family: $font-accent;
+    font-size: $fs-h2;
+    line-height: 1;
+    color: $ember;
+    background: transparent;
+    border: 1px solid $oxblood;
+    border-radius: $r-md;
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      box-shadow 0.2s;
+
+    @media (hover: hover) {
+      &:hover {
+        background: $wine;
+        box-shadow: $glow-red;
+      }
+    }
+
+    &:active {
+      background: $oxblood;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $crimson;
+      outline-offset: 2px;
+    }
+  }
+}

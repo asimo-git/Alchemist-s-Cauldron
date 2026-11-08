@@ -29,6 +29,7 @@ import {
   mergeSideEffects,
   pickReactionsForGame,
 } from '../logic/reactions';
+import { setPreference } from '../utils/preferences';
 
 export const gameEvents = new EventTarget() as IGameEventTarget;
 
@@ -207,6 +208,7 @@ export const gameActions = {
     const save = loadGame();
     if (!save) return;
 
+    setPreference('difficulty', save.difficulty);
     setState({ ...save, status: 'paused' });
     gameEvents.dispatchEvent(new Event(GAME_SIGNALS.gameBegun));
     countdown.start(save.timeLeft);
@@ -215,6 +217,7 @@ export const gameActions = {
   },
 
   setDifficulty(difficulty: Difficulty): void {
+    setPreference('difficulty', difficulty);
     setState({ difficulty });
   },
 

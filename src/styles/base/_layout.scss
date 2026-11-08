@@ -92,7 +92,7 @@ body {
       grid-area: brew;
     }
 
-    .main-actions__continue[hidden] + .main-actions__button {
+    .main-actions:not(:has(> .main-actions__continue:not([hidden]))) .main-actions__button {
       grid-column: 1 / -1;
     }
   }

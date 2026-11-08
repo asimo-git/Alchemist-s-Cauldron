@@ -1,33 +1,34 @@
+import { translate } from '../../../i18n';
 import { createElement } from '../../../utils/helpers';
 import { closeDialog, openDialog } from '../dialog';
 
-const RULES = [
-  'Each recipe asks for <strong>Temperature</strong>, <strong>Density</strong> and <strong>Magic Power</strong> to fall inside target ranges.',
-  'Click ingredients on the shelf to add them to the cauldron. Its capacity is limited.',
-  'When you think the mix matches the recipe, press the <strong>Brew</strong> button or the <strong>B</strong> key.',
-  "Don't worry, you don't need to hit the exact values ​for the potion—there is a small margin of tolerance for the stats at each level.",
-  'A correct brew gives you points and extra time, and you get a new recipe.',
-  'A wrong brew costs one life and empties the cauldron.',
-  'You can empty the cauldron at any time with the <strong>Pour Out</strong> button or the <strong>X</strong> key. This costs you some time, and the ingredients are spent — they are not returned.',
-  'The game ends when time runs out, you lose all lives, or the shelf has no ingredients left.',
-  'Press <strong>Esc</strong> or <strong>P</strong> to pause the game, <strong>M</strong> to exit to the menu.',
+const RULE_KEYS = [
+  'help.rule.ranges',
+  'help.rule.add',
+  'help.rule.brew',
+  'help.rule.tolerance',
+  'help.rule.success',
+  'help.rule.fail',
+  'help.rule.pourOut',
+  'help.rule.end',
+  'help.rule.keys',
 ];
 
 export function showHelp(): void {
   openDialog(
-    createElement('h2', { className: 'dialog__title', textContent: 'How to play' }),
+    createElement('h2', { className: 'dialog__title', textContent: translate('help.title') }),
     createElement('ul', {
       className: 'dialog__list',
-      children: RULES.map((rule) => {
+      children: RULE_KEYS.map((key) => {
         const li = document.createElement('li');
-        // innerHTML only because it's a static constant in the code, not a template
-        li.innerHTML = rule;
+        // innerHTML only because the text comes from static dictionaries in the code,
+        li.innerHTML = translate(key);
         return li;
       }),
     }),
     createElement('button', {
       className: 'dialog__button dialog__button--primary',
-      textContent: 'Got it',
+      textContent: translate('help.gotIt'),
       attributes: { type: 'button' },
       events: { click: closeDialog },
     }),

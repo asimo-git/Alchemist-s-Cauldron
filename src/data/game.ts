@@ -1,3 +1,4 @@
+import { translate } from '../i18n';
 import type { Difficulty, IDifficultySettings, IGameState } from '../utils/types';
 
 export const MIN_STOCK = 2;
@@ -17,10 +18,11 @@ export const MIN_NAME_LENGTH = 2;
 export const MAX_NAME_LENGTH = 15;
 export const NAME_PATTERN = /^[\p{L}\p{N} _-]+$/u;
 
+// Bad decision; it would be better to move the labels out of here, but it’ll do for now.
 export const STATS = [
-  { key: 'temperature', label: 'Temperature' },
-  { key: 'density', label: 'Density' },
-  { key: 'magicPower', label: 'Magic Power' },
+  { key: 'temperature', label: translate('stat.temperature') },
+  { key: 'density', label: translate('stat.density') },
+  { key: 'magicPower', label: translate('stat.magicPower') },
 ] as const;
 
 export const SAVE_TRIGGER_KEYS: Set<keyof IGameState> = new Set([

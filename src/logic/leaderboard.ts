@@ -6,6 +6,7 @@ import {
   NAME_PATTERN,
   TOP_STORAGE_KEY,
 } from '../data/game';
+import { translate } from '../i18n';
 import { getStorageItem } from '../utils/storage';
 import type { Difficulty, ILeaderboardEntry } from '../utils/types';
 
@@ -13,10 +14,10 @@ export type SaveStatus = 'saved' | 'failed';
 
 export function validatePlayerName(name: string): string | undefined {
   if (name.length < MIN_NAME_LENGTH || name.length > MAX_NAME_LENGTH) {
-    return `Name must be ${MIN_NAME_LENGTH}–${MAX_NAME_LENGTH} characters long`;
+    return translate('error.nameLength', { min: MIN_NAME_LENGTH, max: MAX_NAME_LENGTH });
   }
   if (!NAME_PATTERN.test(name)) {
-    return 'Use only letters, digits, spaces, "_" and "-"';
+    return translate('error.namePattern');
   }
   return undefined;
 }

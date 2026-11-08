@@ -43,8 +43,8 @@ $r-md: 4px;
 $r-full: 999px;
 
 // ---- Fonts ----
-$font-accent: 'Grenze gotisch', Georgia, serif;
-$font-body: 'Garamond', Georgia, serif;
+$font-accent: 'Heinrich', Georgia, serif;
+$font-body: 'Literata', Georgia, serif;
 
 // Font weights
 $font-weight-regular: 400;
@@ -67,7 +67,7 @@ $breakpoint-mobile: 480px;
 
 $layout-max-height: 1080px;
 
-$gap-large: clamp(8px, 1.6vw, 28px);
+$gap-large: clamp(8px, 1vw, 28px);
 $padding-large: clamp(10px, 1vw, 40px);
 
 // ---- Animation ----

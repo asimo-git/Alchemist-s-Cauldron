@@ -1,4 +1,5 @@
 import { GAME_EVENTS, STATS } from '../../data/game';
+import { translate } from '../../i18n';
 import { getSettings, getState } from '../../state/game-state';
 import { gameEvents } from '../../state/game-controller';
 import { createElement } from '../../utils/helpers';
@@ -7,10 +8,15 @@ export function createRecipeSection(): HTMLElement {
   const name = createElement('p', { className: 'recipe__name' });
   const counter = createElement('span', { className: 'recipe__counter' });
 
+  const empty = createElement('p', {
+    className: 'recipe__empty',
+    textContent: translate('recipe.empty'),
+  });
+
   const indicator = createElement('div', {
     className: 'recipe__indicator',
     attributes: { role: 'status', 'aria-live': 'polite' },
-    textContent: 'Ingredients in the cauldron: ',
+    textContent: translate('recipe.cauldronCount'),
     children: [counter],
   });
 
@@ -22,11 +28,14 @@ export function createRecipeSection(): HTMLElement {
 
   const list = createElement('ul', {
     className: 'recipe__list',
-    children: STATS.map(({ key, label }) =>
+    children: STATS.map(({ key }) =>
       createElement('li', {
         className: 'recipe__item',
         children: [
-          createElement('span', { className: 'recipe__stat', textContent: label }),
+          createElement('span', {
+            className: 'recipe__stat',
+            textContent: translate(`stat.${key}`),
+          }),
           ranges[key],
         ],
       }),
@@ -36,7 +45,8 @@ export function createRecipeSection(): HTMLElement {
   const section = createElement('section', {
     className: 'recipe',
     children: [
-      createElement('h3', { className: 'recipe__title', textContent: 'Current recipe' }),
+      createElement('h3', { className: 'recipe__title', textContent: translate('recipe.title') }),
+      empty,
       name,
       indicator,
       list,
@@ -46,6 +56,8 @@ export function createRecipeSection(): HTMLElement {
   function render(): void {
     const { cauldronIngredients, activeRecipe } = getState();
     const count = cauldronIngredients.length;
+
+    section.classList.toggle('recipe--empty', !activeRecipe);
 
     counter.textContent = `${count} / ${getSettings().cauldronCapacity}`;
     indicator.classList.toggle('recipe__indicator--full', count >= getSettings().cauldronCapacity);
@@ -58,7 +70,7 @@ export function createRecipeSection(): HTMLElement {
       return;
     }
 
-    name.textContent = activeRecipe.name;
+    name.textContent = translate(`recipe.${activeRecipe.id}`);
     for (const { key } of STATS) {
       const { min, max } = activeRecipe[key];
       ranges[key].textContent = `${min} … ${max}`;

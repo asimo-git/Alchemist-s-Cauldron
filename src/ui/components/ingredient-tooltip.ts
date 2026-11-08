@@ -3,6 +3,7 @@ import { createElement } from '../../utils/helpers';
 import { getState } from '../../state/game-state';
 import { gameEvents } from '../../state/game-controller';
 import { GAME_EVENTS, STATS } from '../../data/game';
+import { translate } from '../../i18n';
 
 const GAP = 10;
 const EDGE = 8;
@@ -16,12 +17,15 @@ export function formatSigned(value: number): string {
 export function createIngredientTooltip(signal: AbortSignal): IIngredientTooltip {
   const title = createElement('div', { className: 'ingredient_tooltip_title' });
 
-  const rows = STATS.map(({ key, label }) => {
+  const rows = STATS.map(({ key }) => {
     const value = createElement('span', { className: 'ingredient_tooltip_value' });
     const row = createElement('div', {
       className: 'ingredient_tooltip_row',
       children: [
-        createElement('span', { className: 'ingredient_tooltip_label', textContent: label }),
+        createElement('span', {
+          className: 'ingredient_tooltip_label',
+          textContent: translate(`stat.${key}`),
+        }),
         value,
       ],
     });
@@ -50,7 +54,7 @@ export function createIngredientTooltip(signal: AbortSignal): IIngredientTooltip
   function show(anchor: HTMLElement, ingredient: IIngredient): void {
     hide();
 
-    title.textContent = ingredient.name;
+    title.textContent = translate(`ingredient.${ingredient.id}`);
     for (const { key, value: element } of rows) {
       const value = ingredient[key];
       element.textContent = formatSigned(value);

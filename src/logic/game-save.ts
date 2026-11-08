@@ -5,7 +5,6 @@ import { RECIPES } from '../data/recipes';
 import { isNonNegativeNumber, isPlainObject } from '../utils/helpers';
 import { getStorageItem } from '../utils/storage';
 import type { Difficulty, IGameState, IIngredient, IRecipe } from '../utils/types';
-import { getShelfIngredients } from './stock';
 
 //a valid prescription is required
 export type SavedGame = Omit<IGameState, 'activeRecipe'> & {
@@ -24,13 +23,13 @@ const isDifficulty = (value: unknown): value is Difficulty =>
 const isKnownRecipe = (value: unknown): boolean =>
   isPlainObject(value) && findRecipe(value.id) !== undefined;
 
-const isValidShelfStock = (value: unknown, shelfIds: string[]): boolean =>
+const isValidShelfStock = (value: unknown, shelfSize: number): boolean =>
   isPlainObject(value) &&
-  Object.keys(value).length === shelfIds.length &&
-  shelfIds.every((id) => {
-    const portions = value[id];
-    return isNonNegativeNumber(portions) && portions <= MAX_STOCK;
-  });
+  Object.keys(value).length === shelfSize &&
+  Object.entries(value).every(
+    ([id, portions]) =>
+      findIngredient(id) !== undefined && isNonNegativeNumber(portions) && portions <= MAX_STOCK,
+  );
 
 const isValidCauldron = (value: unknown, shelfIds: string[], capacity: number): boolean =>
   Array.isArray(value) &&
@@ -61,7 +60,9 @@ function isValidSave(data: unknown): data is SavedGame {
   if (!isDifficulty(difficulty)) return false;
 
   const settings = DIFFICULTY_SETTINGS[difficulty];
-  const shelfIds = getShelfIngredients(settings.shelfIngredients).map(({ id }) => id);
+  if (!isValidShelfStock(shelfStock, settings.shelfIngredients)) return false;
+
+  const shelfIds = Object.keys(shelfStock as Record<string, unknown>);
 
   return (
     (status === 'playing' || status === 'paused') &&
@@ -73,7 +74,6 @@ function isValidSave(data: unknown): data is SavedGame {
     lives <= settings.lives &&
     isKnownRecipe(activeRecipe) &&
     isValidCauldron(cauldronIngredients, shelfIds, settings.cauldronCapacity) &&
-    isValidShelfStock(shelfStock, shelfIds) &&
     isValidActiveReactionIds(activeReactionIds)
   );
 }
